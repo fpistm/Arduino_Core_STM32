@@ -28,9 +28,8 @@ void TouchScreen::Touch_Read()
 {
   if (!isInitialized)
   {
-    Wire.stm32SetInstance(I2C3);
-    Wire.stm32SetSDA(PH8);
-    Wire.stm32SetSCL(PH7);
+    Wire.setSDA(PH8);
+    Wire.setSCL(PH7);
     Wire.begin();
 
     UB_Touch_Init();
