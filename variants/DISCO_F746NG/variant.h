@@ -59,11 +59,15 @@ enum {
   PI11, //D22 User btn
   PB7,  //D23 ST-Link Rx
   PA9,  //D24 ST-Link Tx
+  PH8,  //D25
+  PH7,  //D26
+  PI12, //D27
+  PK3,  //D28
   PEND
 };
 
 // This must be a literal with the same value as PEND
-#define NUM_DIGITAL_PINS        25
+#define NUM_DIGITAL_PINS        29
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
 #define NUM_ANALOG_INPUTS       6
 #define NUM_ANALOG_FIRST        16
