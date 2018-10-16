@@ -440,6 +440,14 @@ void SPIClass::transfer(byte _pin, void *_bufout, void *_bufin, size_t _count, S
 }
 
 /**
+  * @brief  Flush
+  */
+void SPIClass::flush(void)
+{
+  spi_flush_rx(&_spi);
+}
+
+/**
   * @brief  Not implemented.
   */
 void SPIClass::usingInterrupt(uint8_t interruptNumber)

@@ -510,6 +510,31 @@ spi_status_e spi_transfer(spi_t *obj, uint8_t * tx_buffer,
   return ret;
 }
 
+/**
+  * @brief  This function Flush the RX fifo
+  * @param  obj : pointer to spi_t structure
+  * @retval status of the send operation (0) in case of error
+  */
+spi_status_e spi_flush_rx(spi_t *obj)
+{
+  spi_status_e ret = SPI_OK;
+  HAL_StatusTypeDef hal_status;
+
+  if(obj == NULL) {
+    return SPI_ERROR;
+  }
+
+  hal_status = HAL_SPIEx_FlushRxFifo(&(obj->handle));
+
+  if(hal_status == HAL_TIMEOUT) {
+    ret = SPI_TIMEOUT;
+  } else if(hal_status != HAL_OK) {
+    ret = SPI_ERROR;
+  }
+
+  return ret;
+}
+
 
 /**
   * @}

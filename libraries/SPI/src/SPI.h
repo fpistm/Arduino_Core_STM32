@@ -173,6 +173,8 @@ class SPIClass {
       transfer(CS_PIN_CONTROLLED_BY_USER, _bufout, _bufin, _count, _mode);
     }
 
+    void flush(void);
+
     /* These methods are deprecated and kept for compatibility.
      * Use SPISettings with SPI.beginTransaction() to configure SPI parameters.
      */
