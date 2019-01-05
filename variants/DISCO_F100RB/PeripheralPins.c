@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2018, STMicroelectronics
+ * Copyright (c) 2019, STMicroelectronics
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ const PinMap PinMap_ADC[] = {
 const PinMap PinMap_DAC[] = {
   {PA_4,  DAC1, STM_PIN_DATA_EXT(STM_MODE_ANALOG, GPIO_NOPULL, 0, 1, 0)}, // DAC_OUT1
   {PA_5,  DAC1, STM_PIN_DATA_EXT(STM_MODE_ANALOG, GPIO_NOPULL, 0, 2, 0)}, // DAC_OUT2
-  {NC,   NP,    0}
+  {NC,    NP,    0}
 };
 #endif
 
