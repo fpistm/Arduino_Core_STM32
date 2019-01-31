@@ -42,6 +42,9 @@ CDC_ReceiveQueue_TypeDef ReceiveQueue;
 __IO uint32_t lineState = 0;
 __IO bool receivePended = true;
 
+/* USER CODE BEGIN PRIVATE_VARIABLES */
+uint8_t dtr_pin = 0; //DTR pin is disabled
+/* USER CODE END PRIVATE_VARIABLES */
 
 /** USBD_CDC Private Function Prototypes */
 
@@ -170,6 +173,7 @@ static int8_t USBD_CDC_Control  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   case CDC_SET_CONTROL_LINE_STATE:
     lineState =
         (((USBD_SetupReqTypedef *)pbuf)->wValue & 0x01) != 0; // Check DTR state
+		dtr_pin++; //DTR pin is enabled
     break;
 
   case CDC_SEND_BREAK:
@@ -200,6 +204,33 @@ static int8_t USBD_CDC_Control  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
 static int8_t USBD_CDC_Receive (uint8_t* Buf, uint32_t *Len) {
+  /* USER CODE BEGIN 6 */
+  /* Four byte is the magic pack "1EAF" that puts the MCU into bootloader. */
+  if(*Len >= 4){
+    /**
+     * Check if the incoming contains the string "1EAF".
+     * If yes, check if the DTR has been set, to put the MCU into the bootloader mode.
+     */
+    if(dtr_pin > 3){
+      if((Buf[0] == '1')&&(Buf[1] == 'E')&&(Buf[2] == 'A')&&(Buf[3] == 'F')){
+#if defined (HIDBL_F1)  
+        RTC_HandleTypeDef hrtc;
+        __HAL_RCC_PWR_CLK_ENABLE();
+        __HAL_RCC_BKP_CLK_ENABLE();
+        HAL_PWR_EnableBkUpAccess();
+        HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR10,0x424C);  //Write the magic number 0x424C  
+#elif defined (HIDBL_F4)
+        __HAL_RCC_PWR_CLK_ENABLE();
+        HAL_PWR_EnableBkUpAccess();
+        __BKPSRAM_CLK_ENABLE();
+        *(__IO uint32_t *)(BKPSRAM_BASE) = 0x424C; //Write the magic number 0x424C at Backup SRAM address 0x40024000        
+#endif       
+        HAL_NVIC_SystemReset();
+      }
+      dtr_pin = 0;
+    }
+  } /* USER CODE END */
+  
   UNUSED(Buf);
   /* It always contains required amount of free space for writing */
   CDC_ReceiveQueue_CommitBlock(&ReceiveQueue, (uint16_t)(*Len));
