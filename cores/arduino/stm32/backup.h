@@ -49,12 +49,14 @@ extern "C" {
 #if defined (BL_HID)
 #if !defined(HID_MAGIC_NUMBER_BKP_INDEX)
 #define HID_MAGIC_NUMBER_BKP_INDEX LL_RTC_BKP_DR4
-#define HID_OLD_MAGIC_NUMBER_BKP_INDEX LL_RTC_BKP_DR10
 #endif /* HID_MAGIC_NUMBER_BKP_INDEX */
+#if !defined(HID_OLD_MAGIC_NUMBER_BKP_INDEX) && defined(LL_RTC_BKP_DR10)
+#define HID_OLD_MAGIC_NUMBER_BKP_INDEX LL_RTC_BKP_DR10
+#endif /* HID_OLD_MAGIC_NUMBER_BKP_INDEX */
 #ifndef HID_MAGIC_NUMBER_BKP_VALUE
 #define HID_MAGIC_NUMBER_BKP_VALUE 0x424C
 #endif /* HID_MAGIC_NUMBER_BKP_VALUE */
-#endif /* BL_HID */               
+#endif /* BL_HID */
 
 /* Exported functions ------------------------------------------------------- */
 static inline void resetBackupDomain(void)
