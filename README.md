@@ -48,7 +48,7 @@ User can add a STM32 based board following this [wiki](https://github.com/stm32d
 | :green_heart: | [Nucleo L496ZG-P](http://www.st.com/en/evaluation-tools/nucleo-l496zg-p.html) | *1.3.0* |  |
 | :green_heart: | [Nucleo L4R5ZI](http://www.st.com/en/evaluation-tools/nucleo-l4r5zi.html) | *1.4.0* |  |
 | :green_heart: | [Nucleo L4R5ZI-P](http://www.st.com/en/evaluation-tools/nucleo-l4r5zi-p.html) | *1.4.0* |  |
-| :green_heart: | [Nucleo H743ZI](https://www.st.com/en/evaluation-tools/nucleo-h743zi.html) | *1.5.0* |  |
+| :green_heart: | [Nucleo H743ZI(2)](https://www.st.com/en/evaluation-tools/nucleo-h743zi.html) | *1.5.0* | Nucleo H743ZI(2) since 1.6.0 |
 
 | Status | [Nucleo 64](https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-nucleo-boards.html) | Release | Comment |
 | :---: | --- | :---: | :--- |
@@ -130,15 +130,14 @@ User can add a STM32 based board following this [wiki](https://github.com/stm32d
 ## Troubleshooting
 
 ### Important notice:
-Previously, support was performed on [stm32duino forum](http://stm32duino.com). This forum, will be be read only from **Saturday 27th April**. User registration is no more possible. Further information [here](http://stm32duino.com/viewtopic.php?f=16&t=4540).
+[stm32duino forum](http://stm32duino.com) will be transfer to STM. See [here](http://stm32duino.com/viewtopic.php?f=16&t=4671).
 
 If you have any issue, you could [file an issue on Github](https://github.com/stm32duino/Arduino_Core_STM32/issues/new).
 
-If you already have an account on [stm32duino forum](http://stm32duino.com), you can always submit a topic on the [stm32duino forum](http://stm32duino.com) until the _Saturday 27th April_:
+For question, support, ...,  you could submit a topic on the [stm32duino forum](http://stm32duino.com):
 
  * questions on the [STM32 Core](http://stm32duino.com/viewforum.php?f=48)
  
  * bugs/enhancements on the [STM core: Bugs and enhancements](http://stm32duino.com/viewforum.php?f=49)
 
 In any case, it always fine to search on those topics before submit an issue.
-**We are currently working on finding the best handover solution.**
