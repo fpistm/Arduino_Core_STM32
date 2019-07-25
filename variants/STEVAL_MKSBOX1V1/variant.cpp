@@ -73,9 +73,6 @@ const PinName digitalPin[] = {
   /* HTS221 (HUM + TEMP) */
   PD_13, // INT_HTS
 
-  /* NU (TEMPERATURE) */
-  PE_0,  // EVENT_STTS
-
   /* I2C3: STTS751-0DP3F */
   PG_7,  // I2C3_SCL
   PG_8,  // I2C3_SDA

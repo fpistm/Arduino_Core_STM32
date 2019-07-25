@@ -74,57 +74,54 @@ extern "C" {
 /* HTS221 (HUM + TEMP) */
 #define PD13 28 // INT_HTS
 
-/* NU (TEMPERATURE) */
-#define PE0  29 // EVENT_STTS
-
 /* I2C3: STTS751-0DP3F */
-#define PG7  30 // I2C3_SCL
-#define PG8  31 // I2C3_SDA
+#define PG7  29 // I2C3_SCL
+#define PG8  30 // I2C3_SDA
 
 /* STTS751-0DP3F (TEMPERATURE) */
-#define PG5  32 // INT_STT
-#define PG6  33 // EVENT_STT
-#define PE1  34 // INT_STT
+#define PG5  31 // INT_STT
+#define PG6  32 // EVENT_STT
+#define PE1  33 // INT_STT
 
 /* STBB3JR (BUCK-BOOST) */
-#define PE4  35 // SD_EN
-#define PF0  36 // BB_MODE
+#define PE4  34 // SD_EN
+#define PF0  35 // BB_MODE
 
 /* STBC02AJR (CHG+PP+LDO) */
-#define PG4  37 // SW_SEL
-#define PG2  38 // BTN_PWR
-#define PG3  39 // CHG_LED
-#define PG10 40 // CHG_LED2
-#define PC4  41 // AN_VBAT (A0)
+#define PG4  36 // SW_SEL
+#define PG2  37 // BTN_PWR
+#define PG3  38 // CHG_LED
+#define PG10 39 // CHG_LED2
+#define PC4  40 // AN_VBAT (A0)
 
 /* MP23ABS1TR (MIC) */
 /* TS922EIJT (OPAMP) */
-#define PA3  42 // M1P (A1)
-#define PB0  43 // MREF (A2)
-#define PA4  44 // DAC_OUT1
+#define PA3  41 // M1P (A1)
+#define PB0  42 // MREF (A2)
+#define PA4  43 // DAC_OUT1
 
 /* LDK130PU-R */
-#define PF7  45 // 2V7_EN
+#define PF7  44 // 2V7_EN
 
 /* ST6G3244MEBJR (SD) */
-#define PB12 46 // SD_DETECT
-#define PE5  47 // SD_SEL
-#define PB8  48 // SDMMC1_CLK_F
-#define PB9  49 // SDMMC1_CMDDIR
-#define PC6  50 // SDMMC1_DAT0DIR
-#define PC7  51 // SDMMC1_DAT123DIR
-#define PC8  52 // SDMMC1_D0
-#define PC9  53 // SDMMC1_D1
-#define PC10 54 // SDMMC1_D2
-#define PC11 55 // SDMMC1_D3
-#define PC12 56 // SDMMC1_CK
-#define PD2  57 // SDMMC1_CMD
+#define PB12 45 // SD_DETECT
+#define PE5  46 // SD_SEL
+#define PB8  47 // SDMMC1_CLK_F
+#define PB9  48 // SDMMC1_CMDDIR
+#define PC6  49 // SDMMC1_DAT0DIR
+#define PC7  50 // SDMMC1_DAT123DIR
+#define PC8  51 // SDMMC1_D0
+#define PC9  52 // SDMMC1_D1
+#define PC10 53 // SDMMC1_D2
+#define PC11 54 // SDMMC1_D3
+#define PC12 55 // SDMMC1_CK
+#define PD2  56 // SDMMC1_CMD
 
 /* Other*/
-#define PG1  58 // USER_PB1
-#define PH3  59 // BOOT0
-#define PB15 60 // CPU_LED
-#define PF2  61 // CPU_LED2
+#define PG1  57 // USER_PB1
+#define PH3  58 // BOOT0
+#define PB15 59 // CPU_LED
+#define PF2  60 // CPU_LED2
 
 /* USB */
 /*#define PA11 62 // USB_DM*/
@@ -135,10 +132,10 @@ extern "C" {
 /*#define PA14 65 // SWCLK*/
 
 // This must be a literal
-#define NUM_DIGITAL_PINS        62
+#define NUM_DIGITAL_PINS        61
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
 #define NUM_ANALOG_INPUTS       3
-#define NUM_ANALOG_FIRST        41
+#define NUM_ANALOG_FIRST        40
 
 /* On-board LED pin number */
 #define LED_BUILTIN             PF2  // CPU_LED2
