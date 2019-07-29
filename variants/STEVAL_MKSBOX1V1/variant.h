@@ -26,12 +26,12 @@ extern "C" {
 #define PE14 1  // SPI1_MISO
 #define PE15 2  // SPI1_MOSI
 
-/* LSM6DSO (3D ACC+GYR) */
-#define PA2  3  // INT1_DSR
-#define PE3  4  // INT2_DSR
+/* LSM6DSOX (3D ACC+GYR) */
+#define PA2  3  // INT1_INEMO
+#define PE3  4  // INT2_INEMO
 #define PE12 5  // CS_INEMO
 
-/* IIS3DHHCTR (ACCELEROMETER) */
+/* LIS3DHH (ACCELEROMETER) */
 #define PE10 6  // CS_ACC2
 #define PC13 7  // ACC2_INT1
 #define PE6  8  // ACC2_INT2

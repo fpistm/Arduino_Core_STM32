@@ -25,12 +25,12 @@ const PinName digitalPin[] = {
   PE_14, // SPI1_MISO
   PE_15, // SPI1_MOSI
 
-  /* LSM6DSO (3D ACC+GYR) */
-  PA_2,  // INT1_DSR
-  PE_3,  // INT2_DSR
+  /* LSM6DSOX (3D ACC+GYR) */
+  PA_2,  // INT1_INEMO
+  PE_3,  // INT2_INEMO
   PE_12, // CS_INEMO
 
-  /* IIS3DHHCTR (ACCELEROMETER) */
+  /* LIS3DHH (ACCELEROMETER) */
   PE_10, // CS_ACC2
   PC_13, // ACC2_INT1
   PE_6,  // ACC2_INT2
