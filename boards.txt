@@ -877,6 +877,14 @@ GenF3.menu.pnum.BLACKPILL_F303CC.build.board=BLACKPILL_F303CC
 GenF3.menu.pnum.BLACKPILL_F303CC.build.product_line=STM32F303xC
 GenF3.menu.pnum.BLACKPILL_F303CC.build.variant=PILL_F303XX
 
+# Example_STM32F373R8
+GenF3.menu.pnum.Example_STM32F373R8=Example_STM32F373R8
+GenF3.menu.pnum.Example_STM32F373R8.upload.maximum_size=65536
+GenF3.menu.pnum.Example_STM32F373R8.upload.maximum_data_size=16384
+GenF3.menu.pnum.Example_STM32F373R8.build.board=Example_STM32F373R8
+GenF3.menu.pnum.Example_STM32F373R8.build.product_line=STM32F373xC
+GenF3.menu.pnum.Example_STM32F373R8.build.variant=Example_STM32F373R8
+
 # Upload menu
 GenF3.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF3.menu.upload_method.swdMethod.upload.protocol=0
