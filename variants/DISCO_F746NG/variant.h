@@ -53,9 +53,13 @@ extern "C" {
 #define PB7  23 // ST-Link Rx
 #define PA9  24 // ST-Link Tx
 #define PC13 25 // SD detect
+#define PH8  26
+#define PH7  27
+#define PI12 28
+#define PK3  29
 
 // This must be a literal
-#define NUM_DIGITAL_PINS        26
+#define NUM_DIGITAL_PINS        30
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
 #define NUM_ANALOG_INPUTS       6
 #define NUM_ANALOG_FIRST        16
@@ -86,6 +90,7 @@ extern "C" {
 #define HAL_DAC_MODULE_ENABLED
 #define HAL_ETH_MODULE_ENABLED
 #define HAL_SD_MODULE_ENABLED
+#define HAL_LTDC_MODULE_ENABLED
 
 #ifdef __cplusplus
 } // extern "C"

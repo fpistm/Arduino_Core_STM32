@@ -49,7 +49,11 @@ const PinName digitalPin[] = {
   PI_11, //D22 User btn
   PB_7,  //D23 ST-Link Rx
   PA_9,  //D24 ST-Link Tx
-  PC_13  //D25 SD detect
+  PC_13, //D25 SD detect
+  PH_8,  //D26
+  PH_7,  //D27
+  PI_12, //D28
+  PK_3   //D29
 };
 
 #ifdef __cplusplus
