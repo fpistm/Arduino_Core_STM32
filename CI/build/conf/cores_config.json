@@ -189,8 +189,8 @@
             "MAPLEMINI_F103CB",
             "NUCLEO_F207ZG",
             "NUCLEO_F429ZI",
-            "NUCLEO_L496ZG-P",
-            "NUCLEO_L4R5ZI-P",
+            "NUCLEO_L496ZG_P",
+            "NUCLEO_L4R5ZI_P",
             "NUCLEO_H743ZI",
             "DISCO_F072RB",
             "DISCO_F407VG",
@@ -231,9 +231,9 @@
             "NUCLEO_L452REP",
             "NUCLEO_L476RG",
             "NUCLEO_L496ZG",
-            "NUCLEO_L496ZG-P",
+            "NUCLEO_L496ZG_P",
             "NUCLEO_L4R5ZI",
-            "NUCLEO_L4R5ZI-P",
+            "NUCLEO_L4R5ZI_P",
             "PNUCLEO_WB55RG",
             "STM32MP157C_DK2"
           ]
