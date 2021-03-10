@@ -1243,7 +1243,6 @@ def print_variant(generic_list):
     variant_h_file.write(
         variant_h_template.render(
             year=datetime.datetime.now().year,
-            generic_list=generic_list,
             pins_number_list=pins_number_list,
             alt_pins_list=alt_pins_list,
             waltpin=max(waltpin),
@@ -1728,8 +1727,8 @@ filtered_family = ""
 periph_c_filename = "PeripheralPins.c"
 pinvar_h_filename = "PinNamesVar.h"
 config_filename = Path("variant_config.json")
-variant_h_filename = "variant.h"
-variant_cpp_filename = "variant.cpp"
+variant_h_filename = "variant_generic.h"
+variant_cpp_filename = "variant_generic.cpp"
 boards_entry_filename = "boards_entry.txt"
 generic_clock_filename = "generic_clock.c"
 repo_local_path = cur_dir / "repo"
