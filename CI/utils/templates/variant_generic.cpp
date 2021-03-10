@@ -14,10 +14,6 @@
 
 #include "pins_arduino.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Digital PinName array
 const PinName digitalPin[] = {
 {% for pinname in pinnames_list %}
@@ -40,8 +36,5 @@ const uint32_t analogInputPin[] = {
 {% endfor %}
 };
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
 #endif /* ARDUINO_GENERIC_* */
 

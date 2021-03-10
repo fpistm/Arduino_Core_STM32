@@ -1229,21 +1229,20 @@ def print_variant(generic_list):
     # Define extra HAL modules
     hal_modules_list = []
     if daclist:
-        hal_modules_list.append("HAL_DAC_MODULE_ENABLED")
+        hal_modules_list.append("DAC")
     if eth_list:
-        hal_modules_list.append("HAL_ETH_MODULE_ENABLED")
+        hal_modules_list.append("ETH")
     if quadspidata0_list:
         if "OCTOSPI" in quadspidata0_list[0][2]:
-            hal_modules_list.append("HAL_OSPI_MODULE_ENABLED")
+            hal_modules_list.append("OSPI")
         else:
-            hal_modules_list.append("HAL_QSPI_MODULE_ENABLED")
+            hal_modules_list.append("QSPI")
     if sd_list:
-        hal_modules_list.append("HAL_SD_MODULE_ENABLED")
+        hal_modules_list.append("SD")
 
     variant_h_file.write(
         variant_h_template.render(
             year=datetime.datetime.now().year,
-            generic_list=generic_list,
             pins_number_list=pins_number_list,
             alt_pins_list=alt_pins_list,
             waltpin=max(waltpin),
@@ -1728,8 +1727,8 @@ filtered_family = ""
 periph_c_filename = "PeripheralPins.c"
 pinvar_h_filename = "PinNamesVar.h"
 config_filename = Path("variant_config.json")
-variant_h_filename = "variant.h"
-variant_cpp_filename = "variant.cpp"
+variant_h_filename = "variant_generic.h"
+variant_cpp_filename = "variant_generic.cpp"
 boards_entry_filename = "boards_entry.txt"
 generic_clock_filename = "generic_clock.c"
 repo_local_path = cur_dir / "repo"
