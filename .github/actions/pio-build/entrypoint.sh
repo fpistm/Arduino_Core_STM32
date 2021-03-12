@@ -13,10 +13,10 @@ python3 -c "import json; import os; fp=open(os.path.expanduser('~/.platformio/pl
 }
 
 # Fix for variant path change while not updated in PIO
-python3 -c "import json; import os; fp=open(os.path.expanduser('~/.platformio/platforms/ststm32/boards/remram_v1.json'), 'r+'); data=json.load(fp); data['build']['variant'] = 'STM32F7xx/REMRAM_V1'; fp.seek(0); fp.truncate(); json.dump(data, fp); fp.close()" || {
+python3 -c "import json; import os; fp=open(os.path.expanduser('~/.platformio/platforms/ststm32/boards/remram_v1.json'), 'r+'); data=json.load(fp); data['build']['variant'] = 'STM32F7xx/REMRAM_V1'; data['build']['extra_flags'] = '-DSTM32F765xx -DVARIANT_H=\\\\\"variant_REMRAM_V1.h\\\\\"'; fp.seek(0); fp.truncate(); json.dump(data, fp); fp.close()" || {
   exit 1
 }
-python3 -c "import json; import os; fp=open(os.path.expanduser('~/.platformio/platforms/ststm32/boards/blackpill_f103c8.json'), 'r+'); data=json.load(fp); data['build']['variant'] = 'STM32F1xx/PILL_F103XX'; fp.seek(0); fp.truncate(); json.dump(data, fp); fp.close()" || {
+python3 -c "import json; import os; fp=open(os.path.expanduser('~/.platformio/platforms/ststm32/boards/blackpill_f103c8.json'), 'r+'); data=json.load(fp); data['build']['variant'] = 'STM32F1xx/PILL_F103XX'; data['build']['extra_flags'] = '-DSTM32F1 -DSTM32F103xB -DVARIANT_H=\\\\\"variant_PILL_F103XX.h\\\\\"'; fp.seek(0); fp.truncate(); json.dump(data, fp); fp.close()" || {
   exit 1
 }
 
