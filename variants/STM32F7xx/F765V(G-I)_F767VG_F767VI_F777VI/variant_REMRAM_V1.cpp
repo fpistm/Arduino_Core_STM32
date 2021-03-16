@@ -27,13 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
+#if defined(ARDUINO_REMRAM_V1)
 
 #include "pins_arduino.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 // Pin number
 // This array allows to wrap Arduino pin number(Dx or x)
@@ -149,10 +145,6 @@ const uint32_t analogInputPin[] = {
   68  // A4
 };
 
-#ifdef __cplusplus
-}
-#endif
-
 // ----------------------------------------------------------------------------
 
 #ifdef __cplusplus
@@ -234,3 +226,5 @@ WEAK void SystemClock_Config(void)
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_REMRAM_V1 */

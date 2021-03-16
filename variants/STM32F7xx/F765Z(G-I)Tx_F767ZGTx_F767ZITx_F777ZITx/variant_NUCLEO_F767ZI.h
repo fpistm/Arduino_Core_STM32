@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2020, STMicroelectronics
+ * Copyright (c) 2020-2021, STMicroelectronics
  * All rights reserved.
  *
  * This software component is licensed by ST under BSD 3-Clause license,
@@ -9,14 +9,8 @@
  *                        opensource.org/licenses/BSD-3-Clause
  *
  *******************************************************************************
- */
-
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
-
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+*/
+#pragma once
 
 /*----------------------------------------------------------------------------
  *        Pins
@@ -55,7 +49,7 @@ extern "C" {
 #define PD11 30
 #define PE2  31
 #define PA0  A14
-#define PB0  33 // LED_GREEN
+#define PB0  A23 // LED_GREEN
 #define PE0  34
 #define PB11 35
 #define PB10 36
@@ -141,32 +135,91 @@ extern "C" {
 #define PH0  115 // MCO
 #define PH1  116
 
+// Alternate pins number
+#define PA0_ALT1                (PA0  | ALT1)
+#define PA0_ALT2                (PA0  | ALT2)
+#define PA1_ALT1                (PA1  | ALT1)
+#define PA1_ALT2                (PA1  | ALT2)
+#define PA2_ALT1                (PA2  | ALT1)
+#define PA2_ALT2                (PA2  | ALT2)
+#define PA3_ALT1                (PA3  | ALT1)
+#define PA3_ALT2                (PA3  | ALT2)
+#define PA4_ALT1                (PA4  | ALT1)
+#define PA5_ALT1                (PA5  | ALT1)
+#define PA6_ALT1                (PA6  | ALT1)
+#define PA7_ALT1                (PA7  | ALT1)
+#define PA7_ALT2                (PA7  | ALT2)
+#define PA7_ALT3                (PA7  | ALT3)
+#define PA15_ALT1               (PA15 | ALT1)
+#define PB0_ALT1                (PB0  | ALT1)
+#define PB0_ALT2                (PB0  | ALT2)
+#define PB1_ALT1                (PB1  | ALT1)
+#define PB1_ALT2                (PB1  | ALT2)
+#define PB3_ALT1                (PB3  | ALT1)
+#define PB4_ALT1                (PB4  | ALT1)
+#define PB5_ALT1                (PB5  | ALT1)
+#define PB8_ALT1                (PB8  | ALT1)
+#define PB9_ALT1                (PB9  | ALT1)
+#define PB14_ALT1               (PB14 | ALT1)
+#define PB14_ALT2               (PB14 | ALT2)
+#define PB15_ALT1               (PB15 | ALT1)
+#define PB15_ALT2               (PB15 | ALT2)
+#define PC0_ALT1                (PC0  | ALT1)
+#define PC0_ALT2                (PC0  | ALT2)
+#define PC1_ALT1                (PC1  | ALT1)
+#define PC1_ALT2                (PC1  | ALT2)
+#define PC2_ALT1                (PC2  | ALT1)
+#define PC2_ALT2                (PC2  | ALT2)
+#define PC3_ALT1                (PC3  | ALT1)
+#define PC3_ALT2                (PC3  | ALT2)
+#define PC4_ALT1                (PC4  | ALT1)
+#define PC5_ALT1                (PC5  | ALT1)
+#define PC6_ALT1                (PC6  | ALT1)
+#define PC7_ALT1                (PC7  | ALT1)
+#define PC8_ALT1                (PC8  | ALT1)
+#define PC9_ALT1                (PC9  | ALT1)
+#define PC10_ALT1               (PC10 | ALT1)
+#define PC11_ALT1               (PC11 | ALT1)
+
 // This must be a literal
 #define NUM_DIGITAL_PINS        117
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
-#define NUM_ANALOG_INPUTS       23
+#define NUM_ANALOG_INPUTS       24
 
 // On-board LED pin number
-#define LED_BUILTIN             PB0
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN             PB0
+#endif
 #define LED_GREEN               LED_BUILTIN
 #define LED_BLUE                PB7
 #define LED_RED                 PB14
 
 // On-board user button
-#define USER_BTN                PC13
+#ifndef USER_BTN
+  #define USER_BTN              PC13
+#endif
 
 // Timer Definitions
 // Use TIM6/TIM7 when possible as servo and tone don't need GPIO output pin
-#define TIMER_TONE              TIM6
-#define TIMER_SERVO             TIM7
+#ifndef TIMER_TONE
+  #define TIMER_TONE            TIM6
+#endif
+#ifndef TIMER_SERVO
+  #define TIMER_SERVO           TIM7
+#endif
 
 // UART Definitions
-#define SERIAL_UART_INSTANCE    3 //Connected to ST-Link
-
+#ifndef SERIAL_UART_INSTANCE
+  #define SERIAL_UART_INSTANCE  3 //Connected to ST-Link
+#endif
 // Serial pin used for console (ex: stlink)
 // Rerquired by Firmata
-#define PIN_SERIAL_RX           PD9
-#define PIN_SERIAL_TX           PD8
+#ifndef PIN_SERIAL_RX
+  #define PIN_SERIAL_RX         PD9
+#endif
+#ifndef PIN_SERIAL_TX
+  #define PIN_SERIAL_TX         PD8
+#endif
 
 // Value of the External oscillator in Hz
 #define HSE_VALUE               8000000U
@@ -176,13 +229,10 @@ extern "C" {
 #define HAL_ETH_MODULE_ENABLED
 
 // Last Flash sector used for EEPROM emulation, address/sector depends on single/dual bank configuration.
-// By default 1MB single bank
-#define FLASH_BASE_ADDRESS      0x080C0000
-#define FLASH_DATA_SECTOR       11
+// By default 2MB single bank
+#define FLASH_BASE_ADDRESS  0x081C0000
+#define FLASH_DATA_SECTOR   11
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -203,8 +253,10 @@ extern "C" {
   //
   // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
   //                            pins are NOT connected to anything by default.
-  #define SERIAL_PORT_MONITOR     Serial
-  #define SERIAL_PORT_HARDWARE    Serial
+  #ifndef SERIAL_PORT_MONITOR
+    #define SERIAL_PORT_MONITOR     Serial
+  #endif
+  #ifndef SERIAL_PORT_HARDWARE
+    #define SERIAL_PORT_HARDWARE    Serial
+  #endif
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */

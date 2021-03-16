@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2020, STMicroelectronics
+ * Copyright (c) 2020-2021, STMicroelectronics
  * All rights reserved.
  *
  * This software component is licensed by ST under BSD 3-Clause license,
@@ -10,12 +10,9 @@
  *
  *******************************************************************************
  */
+#if defined(ARDUINO_NUCLEO_F746ZG) || defined(ARDUINO_NUCLEO_F756ZG)
 
 #include "pins_arduino.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Pin number
 const PinName digitalPin[] = {
@@ -52,7 +49,7 @@ const PinName digitalPin[] = {
   PD_11, //D30
   PE_2,  //D31
   PA_0,  //D32
-  PB_0,  //D33 - LED_GREEN
+  PB_0,  //D33/A23 - LED_GREEN
   PE_0,  //D34
   PB_11, //D35
   PB_10, //D36
@@ -162,12 +159,10 @@ const uint32_t analogInputPin[] = {
   89, //A19
   97, //A20
   98, //A21
-  99  //A22
+  99, //A22
+  33  //A23
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -231,16 +226,18 @@ WEAK void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
   PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 }
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_NUCLEO_F746ZG || ARDUINO_NUCLEO_F756ZG */

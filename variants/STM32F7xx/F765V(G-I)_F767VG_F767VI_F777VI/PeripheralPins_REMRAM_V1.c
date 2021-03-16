@@ -11,6 +11,7 @@
  *******************************************************************************
  * Automatically generated from STM32F765V(G-I)Tx.xml
  */
+#if defined(ARDUINO_REMRAM_V1)
 #include "Arduino.h"
 #include "PeripheralPins.h"
 
@@ -519,3 +520,4 @@ WEAK const PinMap PinMap_SD[] = {
   {NC,    NP,    0}
 };
 #endif
+#endif /* ARDUINO_REMRAM_V1 */

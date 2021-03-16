@@ -28,13 +28,7 @@
  *******************************************************************************
  */
 
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif // __cplusplus
+#pragma once
 
 /*----------------------------------------------------------------------------
 *        Pins
@@ -176,9 +170,6 @@ extern "C"
 #define FLASH_BASE_ADDRESS  0x081C0000
 #define FLASH_DATA_SECTOR   11
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -187,5 +178,3 @@ extern "C"
   #define SERIAL_PORT_MONITOR Serial
   #define SERIAL_PORT_HARDWARE Serial
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */

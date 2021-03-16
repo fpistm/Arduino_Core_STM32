@@ -16,129 +16,50 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "pins_arduino.h"
+#if defined(ARDUINO_DISCO_F746NG)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "pins_arduino.h"
 
 // Pin number
 const PinName digitalPin[] = {
-  PG_9,  //D0
-  PG_14, //D1
-  PF_15, //D2
-  PE_13, //D3
-  PF_14, //D4
-  PE_11, //D5
-  PE_9,  //D6
-  PF_13, //D7
-  PF_12, //D8
-  PD_15, //D9
-  PD_14, //D10
-  PA_7,  //D11
-  PA_6,  //D12
-  PA_5,  //D13
+  PC_7,  //D0
+  PC_6,  //D1
+  PG_6,  //D2
+  PB_4,  //D3
+  PG_7,  //D4
+  PI_0,  //D5
+  PH_6,  //D6
+  PI_3,  //D7
+  PI_2,  //D8
+  PA_15, //D9
+  PA_8,  //D10
+  PB_15, //D11
+  PB_14, //D12
+  PI_1,  //D13
   PB_9,  //D14
   PB_8,  //D15
-  PC_6,  //D16
-  PB_15, //D17
-  PB_13, //D18
-  PB_12, //D19
-  PA_15, //D20
-  PC_7,  //D21
-  PB_5,  //D22
-  PB_3,  //D23
-  PA_4,  //D24
-  PB_4,  //D25
-  PB_6,  //D26
-  PB_2,  //D27
-  PD_13, //D28
-  PD_12, //D29
-  PD_11, //D30
-  PE_2,  //D31
-  PA_0,  //D32
-  PB_0,  //D33 - LED_GREEN
-  PE_0,  //D34
-  PB_11, //D35
-  PB_10, //D36
-  PE_15, //D37
-  PE_14, //D38
-  PE_12, //D39
-  PE_10, //D40
-  PE_7,  //D41
-  PE_8,  //D42
-  PC_8,  //D43
-  PC_9,  //D44
-  PC_10, //D45
-  PC_11, //D46
-  PC_12, //D47
-  PD_2,  //D48
-  PG_2,  //D49
-  PG_3,  //D50
-  PD_7,  //D51
-  PD_6,  //D52
-  PD_5,  //D53
-  PD_4,  //D54
-  PD_3,  //D55
-  PE_2,  //D56
-  PE_4,  //D57
-  PE_5,  //D58
-  PE_6,  //D59
-  PE_3,  //D60
-  PF_8,  //D61
-  PF_7,  //D62
-  PF_9,  //D63
-  PG_1,  //D64
-  PG_0,  //D65
-  PD_1,  //D66
-  PD_0,  //D67
-  PF_0,  //D68
-  PF_1,  //D69
-  PF_2,  //D70
-  PA_7,  //D71
-  NC,    //D72
-  PB_7,  //D73 - LED_BLUE
-  PB_14, //D74 - LED_RED
-  PC_13, //D75 - USER_BTN
-  PD_9,  //D76 - Serial Rx
-  PD_8,  //D77 - Serial Tx
-  PA_3,  //D78/A0
-  PC_0,  //D79/A1
-  PC_3,  //D80/A2
-  PF_3,  //D81/A3
-  PF_5,  //D82/A4
-  PF_10, //D83/A5
-  PB_1,  //D84/A6
-  PC_2,  //D85/A7
-  PF_4,  //D86/A8
-  PF_6   //D87/A9
+  PA_0,  //D16/A0
+  PF_10, //D17/A1
+  PF_9,  //D18/A2
+  PF_8,  //D19/A3
+  PF_7,  //D20/A4
+  PF_6,  //D21/A5
+  PI_11, //D22 User btn
+  PB_7,  //D23 ST-Link Rx
+  PA_9,  //D24 ST-Link Tx
+  PC_13  //D25 SD detect
 };
 
 // Analog (Ax) pin number array
 const uint32_t analogInputPin[] = {
-  78, //A0
-  79, //A1
-  80, //A2
-  81, //A3
-  82, //A4
-  83, //A5
-  84, //A6
-  85, //A7
-  86, //A8
-  87, //A9
-  11, //A10
-  12, //A11
-  13, //A12
-  24, //A13
-  32, //A14
-  61, //A15
-  62, //A16
-  63  //A17
+  16, // A0
+  17, // A1
+  18, // A2
+  19, // A3
+  20, // A4
+  21  // A5
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -149,19 +70,19 @@ extern "C" {
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow :
-  *            System Clock source            = PLL (HSI)
+  *            System Clock source            = PLL (HSE)
   *            SYSCLK(Hz)                     = 216000000
   *            HCLK(Hz)                       = 216000000
   *            AHB Prescaler                  = 1
   *            APB1 Prescaler                 = 4
   *            APB2 Prescaler                 = 2
-  *            HSE Frequency(Hz)              = 16000000
-  *            PLL_M                          = 8
-  *            PLL_N                          = 216
+  *            HSE Frequency(Hz)              = 25000000
+  *            PLL_M                          = 25
+  *            PLL_N                          = 432
   *            PLL_P                          = 2
   *            PLL_Q                          = 9
   *            PLLSAI_N                       = 192
-  *            PLLSAI_P                       = 2
+  *            PLLSAI_P                       = 4
   *            VDD(V)                         = 3.3
   *            Main regulator output voltage  = Scale1 mode
   *            Flash Latency(WS)              = 7
@@ -180,22 +101,21 @@ WEAK void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /* Initializes the CPU, AHB and APB busses clocks */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 216;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 25;
+  RCC_OscInitStruct.PLL.PLLN = 432;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   /* Activate the Over-Drive mode */
   if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
   /* Initializes the CPU, AHB and APB busses clocks */
@@ -207,16 +127,26 @@ WEAK void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
-  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC | RCC_PERIPHCLK_USART1
+                                             | RCC_PERIPHCLK_CLK48;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
+  PeriphClkInitStruct.PLLSAI.PLLSAIR = 5;
+  PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
+  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV4;
+  PeriphClkInitStruct.PLLSAIDivQ = 1;
+  PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_4;
+  PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLLSAIP;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
 }
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_DISCO_F746NG */

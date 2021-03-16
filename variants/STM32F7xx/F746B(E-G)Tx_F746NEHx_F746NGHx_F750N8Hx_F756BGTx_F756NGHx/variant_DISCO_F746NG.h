@@ -16,12 +16,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
-
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+#pragma once
 
 /*----------------------------------------------------------------------------
  *        Pins
@@ -60,35 +55,48 @@ extern "C" {
 #define NUM_ANALOG_INPUTS       6
 
 // On-board LED pin number
-#define LED_BUILTIN             13
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN           13
+#endif
 #define LED_GREEN               LED_BUILTIN
 
 // On-board user button
-#define USER_BTN                PI11
+#ifndef USER_BTN
+  #define USER_BTN              PI11
+#endif
 
 // Timer Definitions
 // Use TIM6/TIM7 when possible as servo and tone don't need GPIO output pin
-#define TIMER_TONE              TIM6
-#define TIMER_SERVO             TIM7
+#ifndef TIMER_TONE
+  #define TIMER_TONE            TIM6
+#endif
+#ifndef TIMER_SERVO
+  #define TIMER_SERVO           TIM7
+#endif
 
 // UART Definitions
-#define SERIAL_UART_INSTANCE    1 //Connected to ST-Link
+#ifndef SERIAL_UART_INSTANCE
+  #define SERIAL_UART_INSTANCE  1 //Connected to ST-Link
+#endif
 // Default pin used for 'Serial' instance (ex: ST-Link)
 // Mandatory for Firmata
-#define PIN_SERIAL_RX           PB7
-#define PIN_SERIAL_TX           PA9
+#ifndef PIN_SERIAL_RX
+  #define PIN_SERIAL_RX         PB7
+#endif
+#ifndef PIN_SERIAL_TX
+  #define PIN_SERIAL_TX         PA9
+#endif
 
 // SD detect signal
-#define SD_DETECT_PIN           PC13
+#ifndef SD_DETECT_PIN
+  #define SD_DETECT_PIN         PC13
+#endif
 
 /* Extra HAL modules */
 #define HAL_DAC_MODULE_ENABLED
 #define HAL_ETH_MODULE_ENABLED
 #define HAL_SD_MODULE_ENABLED
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -109,8 +117,10 @@ extern "C" {
   //
   // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
   //                            pins are NOT connected to anything by default.
-  #define SERIAL_PORT_MONITOR     Serial
-  #define SERIAL_PORT_HARDWARE    Serial
+  #ifndef SERIAL_PORT_MONITOR
+    #define SERIAL_PORT_MONITOR     Serial
+  #endif
+  #ifndef SERIAL_PORT_HARDWARE
+    #define SERIAL_PORT_HARDWARE    Serial
+  #endif
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */
