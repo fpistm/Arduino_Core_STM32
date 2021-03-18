@@ -15,12 +15,9 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#if defined(ARDUINO_RHF76_052)
 
 #include "pins_arduino.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 const PinName digitalPin[] = {
   PA_1,  //D0 - RFSW0
@@ -42,10 +39,6 @@ const PinName digitalPin[] = {
   PA_9,  //D16 - UART_TX
   PA_10  //D17 - UART_RX
 };
-
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -92,6 +85,9 @@ WEAK void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_RHF76_052 */

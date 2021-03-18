@@ -16,105 +16,73 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
+#pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
 
 /*----------------------------------------------------------------------------
  *        Pins
  *----------------------------------------------------------------------------*/
 
-#define PA3  0
+#define PA1  0
 #define PA2  1
-#define PA10 2
-#define PB3  3
-#define PB5  4
-#define PB4  5
-#define PB10 6
-#define PA8  7
-#define PA9  8
-#define PC7  9
-#define PB6  10
-#define PA7  A6
-#define PA6  A7
-#define PA5  13
-#define PB9  14
-#define PB8  15
-// ST Morpho
-// CN7 Left Side
-#define PC10 16
-#define PC12 17
-// 18 is NC - BOOT0
-#define PA13 19 // SWD
-#define PA14 20 // SWD
-#define PA15 21
-#define PB7  22
-#define PC13 23
-#define PC14 24
-#define PC15 25
-#define PH0  26
-#define PH1  27
-#define PC2  A8
-#define PC3  A9
-// CN7 Right Side
-#define PC11 30
-#define PD2  31
-// CN10 Left Side
-#define PC9  32
-// CN10 Right side
-#define PC8  33
-#define PC6  34
-#define PC5  A10
-#define PA12 36
-#define PA11 37
-#define PB12 38
-#define PB11 39
-#define PB2  40
-#define PB1  41
-#define PB15 42
-#define PB14 43
-#define PB13 44
-#define PC4  A11
-#define PA0  A0
-#define PA1  A1
-#define PA4  A2
-#define PB0  A3
-#define PC1  A4
-#define PC0  A5
+#define PA4  2
+#define PA5  3
+#define PA6  4
+#define PA7  5
+#define PB0  6
+#define PB1  7
+#define PB2  8
+#define PB4  9
+#define PB5  10
+#define PB10 11
+#define PB11 12
+#define PC0  13
+#define PB6  14 // TX Module LoRa
+#define PB7  15 // RX
+#define PA9  16 // TX Boot
+#define PA10 17 // RX Boot
+
+// Alternate pins number
+#define PA2_ALT1                (PA2 | ALT1)
+#define PA3_ALT1                (PA3 | ALT1)
 
 // This must be a literal
-#define NUM_DIGITAL_PINS        52
-// This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
-#define NUM_ANALOG_INPUTS       12
+#define NUM_DIGITAL_PINS        18
 
 // On-board LED pin number
-#define LED_BUILTIN             13
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN           PB4
+#endif
+
 #define LED_GREEN               LED_BUILTIN
 
-// On-board user button
-#define USER_BTN                PC13
-
-// Timer Definitions
-// Use TIM6 when possible as servo and tone don't need GPIO output pin
-#define TIMER_TONE              TIM6
-#define TIMER_SERVO             TIM2
+// SPI Definitions
+#ifndef PIN_SPI_SS
+  #define PIN_SPI_SS            PA4
+#endif
+#ifndef PIN_SPI_MOSI
+  #define PIN_SPI_MOSI          PA7
+#endif
+#ifndef PIN_SPI_MISO
+  #define PIN_SPI_MISO          PA6
+#endif
+#ifndef PIN_SPI_SCK
+  #define PIN_SPI_SCK           PA5
+#endif
 
 // UART Definitions
-#define SERIAL_UART_INSTANCE    2 //Connected to ST-Link
-// Default pin used for 'Serial' instance (ex: ST-Link)
-// Mandatory for Firmata
-#define PIN_SERIAL_RX           0
-#define PIN_SERIAL_TX           1
-
-/* Extra HAL modules */
-#define HAL_DAC_MODULE_ENABLED
-
-#ifdef __cplusplus
-} // extern "C"
+#ifndef SERIAL_UART_INSTANCE
+  #define SERIAL_UART_INSTANCE  1
 #endif
+
+// Mandatory for Firmata
+#ifndef PIN_SERIAL_RX
+  #define PIN_SERIAL_RX         PB7
+#endif
+#ifndef PIN_SERIAL_TX
+  #define PIN_SERIAL_TX         PB6
+#endif
+
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -135,8 +103,10 @@ extern "C" {
   //
   // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
   //                            pins are NOT connected to anything by default.
-  #define SERIAL_PORT_MONITOR     Serial
-  #define SERIAL_PORT_HARDWARE    Serial
+  #ifndef SERIAL_PORT_MONITOR
+    #define SERIAL_PORT_MONITOR     Serial
+  #endif
+  #ifndef SERIAL_PORT_HARDWARE
+    #define SERIAL_PORT_HARDWARE    Serial1
+  #endif
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */

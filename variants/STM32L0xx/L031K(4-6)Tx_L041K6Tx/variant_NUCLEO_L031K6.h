@@ -1,39 +1,16 @@
 /*
  *******************************************************************************
- * Copyright (c) 2017, STMicroelectronics
+ * Copyright (c) 2017-2021, STMicroelectronics
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
  *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. Neither the name of STMicroelectronics nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************
  */
-
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
-
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+#pragma once
 
 /*----------------------------------------------------------------------------
  *        Pins
@@ -42,10 +19,10 @@ extern "C" {
 #define PA10 0
 #define PA9  1
 #define PA12 2
-#define PB0  3
+#define PB0  A8
 #define PB7  4
 #define PB6  5
-#define PB1  6
+#define PB1  A9
 #define PC14 7
 #define PC15 8
 #define PA8  9
@@ -63,33 +40,51 @@ extern "C" {
 #define PA2  A7 // SB2 ON STLink Tx
 #define PA15 22 // STLink Rx
 
+// Alternate pins number
+#define PA2_ALT1                (PA2  | ALT1)
+#define PA3_ALT1                (PA3  | ALT1)
+#define PA14_ALT1               (PA14 | ALT1)
+
 // This must be a literal
 #define NUM_DIGITAL_PINS        23
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
-#define NUM_ANALOG_INPUTS       8
+#define NUM_ANALOG_INPUTS       10
 
 // On-board LED pin number
-#define LED_BUILTIN             13
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN           13
+#endif
 #define LED_GREEN               LED_BUILTIN
 
 // I2C Definitions
-#define PIN_WIRE_SDA            4
-#define PIN_WIRE_SCL            5
+#ifndef PIN_WIRE_SDA
+  #define PIN_WIRE_SDA          4
+#endif
+#ifndef PIN_WIRE_SCL
+  #define PIN_WIRE_SCL          5
+#endif
 
 //Timer Definitions
-#define TIMER_TONE              TIM2
-#define TIMER_SERVO             TIM21
+#ifndef TIMER_TONE
+  #define TIMER_TONE            TIM2
+#endif
+#ifndef TIMER_SERVO
+  #define TIMER_SERVO           TIM21
+#endif
 
 // UART Definitions
-#define SERIAL_UART_INSTANCE    2 //ex: 2 for Serial2 (USART2)
+#ifndef SERIAL_UART_INSTANCE
+  #define SERIAL_UART_INSTANCE  2 //ex: 2 for Serial2 (USART2)
+#endif
 // Default pin used for 'Serial' instance (ex: ST-Link)
 // Mandatory for Firmata
-#define PIN_SERIAL_RX           PA15
-#define PIN_SERIAL_TX           PA2
-
-#ifdef __cplusplus
-} // extern "C"
+#ifndef PIN_SERIAL_RX
+  #define PIN_SERIAL_RX         PA15
 #endif
+#ifndef PIN_SERIAL_TX
+  #define PIN_SERIAL_TX         PA2_ALT1
+#endif
+
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -110,8 +105,10 @@ extern "C" {
   //
   // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
   //                            pins are NOT connected to anything by default.
-  #define SERIAL_PORT_MONITOR     Serial
-  #define SERIAL_PORT_HARDWARE    Serial
+  #ifndef SERIAL_PORT_MONITOR
+    #define SERIAL_PORT_MONITOR     Serial
+  #endif
+  #ifndef SERIAL_PORT_HARDWARE
+    #define SERIAL_PORT_HARDWARE    Serial
+  #endif
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */

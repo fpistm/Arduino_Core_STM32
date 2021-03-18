@@ -1,31 +1,23 @@
 /*
-  Copyright (c) 2011 Arduino.  All right reserved.
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+ *******************************************************************************
+ * Copyright (c) 2017-2021, STMicroelectronics
+ * All rights reserved.
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ *******************************************************************************
+ */
+#if defined(ARDUINO_NUCLEO_L073RZ)
 
 #include "pins_arduino.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Pin number
 const PinName digitalPin[] = {
-  PA_3,  //D0
-  PA_2,  //D1
+  PA_3,  //D0/A12
+  PA_2,  //D1/A13
   PA_10, //D2
   PB_3,  //D3
   PB_5,  //D4
@@ -34,10 +26,10 @@ const PinName digitalPin[] = {
   PA_8,  //D7
   PA_9,  //D8
   PC_7,  //D9
-  PB_6,  //D10
-  PA_7,  //D11
-  PA_6,  //D12
-  PA_5,  //D13
+  PB_6,  //D10 - PWM is not supported by D10 as no timer on PB_6
+  PA_7,  //D11/A6
+  PA_6,  //D12/A7
+  PA_5,  //D13/A14
   PB_9,  //D14
   PB_8,  //D15
   // ST Morpho
@@ -54,8 +46,8 @@ const PinName digitalPin[] = {
   PC_15, //D25
   PH_0,  //D26
   PH_1,  //D27
-  PC_2,  //D28
-  PC_3,  //D29
+  PC_2,  //D28/A8
+  PC_3,  //D29/A9
   // CN7 Right Side
   PC_11, //D30
   PD_2,  //D31
@@ -64,22 +56,22 @@ const PinName digitalPin[] = {
   // CN10 Right side
   PC_8,  //D33
   PC_6,  //D34
-  PC_5,  //D35
+  PC_5,  //D35/A10
   PA_12, //D36
   PA_11, //D37
   PB_12, //D38
   PB_11, //D39
   PB_2,  //D40
-  PB_1,  //D41
+  PB_1,  //D41/A15
   PB_15, //D42
   PB_14, //D43
   PB_13, //D44
-  PC_4,  //D45
+  PC_4,  //D45/A11
   PA_0,  //D46/A0
   PA_1,  //D47/A1
   PA_4,  //D48/A2
   PB_0,  //D49/A3
-  PC_1,  //D50/A4
+  PC_1,  //D50/A4 - SB56 ON SB51 ON on the board
   PC_0   //D51/A5
 };
 
@@ -96,12 +88,12 @@ const uint32_t analogInputPin[] = {
   28, //A8
   29, //A9
   35, //A10
-  45  //A11
+  45, //A11
+  0,  //A12
+  1,  //A13
+  13, //A14
+  41  //A15
 };
-
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -116,25 +108,28 @@ extern "C" {
   */
 WEAK void SystemClock_Config(void)
 {
+
   RCC_OscInitTypeDef RCC_OscInitStruct = {};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {};
 
   /* Configure the main internal regulator output voltage */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /*
-   * Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+
+  /* Initializes the CPU, AHB and APB busses clocks */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI48;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_12;
-  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_3;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_4;
+  RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     Error_Handler();
   }
-  /* Initializes the CPU, AHB and APB buses clocks */
+
+  /* Initializes the CPU, AHB and APB busses clocks */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -146,16 +141,15 @@ WEAK void SystemClock_Config(void)
     Error_Handler();
   }
 
-#ifdef USBCON
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {};
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
-  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
+  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
     Error_Handler();
   }
-#endif
 }
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_NUCLEO_L053R8 */

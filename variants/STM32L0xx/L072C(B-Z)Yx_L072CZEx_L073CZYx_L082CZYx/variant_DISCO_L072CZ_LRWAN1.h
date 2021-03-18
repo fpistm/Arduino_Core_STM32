@@ -15,13 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
-#ifndef _VARIANT_ARDUINO_STM32_
-#define _VARIANT_ARDUINO_STM32_
-
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
+#pragma once
 
 /*----------------------------------------------------------------------------
  *        Pins
@@ -71,13 +65,24 @@ extern "C" {
 #define PB1  39 // RADIO_DIO_1_PORT
 #define PB0  40 // RADIO_DIO_2_PORT
 
+// Alternate pins number
+#define PA2_ALT1                (PA2  | ALT1)
+#define PA3_ALT1                (PA3  | ALT1)
+#define PA6_ALT1                (PA6  | ALT1)
+#define PA7_ALT1                (PA7  | ALT1)
+#define PA14_ALT1               (PA14 | ALT1)
+#define PB4_ALT1                (PB4  | ALT1)
+#define PB5_ALT1                (PB5  | ALT1)
+
 // This must be a literal
 #define NUM_DIGITAL_PINS        42
 // This must be a literal with a value less than or equal to to MAX_ANALOG_INPUTS
 #define NUM_ANALOG_INPUTS       7
 
 // On-board LED pin number
-#define LED_BUILTIN             PA5
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN           PA5
+#endif
 #define LED_LD2                 LED_BUILTIN
 #define LED_GREEN2              LED_BUILTIN
 #define LED_GREEN               4
@@ -88,7 +93,9 @@ extern "C" {
 #define LED_LD4                 LED_RED
 
 // On-board user button
-#define USER_BTN                6
+#ifndef USER_BTN
+  #define USER_BTN              6
+#endif
 
 // LORA
 #define RADIO_RESET_PORT        PC0
@@ -105,19 +112,27 @@ extern "C" {
 
 //Timer Definitions
 // Use TIM6/TIM7 when possible as servo and tone don't need GPIO output pin
-#define TIMER_TONE              TIM6
-#define TIMER_SERVO             TIM7
+#ifndef TIMER_TONE
+  #define TIMER_TONE            TIM6
+#endif
+#ifndef TIMER_SERVO
+  #define TIMER_SERVO           TIM7
+#endif
 
 // UART Definitions
-#define SERIAL_UART_INSTANCE    2 //Connected to ST-Link
+#ifndef SERIAL_UART_INSTANCE
+  #define SERIAL_UART_INSTANCE  2 //Connected to ST-Link
+#endif
+
 // Default pin used for 'Serial' instance (ex: ST-Link)
 // Mandatory for Firmata
-#define PIN_SERIAL_RX           0
-#define PIN_SERIAL_TX           1
-
-#ifdef __cplusplus
-} // extern "C"
+#ifndef PIN_SERIAL_RX
+  #define PIN_SERIAL_RX         0
 #endif
+#ifndef PIN_SERIAL_TX
+  #define PIN_SERIAL_TX         1
+#endif
+
 /*----------------------------------------------------------------------------
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
@@ -141,5 +156,3 @@ extern "C" {
   #define SERIAL_PORT_MONITOR     Serial
   #define SERIAL_PORT_HARDWARE    Serial
 #endif
-
-#endif /* _VARIANT_ARDUINO_STM32_ */

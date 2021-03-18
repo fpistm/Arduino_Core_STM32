@@ -11,6 +11,8 @@
  *******************************************************************************
  * Automatically generated from STM32L072R(B-Z)Tx.xml
  */
+#if defined(ARDUINO_PX_HER0)
+
 #include "Arduino.h"
 #include "PeripheralPins.h"
 
@@ -258,3 +260,5 @@ WEAK const PinMap PinMap_USB[] = {
 //*** No USB_OTG_HS ***
 
 //*** No SD ***
+
+#endif /* ARDUINO_PX_HER0 */

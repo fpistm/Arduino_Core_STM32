@@ -13,6 +13,8 @@
  * and merged manually with the STM32L072K(B-Z)Tx.xml
  * to fit ThunderPack requirements
  */
+#if defined(ARDUINO_THUNDERPACK_L072)
+
 #include "Arduino.h"
 #include "PeripheralPins.h"
 
@@ -168,3 +170,5 @@ WEAK const PinMap PinMap_USB[] = {
 //*** No USB_OTG_HS ***
 
 //*** No SD ***
+
+#endif /* ARDUINO_THUNDERPACK_L072 */

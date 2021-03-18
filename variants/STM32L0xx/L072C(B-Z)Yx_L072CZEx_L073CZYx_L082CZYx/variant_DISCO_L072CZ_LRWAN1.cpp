@@ -15,12 +15,9 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#if defined(ARDUINO_DISCO_L072CZ_LRWAN1)
 
 #include "pins_arduino.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Pin number
 const PinName digitalPin[] = {
@@ -82,9 +79,6 @@ const uint32_t analogInputPin[] = {
   32  // A6
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -97,9 +91,9 @@ extern "C" {
 WEAK void SystemClock_Config(void)
 {
 
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_PeriphCLKInitTypeDef PeriphClkInit;
+  RCC_OscInitTypeDef RCC_OscInitStruct = {};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {};
 
   __HAL_RCC_PWR_CLK_ENABLE();
 
@@ -136,3 +130,5 @@ WEAK void SystemClock_Config(void)
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_DISCO_L072CZ_LRWAN1 */
