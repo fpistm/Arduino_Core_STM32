@@ -1,31 +1,23 @@
 /*
-  Copyright (c) 2011 Arduino.  All right reserved.
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+ *******************************************************************************
+ * Copyright (c) 2011-2021, STMicroelectronics
+ * All rights reserved.
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ *******************************************************************************
+ */
+#if defined(ARDUINO_NUCLEO_F302R8)
 
 #include "pins_arduino.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Pin number
 const PinName digitalPin[] = {
-  PA_3,  //D0
-  PA_2,  //D1
+  PA_3,  //D0/A12
+  PA_2,  //D1/A13
   PA_10, //D2
   PB_3,  //D3
   PB_5,  //D4
@@ -37,14 +29,14 @@ const PinName digitalPin[] = {
   PB_6,  //D10
   PB_15, //D11
   PB_14, //D12
-  PB_13, //D13
+  PB_13, //D13/A14
   PB_9,  //D14
   PB_8,  //D15
   // ST Morpho
   // CN7 Left Side
   PC_10, //D16
   PC_12, //D17
-  PF_11, //D18 - BOOT0
+  NC,    //D18 - BOOT0
   PA_13, //D19 - SWD
   PA_14, //D20 - SWD
   PA_15, //D21
@@ -96,12 +88,12 @@ const uint32_t analogInputPin[] = {
   39, //A8
   41, //A9
   42, //A10
-  43  //A11
+  43, //A11
+  0,  //A12
+  1,  //A13
+  13  //A14
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -125,8 +117,8 @@ extern "C" {
   */
 WEAK void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct = {};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {};
 
   /**Initializes the CPU, AHB and APB busses clocks */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
@@ -157,3 +149,5 @@ WEAK void SystemClock_Config(void)
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_NUCLEO_F302R8 */

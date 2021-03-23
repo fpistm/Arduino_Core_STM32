@@ -15,17 +15,13 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
+#if defined(ARDUINO_NUCLEO_F303RE)
 #include "pins_arduino.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Pin number
 const PinName digitalPin[] = {
-  PA_3,  //D0
-  PA_2,  //D1
+  PA_3,  //D0/A14
+  PA_2,  //D1/A15
   PA_10, //D2
   PB_3,  //D3
   PB_5,  //D4
@@ -35,16 +31,16 @@ const PinName digitalPin[] = {
   PA_9,  //D8
   PC_7,  //D9
   PB_6,  //D10
-  PA_7,  //D11
-  PA_6,  //D12
-  PA_5,  //D13
+  PA_7,  //D11/A6
+  PA_6,  //D12/A7
+  PA_5,  //D13/A16
   PB_9,  //D14
   PB_8,  //D15
   // ST Morpho
   // CN7 Left Side
   PC_10, //D16
   PC_12, //D17
-  PF_11, //D18 - BOOT0
+  NC,    //D18 - BOOT0
   PA_13, //D19 - SWD
   PA_14, //D20 - SWD
   PA_15, //D21
@@ -54,8 +50,8 @@ const PinName digitalPin[] = {
   PC_15, //D25
   PF_0,  //D26
   PF_1,  //D27
-  PC_2,  //D28
-  PC_3,  //D29
+  PC_2,  //D28/A8
+  PC_3,  //D29/A9
   // CN7 Right Side
   PC_11, //D30
   PD_2,  //D31
@@ -64,17 +60,17 @@ const PinName digitalPin[] = {
   // CN10 Right side
   PC_8,  //D33
   PC_6,  //D34
-  PC_5,  //D35
+  PC_5,  //D35/A10
   PA_12, //D36
   PA_11, //D37
-  PB_12, //D38
-  PB_11, //D39
-  PB_2,  //D40
-  PB_1,  //D41
-  PB_15, //D42
-  PB_14, //D43
-  PB_13, //D44
-  PC_4,  //D45
+  PB_12, //D38/A22
+  PB_11, //D39/A11
+  PB_2,  //D40/A12
+  PB_1,  //D41/A19
+  PB_15, //D42/A17
+  PB_14, //D43/A18
+  PB_13, //D44/A20
+  PC_4,  //D45/A13
   PA_0,  //D46/A0
   PA_1,  //D47/A1
   PA_4,  //D48/A2
@@ -98,12 +94,16 @@ const uint32_t analogInputPin[] = {
   35, //A10
   39, //A11
   40, //A12
-  45  //A13
+  45, //A13
+  0,  //A14
+  1,  //A15
+  13, //A16
+  42, //A17
+  43, //A18
+  41, //A19
+  44, //A20
+  38  //A21
 };
-
-#ifdef __cplusplus
-}
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -118,8 +118,8 @@ extern "C" {
   */
 WEAK void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct = {};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {};
 
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
@@ -128,7 +128,9 @@ WEAK void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
-  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+    Error_Handler();
+  }
 
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
                                 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
@@ -136,9 +138,13 @@ WEAK void SystemClock_Config(void)
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+    Error_Handler();
+  }
 }
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* ARDUINO_NUCLEO_F303RE */
