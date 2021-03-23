@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2020-2021, STMicroelectronics
+ * Copyright (c) 2019, STMicroelectronics
  * All rights reserved.
  *
  * This software component is licensed by ST under BSD 3-Clause license,
@@ -10,14 +10,90 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_GENERIC_G431C6UX) || defined(ARDUINO_GENERIC_G431C8UX) ||\
-    defined(ARDUINO_GENERIC_G431CBUX) || defined(ARDUINO_GENERIC_G441CBUX)
+#if defined(ARDUINO_DISCO_B_G431B_ESC1)
+
 #include "pins_arduino.h"
+
+
+// This board doesn't breakout pins (no arduino r3 connections)
+// Pin number
+const PinName digitalPin[] = {
+  // LEFT
+  PC_13, // D0
+  PC_14, // D1
+  PC_15, // D2
+  PF_0, // D3
+  PF_1, // D4
+  PG_10, // D5
+  PA_0, // D6
+  PA_1, // D7
+  PA_2, // D8
+  PA_3, // D9
+  PA_4, // D10
+  // BOTTOM
+  PA_5, // D11
+  PA_6, // D12
+  PA_7, // D13
+  PC_4, // D14
+  PB_0, // D15
+  PB_1, // D16
+  PB_2, // D17
+  PB_10, // D18
+  PB_11, // D19
+  // RIGHT
+  PB_12, // D20
+  PB_13, // D21
+  PB_14, // D22
+  PB_15, // D23
+  PC_6, // D24
+  PA_8, // D25
+  PA_9, // D26
+  PA_10, // D27
+  PA_11, // D28
+  PA_12, // D29
+  PA_13, // D30
+  // TOP
+  PA_14, // D31
+  PA_15, // D32
+  PC_10, // D33
+  PC_11, // D34
+  PB_3, // D35
+  PB_4, // D36
+  PB_5, // D37
+  PB_6, // D38
+  PB_7, // D39
+  PB_8, // D40
+  PB_9 // D41
+};
+
+// Analog (Ax) pin number array
+const uint32_t analogInputPin[] = {
+  6,  //PA0
+  7,  //PA1
+  8,  //PA2
+  9, //PA3
+  10, //PA4
+  11, //PA5
+  12, //PA6
+  13, //PA7
+  45, //PB0
+  15, //PB2
+  17, //PB11
+  22, //PB14
+  23, //PB15
+  3, //PF0
+  4,  //PF1
+  5  //PG10
+};
+
+// ----------------------------------------------------------------------------
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
   * @brief  System Clock Configuration
-  * @param  None
-  * @retval None
   */
 WEAK void SystemClock_Config(void)
 {
@@ -66,4 +142,8 @@ WEAK void SystemClock_Config(void)
 #endif
 }
 
-#endif /* ARDUINO_GENERIC_* */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* ARDUINO_DISCO_B_G431B_ESC1 */
