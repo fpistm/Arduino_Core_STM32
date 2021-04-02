@@ -1850,6 +1850,16 @@ GenF4.menu.pnum.THUNDERPACK_F411.build.variant_h=variant_{build.board}.h
 GenF4.menu.pnum.THUNDERPACK_F411.build.variant=STM32F4xx/F411C(C-E)
 GenF4.menu.pnum.THUNDERPACK_F411.build.peripheral_pins=-DCUSTOM_PERIPHERAL_PINS
 
+# VCCGND_F407ZGT6 board
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini=VCCGND F407ZGT6 Mini
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.upload.maximum_size=1048576
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.upload.maximum_data_size=131072
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.build.board=VCCGND_F407ZGT6_MINI
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.build.product_line=STM32F407xx
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.build.variant_h=variant_{build.board}.h
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.build.variant=STM32F4xx/F411C(C-E)
+GenF4.menu.pnum.VCCGND_F407ZGT6Mini.build.peripheral_pins=-DCUSTOM_PERIPHERAL_PINS
+
 # Generic F401CBUx
 GenF4.menu.pnum.GENERIC_F401CBUX=Generic F401CBUx
 GenF4.menu.pnum.GENERIC_F401CBUX.upload.maximum_size=131072
