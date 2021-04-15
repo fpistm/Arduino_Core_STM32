@@ -354,7 +354,7 @@
           "pattern": "StringComparisonOperators",
           "applicable": false,
           "boards": [
-            "ARMED_V1", "EEXTR_F030_V1", "PX_HER0", "RAK811_TRACKER", "REMRAM_V1",
+            "ARMED_V1", "B_L072Z_LRWAN1", "EEXTR_F030_V1", "PX_HER0", "RAK811_TRACKER", "REMRAM_V1",
             "STEVAL_MKSBOX1V1", "THUNDERPACK_F411", "THUNDERPACK_L072"
           ]
         },
@@ -407,7 +407,7 @@
           "boards": [ "" ]
         },
         {
-          "pattern": "tone|p07_Keyboard",
+          "pattern": "Servo|p07_Keyboard|p12_KnockLock",
           "applicable": false,
           "boards": [
             "ST3DP001_EVAL", "STEVAL_MKSBOX1V1", "VAKE_V1", "WRAITH32_V1"
