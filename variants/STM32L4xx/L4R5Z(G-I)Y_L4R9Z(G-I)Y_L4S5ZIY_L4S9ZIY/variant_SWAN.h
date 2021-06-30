@@ -48,8 +48,8 @@
 #define PA2                     PIN_A13 // TX2
 #define PD4                     31      // RTS2
 #define PD3                     32      // CTS2
-#define PB11                    33      // TX3
-#define PB10                    34      // RX3
+#define PB10                    33      // TX3
+#define PB11                    34      // RX3
 #define PD2                     35      // RTS3
 #define PB13                    36      // CTS3
 #define PG8                     37      // RX0
