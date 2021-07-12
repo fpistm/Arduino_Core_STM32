@@ -182,8 +182,8 @@
 #endif
 
 // On-board user button
-#ifndef POWER_SWITCH
-  #define POWER_SWITCH          PE4
+#ifndef ENABLE_3V3
+  #define ENABLE_3V3          PE4
 #endif
 
 // I2C definitions
