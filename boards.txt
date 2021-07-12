@@ -4408,7 +4408,7 @@ GenL4.build.series=STM32L4xx
 GenL4.build.cmsis_lib_gcc=arm_cortexM4lf_math
 
 # Swan
-GenL4.menu.pnum.SWAN=Swan
+GenL4.menu.pnum.SWAN=Swan R5
 GenL4.menu.pnum.SWAN.upload.maximum_size=2097152
 GenL4.menu.pnum.SWAN.upload.maximum_data_size=655360
 GenL4.menu.pnum.SWAN.build.board=SWAN

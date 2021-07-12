@@ -10,7 +10,7 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_SWAN)
+#if defined(ARDUINO_SWAN_R5)
 #include "pins_arduino.h"
 
 // Digital PinName array
@@ -185,4 +185,4 @@ WEAK void SystemClock_Config(void)
 #ifdef __cplusplus
 }
 #endif
-#endif /* ARDUINO_SWAN* */
+#endif /* ARDUINO_SWAN_R5* */

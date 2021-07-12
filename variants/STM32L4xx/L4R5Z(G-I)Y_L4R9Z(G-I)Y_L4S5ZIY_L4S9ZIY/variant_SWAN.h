@@ -181,6 +181,11 @@
   #define USER_BTN              PC13
 #endif
 
+// On-board user button
+#ifndef POWER_SWITCH
+  #define POWER_SWITCH          PE4
+#endif
+
 // I2C definitions
 #ifndef PIN_WIRE_SDA
   #define PIN_WIRE_SDA          PB7

@@ -15,7 +15,7 @@
  * STM32L4S5ZIYx.xml, STM32L4S9ZIYx.xml
  * CubeMX DB release 6.0.21
  */
-#if defined(ARDUINO_SWAN)
+#if defined(ARDUINO_SWAN_R5)
 #include "Arduino.h"
 #include "PeripheralPins.h"
 
@@ -476,4 +476,4 @@ WEAK const PinMap PinMap_SD[] = {
 };
 #endif
 
-#endif /* ARDUINO_SWAN */
+#endif /* ARDUINO_SWAN_R5 */
