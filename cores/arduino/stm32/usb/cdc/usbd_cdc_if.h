@@ -40,8 +40,6 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 
 extern USBD_CDC_ItfTypeDef  USBD_CDC_fops;
-extern CDC_TransmitQueue_TypeDef TransmitQueue;
-extern CDC_ReceiveQueue_TypeDef ReceiveQueue;
 
 
 /* Exported macro ------------------------------------------------------------*/

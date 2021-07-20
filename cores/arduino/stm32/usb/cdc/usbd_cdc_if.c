@@ -49,9 +49,6 @@ USBD_HandleTypeDef hUSBD_Device_CDC;
 static bool CDC_initialized = false;
 static bool CDC_DTR_enabled = true;
 
-/* Received Data over USB are stored in this buffer       */
-CDC_TransmitQueue_TypeDef TransmitQueue;
-CDC_ReceiveQueue_TypeDef ReceiveQueue;
 __IO bool dtrState = false; /* lineState */
 __IO bool rtsState = false;
 __IO bool receivePended = true;
@@ -97,10 +94,10 @@ USBD_CDC_LineCodingTypeDef linecoding = {
 static int8_t USBD_CDC_Init(void)
 {
   /* Set Application Buffers */
-  CDC_TransmitQueue_Init(&TransmitQueue);
-  CDC_ReceiveQueue_Init(&ReceiveQueue);
+  CDC_TransmitQueue_Init();
+  CDC_ReceiveQueue_Init();
   receivePended = true;
-  USBD_CDC_SetRxBuffer(&hUSBD_Device_CDC, CDC_ReceiveQueue_ReserveBlock(&ReceiveQueue));
+  USBD_CDC_SetRxBuffer(&hUSBD_Device_CDC, CDC_ReceiveQueue_ReserveBlock());
 
   return ((int8_t)USBD_OK);
 }
@@ -235,7 +232,7 @@ static int8_t USBD_CDC_Receive(uint8_t *Buf, uint32_t *Len)
   UNUSED(Buf);
 #endif
   /* It always contains required amount of free space for writing */
-  CDC_ReceiveQueue_CommitBlock(&ReceiveQueue, (uint16_t)(*Len));
+  CDC_ReceiveQueue_CommitBlock((uint16_t)(*Len));
   receivePended = false;
   /* If enough space in the queue for a full buffer then continue receive */
   if (!CDC_resume_receive()) {
@@ -263,7 +260,7 @@ static int8_t USBD_CDC_TransmitCplt(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
   UNUSED(Len);
   UNUSED(epnum);
   transmitStart = 0;
-  CDC_TransmitQueue_CommitRead(&TransmitQueue);
+  CDC_TransmitQueue_CommitRead();
   CDC_continue_transmit();
   return ((int8_t)USBD_OK);
 }
@@ -322,7 +319,7 @@ void CDC_continue_transmit(void)
    * is higher than that of the main thread. So this method is thread safe.
    */
   if (hcdc->TxState == 0U) {
-    buffer = CDC_TransmitQueue_ReadBlock(&TransmitQueue, &size);
+    buffer = CDC_TransmitQueue_ReadBlock(&size);
     if (size > 0) {
       transmitStart = HAL_GetTick();
       USBD_CDC_SetTxBuffer(&hUSBD_Device_CDC, buffer, size);
@@ -342,7 +339,7 @@ bool CDC_resume_receive(void)
    * IRQ may occur only if receivePended is true. So it is thread-safe!
    */
   if (!receivePended) {
-    uint8_t *block = CDC_ReceiveQueue_ReserveBlock(&ReceiveQueue);
+    uint8_t *block = CDC_ReceiveQueue_ReserveBlock();
     if (block != NULL) {
       receivePended = true;
       /* Set new buffer */

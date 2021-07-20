@@ -55,7 +55,7 @@ void USBSerial::end()
 int USBSerial::availableForWrite()
 {
   // Just transmit queue size, available for write
-  return static_cast<int>(CDC_TransmitQueue_WriteSize(&TransmitQueue));
+  return static_cast<int>(CDC_TransmitQueue_WriteSize());
 }
 
 size_t USBSerial::write(uint8_t ch)
@@ -69,7 +69,7 @@ size_t USBSerial::write(const uint8_t *buffer, size_t size)
   size_t rest = size;
   while (rest > 0 && CDC_connected()) {
     // Determine buffer size available for write
-    auto portion = (size_t)CDC_TransmitQueue_WriteSize(&TransmitQueue);
+    auto portion = (size_t)CDC_TransmitQueue_WriteSize();
     // Truncate it to content size (if rest is greater)
     if (rest < portion) {
       portion = rest;
@@ -79,7 +79,7 @@ size_t USBSerial::write(const uint8_t *buffer, size_t size)
       // TS: Only main thread calls write and writeSize methods,
       // it's thread-safe since IRQ does not affects
       // TransmitQueue write position
-      CDC_TransmitQueue_Enqueue(&TransmitQueue, buffer, portion);
+      CDC_TransmitQueue_Enqueue(buffer, portion);
       rest -= portion;
       buffer += portion;
       // After storing data, start transmitting process
@@ -92,14 +92,14 @@ size_t USBSerial::write(const uint8_t *buffer, size_t size)
 int USBSerial::available(void)
 {
   // Just ReceiveQueue size, available for reading
-  return static_cast<int>(CDC_ReceiveQueue_ReadSize(&ReceiveQueue));
+  return static_cast<int>(CDC_ReceiveQueue_ReadSize());
 }
 
 int USBSerial::read(void)
 {
   // Dequeue only one char from queue
   // TS: it safe, because only main thread affects ReceiveQueue->read pos
-  auto ch = CDC_ReceiveQueue_Dequeue(&ReceiveQueue);
+  auto ch = CDC_ReceiveQueue_Dequeue();
   // Resume receive process, if possible
   CDC_resume_receive();
   return ch;
@@ -111,7 +111,7 @@ size_t USBSerial::readBytes(char *buffer, size_t length)
   auto rest = static_cast<uint16_t>(length);
   _startMillis = millis();
   do {
-    read = CDC_ReceiveQueue_Read(&ReceiveQueue, reinterpret_cast<uint8_t *>(buffer), rest);
+    read = CDC_ReceiveQueue_Read(reinterpret_cast<uint8_t *>(buffer), rest);
     CDC_resume_receive();
     rest -= read;
     buffer += read;
@@ -128,7 +128,7 @@ size_t USBSerial::readBytesUntil(char terminator, char *buffer, size_t length)
   auto rest = static_cast<uint16_t>(length);
   _startMillis = millis();
   do {
-    bool found = CDC_ReceiveQueue_ReadUntil(&ReceiveQueue, static_cast<uint8_t>(terminator),
+    bool found = CDC_ReceiveQueue_ReadUntil(static_cast<uint8_t>(terminator),
                                             reinterpret_cast<uint8_t *>(buffer), rest, &read);
     CDC_resume_receive();
     rest -= read;
@@ -146,14 +146,14 @@ size_t USBSerial::readBytesUntil(char terminator, char *buffer, size_t length)
 int USBSerial::peek(void)
 {
   // Peek one symbol, it can't change receive avaiablity
-  return CDC_ReceiveQueue_Peek(&ReceiveQueue);
+  return CDC_ReceiveQueue_Peek();
 }
 
 void USBSerial::flush(void)
 {
   // Wait for TransmitQueue read size becomes zero
   // TS: safe, because it not be stopped while receive 0
-  while (CDC_TransmitQueue_ReadSize(&TransmitQueue) > 0) {}
+  while (CDC_TransmitQueue_ReadSize() > 0) {}
 }
 
 uint32_t USBSerial::baud()

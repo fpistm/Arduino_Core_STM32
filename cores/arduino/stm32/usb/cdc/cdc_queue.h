@@ -70,22 +70,22 @@ typedef struct {
   volatile uint16_t length;
 } CDC_ReceiveQueue_TypeDef;
 
-void CDC_TransmitQueue_Init(CDC_TransmitQueue_TypeDef *queue);
-int CDC_TransmitQueue_WriteSize(CDC_TransmitQueue_TypeDef *queue);
-int CDC_TransmitQueue_ReadSize(CDC_TransmitQueue_TypeDef *queue);
-void CDC_TransmitQueue_Enqueue(CDC_TransmitQueue_TypeDef *queue, const uint8_t *buffer, uint32_t size);
-uint8_t *CDC_TransmitQueue_ReadBlock(CDC_TransmitQueue_TypeDef *queue, uint16_t *size);
-void CDC_TransmitQueue_CommitRead(CDC_TransmitQueue_TypeDef *queue);
+void CDC_TransmitQueue_Init(void);
+int CDC_TransmitQueue_WriteSize(void);
+int CDC_TransmitQueue_ReadSize(void);
+void CDC_TransmitQueue_Enqueue(const uint8_t *buffer, uint32_t size);
+uint8_t *CDC_TransmitQueue_ReadBlock(uint16_t *size);
+void CDC_TransmitQueue_CommitRead(void);
 
-void CDC_ReceiveQueue_Init(CDC_ReceiveQueue_TypeDef *queue);
-int CDC_ReceiveQueue_ReadSize(CDC_ReceiveQueue_TypeDef *queue);
-int CDC_ReceiveQueue_Dequeue(CDC_ReceiveQueue_TypeDef *queue);
-int CDC_ReceiveQueue_Peek(CDC_ReceiveQueue_TypeDef *queue);
-uint16_t CDC_ReceiveQueue_Read(CDC_ReceiveQueue_TypeDef *queue, uint8_t *buffer, uint16_t size);
-bool CDC_ReceiveQueue_ReadUntil(CDC_ReceiveQueue_TypeDef *queue, uint8_t terminator, uint8_t *buffer,
+void CDC_ReceiveQueue_Init(void);
+int CDC_ReceiveQueue_ReadSize(void);
+int CDC_ReceiveQueue_Dequeue(void);
+int CDC_ReceiveQueue_Peek(void);
+uint16_t CDC_ReceiveQueue_Read(uint8_t *buffer, uint16_t size);
+bool CDC_ReceiveQueue_ReadUntil(uint8_t terminator, uint8_t *buffer,
                                 uint16_t size, uint16_t *fetched);
-uint8_t *CDC_ReceiveQueue_ReserveBlock(CDC_ReceiveQueue_TypeDef *queue);
-void CDC_ReceiveQueue_CommitBlock(CDC_ReceiveQueue_TypeDef *queue, uint16_t size);
+uint8_t *CDC_ReceiveQueue_ReserveBlock(void);
+void CDC_ReceiveQueue_CommitBlock(uint16_t size);
 
 #ifdef __cplusplus
 }

@@ -40,207 +40,207 @@
 
 #include "cdc_queue.h"
 
+/* Private Variables */
+/* Transmit/Received Data over USB are stored in those buffer */
+CDC_TransmitQueue_TypeDef TxQueue;
+CDC_ReceiveQueue_TypeDef RxQueue;
+
 // Initialize read and write position of queue
-void CDC_TransmitQueue_Init(CDC_TransmitQueue_TypeDef *queue)
+void CDC_TransmitQueue_Init(void)
 {
-  queue->read = 0;
-  queue->write = 0;
+  TxQueue.read = 0;
+  TxQueue.write = 0;
 }
 
 // Determine size, available for write in queue
-int CDC_TransmitQueue_WriteSize(CDC_TransmitQueue_TypeDef *queue)
+int CDC_TransmitQueue_WriteSize(void)
 {
-  return (queue->read + CDC_TRANSMIT_QUEUE_BUFFER_SIZE - queue->write - 1)
+  return (TxQueue.read + CDC_TRANSMIT_QUEUE_BUFFER_SIZE - TxQueue.write - 1)
          % CDC_TRANSMIT_QUEUE_BUFFER_SIZE;
 }
 
 // Determine size of data, stored in queue
-int CDC_TransmitQueue_ReadSize(CDC_TransmitQueue_TypeDef *queue)
+int CDC_TransmitQueue_ReadSize(void)
 {
-  return (queue->write + CDC_TRANSMIT_QUEUE_BUFFER_SIZE - queue->read)
+  return (TxQueue.write + CDC_TRANSMIT_QUEUE_BUFFER_SIZE - TxQueue.read)
          % CDC_TRANSMIT_QUEUE_BUFFER_SIZE;
 }
 
 // Write provided data into queue.
-void CDC_TransmitQueue_Enqueue(CDC_TransmitQueue_TypeDef *queue,
-                               const uint8_t *buffer, uint32_t size)
+void CDC_TransmitQueue_Enqueue(const uint8_t *buffer, uint32_t size)
 {
-  uint32_t sizeToEnd = CDC_TRANSMIT_QUEUE_BUFFER_SIZE - queue->write;
+  uint32_t sizeToEnd = CDC_TRANSMIT_QUEUE_BUFFER_SIZE - TxQueue.write;
   if (sizeToEnd > size) {
-    memcpy(&queue->buffer[queue->write], &buffer[0], size);
+    memcpy(&TxQueue.buffer[TxQueue.write], &buffer[0], size);
   } else {
-    memcpy(&queue->buffer[queue->write], &buffer[0], sizeToEnd);
-    memcpy(&queue->buffer[0], &buffer[sizeToEnd], size - sizeToEnd);
+    memcpy(&TxQueue.buffer[TxQueue.write], &buffer[0], sizeToEnd);
+    memcpy(&TxQueue.buffer[0], &buffer[sizeToEnd], size - sizeToEnd);
   }
-  queue->write = (uint16_t)((queue->write + size) %
-                            CDC_TRANSMIT_QUEUE_BUFFER_SIZE);
+  TxQueue.write = (uint16_t)((TxQueue.write + size) %
+                             CDC_TRANSMIT_QUEUE_BUFFER_SIZE);
 }
 
 // Read flat block from queue biggest as possible, but max QUEUE_MAX_PACKET_SIZE
-uint8_t *CDC_TransmitQueue_ReadBlock(CDC_TransmitQueue_TypeDef *queue,
-                                     uint16_t *size)
+uint8_t *CDC_TransmitQueue_ReadBlock(uint16_t *size)
 {
-  if (queue->write >= queue->read) {
-    *size = queue->write - queue->read;
+  if (TxQueue.write >= TxQueue.read) {
+    *size = TxQueue.write - TxQueue.read;
   } else {
-    *size = CDC_TRANSMIT_QUEUE_BUFFER_SIZE - queue->read;
+    *size = CDC_TRANSMIT_QUEUE_BUFFER_SIZE - TxQueue.read;
   }
-  queue->reserved = *size;
-  return &queue->buffer[queue->read];
+  TxQueue.reserved = *size;
+  return &TxQueue.buffer[TxQueue.read];
 }
 
-void CDC_TransmitQueue_CommitRead(CDC_TransmitQueue_TypeDef *queue)
+void CDC_TransmitQueue_CommitRead(void)
 {
-  queue->read = (queue->read + queue->reserved) %
-                CDC_TRANSMIT_QUEUE_BUFFER_SIZE;
+  TxQueue.read = (TxQueue.read + TxQueue.reserved) %
+                 CDC_TRANSMIT_QUEUE_BUFFER_SIZE;
 }
 
 // Initialize read and write position of queue.
-void CDC_ReceiveQueue_Init(CDC_ReceiveQueue_TypeDef *queue)
+void CDC_ReceiveQueue_Init(void)
 {
-  queue->read = 0;
-  queue->write = 0;
-  queue->length = CDC_RECEIVE_QUEUE_BUFFER_SIZE;
+  RxQueue.read = 0;
+  RxQueue.write = 0;
+  RxQueue.length = CDC_RECEIVE_QUEUE_BUFFER_SIZE;
 }
 
 // Reserve block in queue and return pointer to it.
-uint8_t *CDC_ReceiveQueue_ReserveBlock(CDC_ReceiveQueue_TypeDef *queue)
+uint8_t *CDC_ReceiveQueue_ReserveBlock(void)
 {
   const uint16_t limit =
     CDC_RECEIVE_QUEUE_BUFFER_SIZE - CDC_QUEUE_MAX_PACKET_SIZE;
-  volatile uint16_t read = queue->read;
+  volatile uint16_t read = RxQueue.read;
 
-  if (read <= queue->write) {
+  if (read <= RxQueue.write) {
     // if write is limited only by buffer size.
-    if (queue->write < limit || (queue->write == limit && read > 0)) {
+    if (RxQueue.write < limit || (RxQueue.write == limit && read > 0)) {
       // if size in the rest of buffer is enough for full packet plus 1 byte
       // or if it tight enough and write position can be set to 0
-      return queue->buffer + queue->write;
+      return RxQueue.buffer + RxQueue.write;
     } else if (read > CDC_QUEUE_MAX_PACKET_SIZE) {
       // if size in the rest is not enough, but enough size in head
-      queue->length = queue->write;
-      queue->write = 0;
-      return queue->buffer + queue->write;
+      RxQueue.length = RxQueue.write;
+      RxQueue.write = 0;
+      return RxQueue.buffer + RxQueue.write;
     }
-  } else if (queue->write + CDC_QUEUE_MAX_PACKET_SIZE < read) {
+  } else if (RxQueue.write + CDC_QUEUE_MAX_PACKET_SIZE < read) {
     // write position must be less than read position
     // after reading largest possible packet
-    return queue->buffer + queue->write;
+    return RxQueue.buffer + RxQueue.write;
   }
   return 0;
 }
 
 // Commits block in queue and make it available for reading
-void CDC_ReceiveQueue_CommitBlock(CDC_ReceiveQueue_TypeDef *queue,
-                                  uint16_t size)
+void CDC_ReceiveQueue_CommitBlock(uint16_t size)
 {
-  queue->write += size;
-  if (queue->write >= queue->length) {
-    queue->length = CDC_RECEIVE_QUEUE_BUFFER_SIZE;
+  RxQueue.write += size;
+  if (RxQueue.write >= RxQueue.length) {
+    RxQueue.length = CDC_RECEIVE_QUEUE_BUFFER_SIZE;
   }
-  if (queue->write >= CDC_RECEIVE_QUEUE_BUFFER_SIZE) {
-    queue->write = 0;
+  if (RxQueue.write >= CDC_RECEIVE_QUEUE_BUFFER_SIZE) {
+    RxQueue.write = 0;
   }
 }
 
 // Determine size, available for read
-int CDC_ReceiveQueue_ReadSize(CDC_ReceiveQueue_TypeDef *queue)
+int CDC_ReceiveQueue_ReadSize(void)
 {
   // reading length after write make guarantee, that length >= write
   // and determined reading size will be smaller or equal than real one.
-  volatile uint16_t write = queue->write;
-  volatile uint16_t length = queue->length;
-  if (write >= queue->read) {
-    return write - queue->read;
+  volatile uint16_t write = RxQueue.write;
+  volatile uint16_t length = RxQueue.length;
+  if (write >= RxQueue.read) {
+    return write - RxQueue.read;
   }
-  return length + write - queue->read;
+  return length + write - RxQueue.read;
 }
 
 // Read one byte from queue.
-int CDC_ReceiveQueue_Dequeue(CDC_ReceiveQueue_TypeDef *queue)
+int CDC_ReceiveQueue_Dequeue(void)
 {
-  volatile uint16_t write = queue->write;
-  volatile uint16_t length = queue->length;
-  if (queue->read == length) {
-    queue->read = 0;
+  volatile uint16_t write = RxQueue.write;
+  volatile uint16_t length = RxQueue.length;
+  if (RxQueue.read == length) {
+    RxQueue.read = 0;
   }
-  if (write == queue->read) {
+  if (write == RxQueue.read) {
     return -1;
   }
-  uint8_t ch = queue->buffer[queue->read++];
-  if (queue->read >= length) {
-    queue->read = 0;
+  uint8_t ch = RxQueue.buffer[RxQueue.read++];
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
   return ch;
 }
 
 // Peek byte from queue.
-int CDC_ReceiveQueue_Peek(CDC_ReceiveQueue_TypeDef *queue)
+int CDC_ReceiveQueue_Peek(void)
 {
-  volatile uint16_t write = queue->write;
-  volatile uint16_t length = queue->length;
-  if (queue->read >= length) {
-    queue->read = 0;
+  volatile uint16_t write = RxQueue.write;
+  volatile uint16_t length = RxQueue.length;
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
-  if (write == queue->read) {
+  if (write == RxQueue.read) {
     return -1;
   }
-  return queue->buffer[queue->read];
+  return RxQueue.buffer[RxQueue.read];
 }
 
-uint16_t CDC_ReceiveQueue_Read(CDC_ReceiveQueue_TypeDef *queue,
-                               uint8_t *buffer, uint16_t size)
+uint16_t CDC_ReceiveQueue_Read(uint8_t *buffer, uint16_t size)
 {
-  volatile uint16_t write = queue->write;
-  volatile uint16_t length = queue->length;
+  volatile uint16_t write = RxQueue.write;
+  volatile uint16_t length = RxQueue.length;
   uint16_t available;
 
-  if (queue->read >= length) {
-    queue->read = 0;
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
-  if (write >= queue->read) {
-    available = write - queue->read;
+  if (write >= RxQueue.read) {
+    available = write - RxQueue.read;
   } else {
-    available = length - queue->read;
+    available = length - RxQueue.read;
   }
   if (available < size) {
     size = available;
   }
 
-  memcpy(buffer, &queue->buffer[queue->read], size);
-  queue->read = queue->read + size;
-  if (queue->read >= length) {
-    queue->read = 0;
+  memcpy(buffer, &RxQueue.buffer[RxQueue.read], size);
+  RxQueue.read = RxQueue.read + size;
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
   return size;
 }
 
-bool CDC_ReceiveQueue_ReadUntil(CDC_ReceiveQueue_TypeDef *queue,
-                                uint8_t terminator, uint8_t *buffer, uint16_t size, uint16_t *fetched)
+bool CDC_ReceiveQueue_ReadUntil(uint8_t terminator, uint8_t *buffer, uint16_t size, uint16_t *fetched)
 {
-  volatile uint16_t write = queue->write;
-  volatile uint16_t length = queue->length;
+  volatile uint16_t write = RxQueue.write;
+  volatile uint16_t length = RxQueue.length;
   uint16_t available;
 
-  if (queue->read >= length) {
-    queue->read = 0;
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
-  if (write >= queue->read) {
-    available = write - queue->read;
+  if (write >= RxQueue.read) {
+    available = write - RxQueue.read;
   } else {
-    available = length - queue->read;
+    available = length - RxQueue.read;
   }
   if (available < size) {
     size = available;
   }
 
-  uint8_t *start = &queue->buffer[queue->read];
+  uint8_t *start = &RxQueue.buffer[RxQueue.read];
   for (uint16_t i = 0; i < size; i++) {
     uint8_t ch = start[i];
     if (ch == terminator) {
-      queue->read += (uint16_t)(i + 1);
-      if (queue->read >= length) {
-        queue->read = 0;
+      RxQueue.read += (uint16_t)(i + 1);
+      if (RxQueue.read >= length) {
+        RxQueue.read = 0;
       }
       *fetched = i;
       return true;
@@ -250,9 +250,9 @@ bool CDC_ReceiveQueue_ReadUntil(CDC_ReceiveQueue_TypeDef *queue,
   }
 
   *fetched = size;
-  queue->read += size;
-  if (queue->read >= length) {
-    queue->read = 0;
+  RxQueue.read += size;
+  if (RxQueue.read >= length) {
+    RxQueue.read = 0;
   }
   return false;
 }
