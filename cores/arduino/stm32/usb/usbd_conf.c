@@ -500,13 +500,13 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
 
 #if !defined (USB)
   /* configure EPs FIFOs */
-  HAL_PCDEx_SetRxFiFo(&g_hpcd, ep_def[0].ep_size);
+  HAL_PCDEx_SetRxFiFo(&g_hpcd, ep_def[0].size);
   for (uint32_t i = 1; i < (DEV_NUM_EP + 1); i++) {
-    HAL_PCDEx_SetTxFiFo(&g_hpcd, ep_def[i].ep_adress & 0xF, ep_def[i].ep_size);
+    HAL_PCDEx_SetTxFiFo(&g_hpcd, ep_def[i].fifo, ep_def[i].size);
   }
 #else
   for (uint32_t i = 0; i < (DEV_NUM_EP + 1); i++) {
-    HAL_PCDEx_PMAConfig(&g_hpcd, ep_def[i].ep_adress, ep_def[i].ep_kind, ep_def[i].ep_size);
+    HAL_PCDEx_PMAConfig(&g_hpcd, ep_def[i].ep_addr, ep_def[i].ep_kind, ep_def[i].pmaaddress);
   }
 #endif /* USE_USB_HS */
   return USBD_OK;

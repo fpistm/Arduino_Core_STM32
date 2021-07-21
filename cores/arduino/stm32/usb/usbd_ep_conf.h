@@ -26,10 +26,13 @@
 #include "usbd_def.h"
 
 typedef struct {
-  uint32_t ep_adress; /* Endpoint address */
-  uint32_t ep_size;   /* Endpoint size */
 #if defined (USB)
-  uint32_t ep_kind;   /* PCD Endpoint Kind: PCD_SNG_BUF or PCD_DBL_BUF */
+  uint16_t ep_addr;    /* Endpoint address */
+  uint16_t ep_kind;    /* Endpoint Kind: PCD_SNG_BUF (Single) or PCD_DBL_BUF (Double) */
+  uint32_t pmaaddress; /* Endpoint address in the PMA */
+#else /* USB */
+  uint8_t fifo;        /* FiFo number */
+  uint16_t size;       /* Fifo size */
 #endif
 } ep_desc_t;
 
