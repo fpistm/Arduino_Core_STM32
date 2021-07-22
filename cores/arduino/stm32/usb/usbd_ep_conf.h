@@ -72,8 +72,12 @@ typedef struct {
 
 #ifdef USBD_USE_CDC
 #define PMA_CDC_OUT_BASE    (PMA_EP0_IN_ADDR + USB_MAX_EP0_SIZE)
+#ifndef USBD_CDC_USE_SINGLE_BUFFER
 #define PMA_CDC_OUT_ADDR    ((PMA_CDC_OUT_BASE + USB_FS_MAX_PACKET_SIZE) | \
                             (PMA_CDC_OUT_BASE << 16U))
+#else
+#define PMA_CDC_OUT_ADDR    (PMA_CDC_OUT_BASE + USB_FS_MAX_PACKET_SIZE)
+#endif
 #define PMA_CDC_IN_ADDR     (PMA_CDC_OUT_BASE + USB_FS_MAX_PACKET_SIZE * 2)
 #define PMA_CDC_CMD_ADDR    (PMA_CDC_IN_ADDR + CDC_CMD_PACKET_SIZE)
 #endif /* USBD_USE_CDC */
