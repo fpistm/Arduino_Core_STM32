@@ -70,6 +70,18 @@ extern "C" {
 #endif
 #endif /* E2BEGIN */
 
+/* ToDo: Manage Dual Bank
+Be able to define the correct E2BEGIN
+- swapping
+- remapping
+- continuity
+FLASH_OPTR_DBANK
+LL_SYSCFG_BANKMODE_BANK2
+
+To evaluate linker dependencies?
+*/
+
+
 #if !defined(DATA_EEPROM_BASE)
 static uint8_t eeprom_buffer[E2END + 1] __attribute__((aligned(8))) = {0};
 #endif
