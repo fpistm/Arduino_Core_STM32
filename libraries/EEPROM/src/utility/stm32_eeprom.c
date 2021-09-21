@@ -41,8 +41,8 @@ extern "C" {
 #if !defined(FLASH_DATA_SECTOR)
 #define FLASH_DATA_SECTOR   ((uint32_t)(FLASH_SECTOR_TOTAL - 1))
 #else
-#ifndef FLASH_BASE_ADDRESS
-#error "FLASH_BASE_ADDRESS have to be defined when FLASH_DATA_SECTOR is defined"
+#ifndef E2BEGIN
+#error "E2BEGIN have to be defined when FLASH_DATA_SECTOR is defined"
 #endif
 #endif /* !FLASH_DATA_SECTOR */
 #endif /* FLASH_SECTOR_TOTAL */
@@ -52,23 +52,23 @@ extern "C" {
 #define FLASH_PAGE_NUMBER   ((uint32_t)(((LL_GetFlashSize() * 1024) / FLASH_PAGE_SIZE) - 1))
 #endif /* !FLASH_PAGE_NUMBER */
 
-/* Be able to change FLASH_BASE_ADDRESS to use */
-#ifndef FLASH_BASE_ADDRESS
+/* Be able to change E2BEGIN to use */
+#ifndef E2BEGIN
 /*
  * By default, Use the last page of the flash to store data
  * in order to prevent overwritting
  * program data
  */
 #if defined(EEPROM_RETRAM_MODE)
-#define FLASH_BASE_ADDRESS  EEPROM_RETRAM_START_ADDRESS
+#define E2BEGIN  EEPROM_RETRAM_START_ADDRESS
 #else
 /* If FLASH_PAGE_NUMBER is defined by user, this is not really end of the flash */
-#define FLASH_BASE_ADDRESS  ((uint32_t)(FLASH_BASE + (FLASH_PAGE_NUMBER * FLASH_PAGE_SIZE)))
+#define E2BEGIN  ((uint32_t)(FLASH_BASE + (FLASH_PAGE_NUMBER * FLASH_PAGE_SIZE)))
 #endif
-#ifndef FLASH_BASE_ADDRESS
-#error "FLASH_BASE_ADDRESS could not be defined"
+#ifndef E2BEGIN
+#error "E2BEGIN could not be defined"
 #endif
-#endif /* FLASH_BASE_ADDRESS */
+#endif /* E2BEGIN */
 
 #if !defined(DATA_EEPROM_BASE)
 static uint8_t eeprom_buffer[E2END + 1] __attribute__((aligned(8))) = {0};
@@ -146,7 +146,7 @@ void eeprom_buffered_write_byte(uint32_t pos, uint8_t value)
   */
 void eeprom_buffer_fill(void)
 {
-  memcpy(eeprom_buffer, (uint8_t *)(FLASH_BASE_ADDRESS), E2END + 1);
+  memcpy(eeprom_buffer, (uint8_t *)(E2BEGIN), E2END + 1);
 }
 
 #if defined(EEPROM_RETRAM_MODE)
@@ -158,7 +158,7 @@ void eeprom_buffer_fill(void)
   */
 void eeprom_buffer_flush(void)
 {
-  memcpy((uint8_t *)(FLASH_BASE_ADDRESS), eeprom_buffer, E2END + 1);
+  memcpy((uint8_t *)(E2BEGIN), eeprom_buffer, E2END + 1);
 }
 
 #else /* defined(EEPROM_RETRAM_MODE) */
@@ -172,8 +172,8 @@ void eeprom_buffer_flush(void)
 {
   FLASH_EraseInitTypeDef EraseInitStruct;
   uint32_t offset = 0;
-  uint32_t address = FLASH_BASE_ADDRESS;
-  uint32_t address_end = FLASH_BASE_ADDRESS + E2END;
+  uint32_t address = E2BEGIN;
+  uint32_t address_end = E2BEGIN + E2END;
 #if defined(FLASH_TYPEERASE_PAGES)
   uint32_t pageError = 0;
   uint64_t data = 0;
@@ -186,7 +186,7 @@ void eeprom_buffer_flush(void)
 #if defined (FLASH_PAGE_NUMBER) && defined(FLASH_SIZE)
   EraseInitStruct.Page = FLASH_PAGE_NUMBER;
 #else
-  EraseInitStruct.PageAddress = FLASH_BASE_ADDRESS;
+  EraseInitStruct.PageAddress = E2BEGIN;
 #endif
   EraseInitStruct.NbPages = 1;
 

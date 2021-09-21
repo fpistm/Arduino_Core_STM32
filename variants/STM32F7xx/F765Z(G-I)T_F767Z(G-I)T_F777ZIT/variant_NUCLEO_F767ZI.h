@@ -240,7 +240,7 @@
 
 // Last Flash sector used for EEPROM emulation, address/sector depends on single/dual bank configuration.
 // By default 2MB single bank
-#define FLASH_BASE_ADDRESS      0x081C0000
+#define E2BEGIN                 0x081C0000
 #define FLASH_DATA_SECTOR       11
 
 /*----------------------------------------------------------------------------
