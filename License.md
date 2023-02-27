@@ -17,7 +17,9 @@ Note: most license information is available on top of each source file
 
 [Apache License](#apache-license) is used for:
 * system/Drivers/CMSIS folder includes the STMicroelectronics CMSIS device
+* system/svd folder includes system view descriptions files (svd)
 * cores/arduino/stm32/pinmap.*
+
 
 Note:
 * system/STM32*xx/system_stm32*xx.c uses same license than system/Drivers/ subfolders
