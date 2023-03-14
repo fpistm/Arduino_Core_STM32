@@ -61,7 +61,30 @@ mcu_family = ""
 mcu_refname = ""
 mcu_flash = []
 mcu_ram = []
-legacy_hal = {"CAN": ["F0", "F1", "F2", "F3", "F4", "F7", "L4"], "ETH": ["F4", "F7", "H7"]}
+legacy_hal = {
+    "CAN": ["F0", "F1", "F2", "F3", "F4", "F7", "L4"],
+    "ETH": ["F4", "F7", "H7"],
+}
+openocd_list = {
+    "STM32F0": "stm32f0x",
+    "STM32F1": "stm32f1x",
+    "STM32F2": "stm32f2x",
+    "STM32F3": "stm32f3x",
+    "STM32F4": "stm32f4x",
+    "STM32F7": "stm32f7x",
+    "STM32G0": "stm32g0x",
+    "STM32G4": "stm32g4x",
+    "STM32H7": "stm32h7x",
+    "STM32L0": "stm32l0",
+    "STM32L1": "stm32l1",
+    "STM32L4": "stm32l4x",
+    "STM32L5": "stm32l5x",
+    "STM32MP13": "stm32mp13x",
+    "STM32MP15": "stm32mp15x",
+    "STM32U5": "stm32u5x",
+    "STM32WB": "stm32wbx",
+    "STM32WL": "stm32wlx",
+}
 # Cube information
 product_line_dict = {}
 
@@ -1547,6 +1570,7 @@ def print_boards_entry():
             mcu_dir=mcu_refname.replace("STM32", ""),
             mcu_family_dir=mcu_family_dir,
             product_line=product_line,
+            openocd_filename=openocd_filename,
         )
     )
     return generic_list
@@ -1557,6 +1581,15 @@ def print_general_clock(generic_list):
     generic_clock_file.write(
         generic_clock_template.render(
             generic_list=generic_list,
+        )
+    )
+
+
+def print_openocd(openocd_target):
+    openocd_template = j2_env.get_template(openocd_filename)
+    openocd_file.write(
+        openocd_template.render(
+            openocd_target=openocd_target,
         )
     )
 
@@ -2289,6 +2322,7 @@ system_path = root_dir / "system"
 templates_dir = cur_dir / "templates"
 mcu_family_dir = ""
 filtered_family = ""
+openocd_target = ""
 # filtered_mcu_file = ""
 periph_c_filename = "PeripheralPins.c"
 pinvar_h_filename = "PinNamesVar.h"
@@ -2297,6 +2331,7 @@ variant_h_filename = "variant_generic.h"
 variant_cpp_filename = "variant_generic.cpp"
 boards_entry_filename = "boards_entry.txt"
 generic_clock_filename = "generic_clock.c"
+openocd_filename = "openocd.cfg"
 repo_local_path = cur_dir / "repo"
 cubemxdir = Path()
 gh_url = "https://github.com/STMicroelectronics/STM32_open_pin_data"
@@ -2315,8 +2350,9 @@ By default, generates:
  - {pinvar_h_filename},
  - {variant_cpp_filename},
  - {variant_h_filename},
- - {boards_entry_filename}
- - {generic_clock_filename}
+ - {boards_entry_filename},
+ - {generic_clock_filename},
+ - {openocd_filename}
 for all xml files description available in STM32CubeMX internal database.
 Internal database path must be defined in {config_filename}.
 It can be the one from STM32CubeMX directory if defined:
@@ -2462,6 +2498,23 @@ for mcu_file in mcu_list:
         quit()
     xml_gpio = parse(str(dirIP / f"GPIO-{gpiofile}_Modes.xml"))
 
+    if mcu_family == "STM32MP1":
+        if mcu_refname.startswith("STM32MP13"):
+            openocd_target = openocd_list.get("STM32MP13")
+        elif mcu_refname.startswith("STM32MP15"):
+            openocd_target = openocd_list.get("STM32MP15")
+    else:
+        openocd_target = openocd_list.get(mcu_family, "")
+    if openocd_target == "":
+        print(
+            """
+  --> Could not find appropriate openocd target for this family.
+    - If a script for this family is available in openocd/scripts/target
+      please add it to the openocd_list
+    - Please also update boards.txt to add the openocdscript variable for this
+      family: {new_family}.build.openocdscript=openocd.cfg
+"""
+        )
     mcu_family_dir = mcu_family + "xx"
     out_temp_path = tmp_dir / mcu_family_dir / mcu_file.stem.replace("STM32", "")
     periph_c_filepath = out_temp_path / periph_c_filename
@@ -2470,6 +2523,7 @@ for mcu_file in mcu_list:
     variant_h_filepath = out_temp_path / variant_h_filename
     boards_entry_filepath = out_temp_path / boards_entry_filename
     generic_clock_filepath = out_temp_path / generic_clock_filename
+    openocd_filepath = out_temp_path / openocd_filename
     out_temp_path.mkdir(parents=True, exist_ok=True)
 
     # open output file
@@ -2479,11 +2533,13 @@ for mcu_file in mcu_list:
     variant_h_file = open(variant_h_filepath, "w", newline="\n")
     boards_entry_file = open(boards_entry_filepath, "w", newline="\n")
     generic_clock_file = open(generic_clock_filepath, "w", newline="\n")
+    openocd_file = open(openocd_filepath, "w", newline="\n")
     parse_pins()
     manage_af_and_alternate()
 
     generic_list = print_boards_entry()
     print_general_clock(generic_list)
+    print_openocd(openocd_target)
     print_peripheral()
     alt_syswkup_list = print_pinamevar()
     print_variant(generic_list, alt_syswkup_list)
@@ -2509,6 +2565,7 @@ for mcu_file in mcu_list:
     variant_cpp_file.close()
     boards_entry_file.close()
     generic_clock_file.close()
+    openocd_file.close()
     xml_mcu.unlink()
     xml_gpio.unlink()
 
