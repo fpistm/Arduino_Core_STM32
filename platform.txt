@@ -82,6 +82,11 @@ build.usb_flags=-DUSBCON {build.usb_speed} -DUSBD_VID={build.vid} -DUSBD_PID={bu
 build.vid=0
 build.pid=0
 
+# dfu
+# ---------
+upload.altID=0
+upload.usbID=0483:df11
+
 # To customize the USB manufacturer or product string, must add defines
 # for them, e.g.:
 #    some_board.build.extra_flags='-DUSB_MANUFACTURER_STRING="My Company"' '-DUSB_PRODUCT_STRING="My Product"'
@@ -178,7 +183,7 @@ tools.stm32CubeProg.busybox.windows={path}/win/busybox.exe
 tools.stm32CubeProg.cmd=stm32CubeProg.sh
 tools.stm32CubeProg.upload.params.verbose=
 tools.stm32CubeProg.upload.params.quiet=
-tools.stm32CubeProg.upload.pattern="{busybox}" sh "{path}/{cmd}" {upload.protocol} "{build.path}/{build.project_name}.bin" {build.flash_offset} {upload.options}
+tools.stm32CubeProg.upload.pattern="{busybox}" sh "{path}/{cmd}" {upload.protocol} "{build.path}/{build.project_name}.bin" {build.flash_offset} {upload.altID} {upload.usbID} {upload.options}
 
 # blackmagic upload for generic STM32
 tools.bmp_upload.cmd=arm-none-eabi-gdb
