@@ -24,6 +24,7 @@ https://github.com/stm32duino/Arduino_Core_STM32
 
 import json
 import sys
+import os
 from os.path import isfile, isdir, join
 
 from SCons.Script import COMMAND_LINE_TARGETS, DefaultEnvironment
@@ -34,7 +35,9 @@ board_config = env.BoardConfig()
 
 IS_WINDOWS = sys.platform.startswith("win")
 FRAMEWORK_DIR = platform.get_package_dir("framework-arduinoststm32")
-CMSIS_DIR = join(platform.get_package_dir("framework-cmsis"), "CMSIS")
+# CMSIS_DIR = join(platform.get_package_dir("framework-cmsis"), "CMSIS")
+CMSIS_DIR = join(os.environ["GITHUB_WORKSPACE"], "CMSIS")
+print(CMSIS_DIR)
 assert isdir(FRAMEWORK_DIR)
 assert isdir(CMSIS_DIR)
 

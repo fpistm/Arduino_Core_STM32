@@ -22,6 +22,8 @@ wget --no-verbose "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/do
 tar --extract --bzip2 --file="$CMSIS_ARCHIVE" || {
   exit 1
 }
+echo $PWD
+ls
 cd "$GITHUB_WORKSPACE/CI/build/" || {
   exit 1
 }
