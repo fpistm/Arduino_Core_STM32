@@ -37,22 +37,32 @@
 #define PA1_C                           PIN_A3  // Pin 19 - ADC12_INP1
 #define PC2_C                           PIN_A4  // Pin 20 - ADC3_INP0
 #define PC3_C                           PIN_A5  // Pin 21 - ADC3_INP1
+
+// User LEDs
 #define PI12                            22      // LED1
 #define PI13                            23      // LED2
 #define PI14                            24      // LED3
 #define PI15                            25      // LED4
+
+// ST-Link UART
 #define PA10                            26      // USART1_RX / ST-Link Tx
 #define PA9                             27      // USART1_TX / ST-Link Rx
+
+// SPI
 #define PA11                            28      // SPI2_NSS / PMOD #1 NSS
 #define PA12                            29      // SPI2_SCK / PMOD #4 SCK
 #define PC2                             30      // SPI2_MISO / PMOD #3 MISOp
 #define PC3                             31      // SPI2_MOSI / PMOD #2 MOSIp
+
+// GPIO Buttons
 #define PK2                             32      // JOY_SEL
 #define PK3                             33      // JOY_DOWN
 #define PK4                             34      // JOY_LEFT
 #define PK5                             35      // JOY_RIGHT
 #define PK6                             36      // JOY_UP
 #define PC13                            37      // Wakeup Button / RTC_TAMP1
+
+// QuadSPI
 #define PB2                             38      // QUADSPI_CLK
 #define PG6                             39      // QUADSPI_BK1_NCS
 #define PD11                            40      // QUADSPI_BK1_IO0
@@ -63,16 +73,22 @@
 #define PH3                             45      // QUADSPI_BK2_IO1
 #define PG9                             46      // QUADSPI_BK2_IO2
 #define PG14                            47      // QUADSPI_BK2_IO3
+
+// SDIO/SDMMC
 #define PC8                             48      // SDMMC1_D0 / SDIO1_D0
 #define PC9                             49      // SDMMC1_D1 / SDIO1_D1 / DCMI_D3
 #define PC10                            50      // SDMMC1_D2 / SDIO1_D2
 #define PC11                            51      // SDMMC1_D3 / SDIO1_D3 / DCMI_D4
 #define PC12                            52      // SDMMC1_CK / SDIO1_CK
 #define PD2                             53      // SDMMC1_CMD / SDIO1_CMD
-#define PG10                            54      // DCMI_D2
-#define PB7                             55      // DCMI_VSYNC
-#define PJ14                            56      // DCMI_PWR_EN
-#define PI8                             57      // uSD_Detect
+#define PI8                             54      // uSD_Detect
+
+// Digital Camera Interface
+#define PG10                            55      // DCMI_D2
+#define PB7                             56      // DCMI_VSYNC
+#define PJ14                            57      // DCMI_PWR_EN
+
+// USB
 #define PA5                             58      // USB_OTG_HS_ULPI_CK
 #define PA3                             59      // USB_OTG_HS_ULPI_D0
 #define PB0                             60      // USB_OTG_HS_ULPI_D1
@@ -86,6 +102,8 @@
 #define PH4                             68      // USB_OTG_HS_ULPI_NXT
 #define PI11                            69      // USB_OTG_HS_ULPI_DIR
 #define PJ1                             70      // OTG_HS_OverCurrent
+
+// Audio
 #define PD7                             71      // SPDIF_RX0
 #define PE3                             72      // SAI1_SD_B
 #define PE4                             73      // SAI1_FS_A
@@ -95,6 +113,8 @@
 #define PC1                             77      // SAI4_D1  / ETH_MDC
 #define PE2                             78      // SAI4_CK1 / ETH_nINT
 #define PJ15                            79      // Audio_INT (Audio Codec IRQ)
+
+// Pmod™
 #define PA0                             80      // PMOD #1 CTS
 #define PD5                             81      // PMOD #2 TX
 #define PD6                             82      // PMOD #3 RX
@@ -107,16 +127,24 @@
 #define PD3                             89      // PMOD #18 / DCMI_D5
 #define PB9                             90      // PMOD #19
 #define PB8                             91      // PMOD #20
+
+// Clock outputs
 #define PH0                             92      // RCC_OSC_IN
 #define PH1                             93      // RCC_OSC_OUT
 #define PC14                            94      // RCC_OSC32_IN
 #define PC15                            95      // RCC_OSC32_OUT
 #define PA8                             96      // CEC_CK / RCC_MCO_1
+
+// LCD/DSI
 #define PJ12                            97      // LCD_BL_CTRL
 #define PG3                             98      // DSI_Reset
 #define PJ2                             99      // DSI_TE
 #define PB6                             100     // HDMI_CEC
+
+// Touch Screen Controller
 #define PK7                             101     // TOUCH_INT
+
+// Flash Memory Controller
 #define PE0                             102     // FMC_NBL0
 #define PE1                             103     // FMC_NBL1
 #define PI4                             104     // FMC_NBL2
@@ -175,12 +203,16 @@
                                                 // FMC_A13 does not exist
 #define PG4                             157     // FMC_A14
 #define PG5                             158     // FMC A15
+
+// JTAG/SWD
 #define PA13                            159     // TMS / SWDIO
 #define PA14                            160     // TCK / SWCLK
 #define PA15                            161     // TDI
 #define PB3                             162     // TDO / SWO
 #define PB4                             163     // TRST
+
 /* WARNING: Ethernet is unusable by default on the board */
+// Ethernet port
 #define PA1                             164     // ETH_REF_CLK
 #define PA2                             165     // ETH_MDIO
 #define PA7                             166     // ETH_CRS_DV
@@ -237,12 +269,20 @@
 #endif
 
 // SDMMC signals
-//ToDo: what do I write?
+#define SDX_D0                  PC8
+#define SDX_D1                  PC9
+#define SDX_D2                  PC10
+#define SDX_D3                  PC11
+#define SDX_CK                  PC12
+#define SDX_CMD                 PD2
 
 // SD detect signal
 #ifndef SD_DETECT_PIN
   #define SD_DETECT_PIN         PI8
 #endif
+
+// HAL configuration
+#define HSE_VALUE               25000000U
 
 // Extra HAL modules
 #if !defined(HAL_DAC_MODULE_DISABLED)
