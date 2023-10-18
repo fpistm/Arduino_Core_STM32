@@ -230,10 +230,10 @@
 
 // Default pin used for generic 'Serial' instance (wired to ST-Link)
 #ifndef PIN_SERIAL_RX
-  #define PIN_SERIAL_RX         PA9
+  #define PIN_SERIAL_RX         PA10
 #endif
 #ifndef PIN_SERIAL_TX
-  #define PIN_SERIAL_TX         PA10
+  #define PIN_SERIAL_TX         PA9
 #endif
 
 // SDMMC signals
