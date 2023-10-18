@@ -181,14 +181,14 @@
 #define PB3                             162     // TDO / SWO
 #define PB4                             163     // TRST
 /* WARNING: Ethernet is unusable by default on the board */
-#define PA1                             164 // ETH_REF_CLK
-#define PA2                             165 // ETH_MDIO
-#define PA7                             166 // ETH_CRS_DV
-#define PC4                             167 // ETH_RXD0
-#define PC5                             168 // ETH_RXD1
-#define PG11                            169 // ETH_TX_EN
-#define PG12                            170 // ETH_TXD1
-#define PG13                            171 // ETH_TXD0
+#define PA1                             164     // ETH_REF_CLK
+#define PA2                             165     // ETH_MDIO
+#define PA7                             166     // ETH_CRS_DV
+#define PC4                             167     // ETH_RXD0
+#define PC5                             168     // ETH_RXD1
+#define PG11                            169     // ETH_TX_EN
+#define PG12                            170     // ETH_TXD1
+#define PG13                            171     // ETH_TXD0
 
 //ToDo: alternate pin numbering :)
 
