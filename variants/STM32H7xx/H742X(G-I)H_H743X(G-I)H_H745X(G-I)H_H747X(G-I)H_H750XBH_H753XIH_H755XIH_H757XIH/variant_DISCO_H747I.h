@@ -248,7 +248,7 @@
 
 // UART Definitions
 #ifndef SERIAL_UART_INSTANCE
-  #define SERIAL_UART_INSTANCE  1 //UART1 is connected to ST-Link
+  #define SERIAL_UART_INSTANCE  101 //LPUART1 is connected to ST-Link
 #endif
 
 // Timer Definitions
