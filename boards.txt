@@ -1048,7 +1048,7 @@ Disco.menu.pnum.STM32H573I_DK.build.variant=STM32H5xx/H573IIKxQ
 Disco.menu.pnum.STM32H573I_DK.build.peripheral_pins=-DCUSTOM_PERIPHERAL_PINS
 
 # STM32H747I-DISCO
-Disco.menu.pnum.STM32H747I_DISCO=STM32H747I-DISCO
+Disco.menu.pnum.STM32H747I_DISCO=STM32H747I_DISCO
 Disco.menu.pnum.STM32H747I_DISCO.node=DIS_H747XI
 Disco.menu.pnum.STM32H747I_DISCO.upload.maximum_size=2097152
 Disco.menu.pnum.STM32H747I_DISCO.upload.maximum_data_size=524288
