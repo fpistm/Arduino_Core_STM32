@@ -268,13 +268,11 @@
   #define PIN_SERIAL_TX         PA9
 #endif
 
-// SDMMC signals
-#define SDX_D0                  PC8
-#define SDX_D1                  PC9
-#define SDX_D2                  PC10
-#define SDX_D3                  PC11
-#define SDX_CK                  PC12
-#define SDX_CMD                 PD2
+// SDMMC signals - only define not available, the rest is automagically provided by PeripheralPins
+#define SDMMC_CKIN_NA
+#define SDMMC_CDIR_NA
+#define SDMMC_D0DIR_NA
+#define SDMMC_D123DIR_NA
 
 // SD detect signal
 #ifndef SD_DETECT_PIN
