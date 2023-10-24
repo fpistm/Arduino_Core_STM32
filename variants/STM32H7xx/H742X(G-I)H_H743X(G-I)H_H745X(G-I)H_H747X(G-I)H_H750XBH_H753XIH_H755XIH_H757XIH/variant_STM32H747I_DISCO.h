@@ -268,7 +268,8 @@
   #define PIN_SERIAL_TX         PA9
 #endif
 
-// SDMMC signals - only define not available, the rest is automagically provided by PeripheralPins
+// SDMMC signals - only define not available,
+// the rest is automatically provided by PeripheralPins
 #define SDMMC_CKIN_NA
 #define SDMMC_CDIR_NA
 #define SDMMC_D0DIR_NA

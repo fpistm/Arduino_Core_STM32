@@ -10,7 +10,7 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_DISCO_H747I)
+#if defined(ARDUINO_STM32H747I_DISCO)
 #include "pins_arduino.h"
 
 //Digital pin number mapping array
@@ -195,7 +195,7 @@ const uint32_t analogInputPin[] = {
   17, //A1
   18, //A2
   19, //A3
-  20, //A4 
+  20, //A4
   21  //A5
 };
 
@@ -293,7 +293,7 @@ WEAK void SystemClock_Config(void)
   PeriphClkInitStruct.PLL3.PLL3R = 2;
   PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_3;
   PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOMEDIUM;
-  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;  
+  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   PeriphClkInitStruct.CecClockSelection = RCC_CECCLKSOURCE_LSI;
   PeriphClkInitStruct.DsiClockSelection = RCC_DSICLKSOURCE_PHY;
@@ -323,4 +323,4 @@ WEAK void SystemClock_Config(void)
 }
 #endif
 
-#endif /* ARDUINO_DISCO_H747I */
+#endif /* ARDUINO_STM32H747I_DISCO */

@@ -19,7 +19,7 @@
  * STM32H757XIHx.xml
  * CubeMX DB release 6.0.90
  */
-#if defined(ARDUINO_DISCO_H747I)
+#if defined(ARDUINO_STM32H747I_DISCO)
 #include "Arduino.h"
 #include "PeripheralPins.h"
 
@@ -778,4 +778,4 @@ WEAK const PinMap PinMap_SD_D123DIR[] = {
 };
 #endif
 
-#endif /* ARDUINO_DISCO_H747I */
+#endif /* ARDUINO_STM32H747I_DISCO */
