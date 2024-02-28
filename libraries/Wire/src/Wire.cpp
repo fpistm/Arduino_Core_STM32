@@ -38,6 +38,7 @@ TwoWire::TwoWire(uint32_t sda, uint32_t scl)
   memset((void *)&_i2c, 0, sizeof(_i2c));
   _i2c.sda = digitalPinToPinName(sda);
   _i2c.scl = digitalPinToPinName(scl);
+  _enableWakeUp = false;
 }
 
 /**
@@ -91,7 +92,7 @@ void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 
   recoverBus(); // in case I2C bus (device) is stuck after a reset for example
 
-  i2c_init(&_i2c, 100000, I2C_ADDRESSINGMODE_7BIT, ownAddress);
+  i2c_init(&_i2c, 100000, I2C_ADDRESSINGMODE_7BIT, ownAddress, _enableWakeUp);
 
   if (_i2c.isMaster == 0) {
     // i2c_attachSlaveTxEvent(&_i2c, reinterpret_cast<void(*)(i2c_t*)>(&TwoWire::onRequestService));
@@ -538,6 +539,27 @@ void TwoWire::recoverBus(void)
     pinMode(pinNametoDigitalPin(_i2c.scl), INPUT);
   }
 }
+
+#if defined(I2C_WKUP_SUPPORT)
+void TwoWire::configForLowPower(void)
+{
+  _enableWakeUp = true;
+  // Reconfigure properly Wire instance to use HSI as clock source
+  if (_i2c.handle.State != HAL_I2C_STATE_RESET) {
+    end();
+    cb_function_receive_t function_onReceive = user_onReceive;
+    cb_function_request_t function_onRequest = user_onRequest;
+
+    i2c_config_lowpower(&(_i2c.handle));
+    begin((ownAddress >> 1), (bool)_i2c.generalCall, false);
+    // begin(2);
+    onReceive(user_onReceive);
+    onRequest(user_onRequest);
+  } else {
+    i2c_config_lowpower(&(_i2c.handle));
+  }
+}
+#endif
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
 

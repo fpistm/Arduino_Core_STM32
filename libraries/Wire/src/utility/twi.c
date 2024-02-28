@@ -36,6 +36,8 @@
   ******************************************************************************
   */
 #include "core_debug.h"
+#include "clock.h"
+#include "lock_resource.h"
 #include "utility/twi.h"
 #include "PinAF_STM32F1.h"
 
@@ -643,9 +645,10 @@ static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
   * @param  timing : one of the i2c_timing_e
   * @param  addressingMode : I2C_ADDRESSINGMODE_7BIT or I2C_ADDRESSINGMODE_10BIT
   * @param  ownAddress : device address
+  * @param  enableWakeUp : enable or not the wakeup
   * @retval none
   */
-void i2c_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint32_t ownAddress)
+void i2c_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint32_t ownAddress, bool enableWakeUp)
 {
   if (obj != NULL) {
 
@@ -780,7 +783,16 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint32_t own
           /* Initialization Error */
           Error_Handler();
         }
-
+#if defined(I2C_WKUP_SUPPORT)
+        if (enableWakeUp) {
+          /* Digital filter is not compatible with the wake-up from Stop mode feature. */
+          HAL_I2CEx_ConfigDigitalFilter(handle, 0);
+          /* Enable I2C peripheral in wake up from stop mode */
+          HAL_I2CEx_EnableWakeUp(handle);
+        }
+#else
+        UNUSED(enableWakeUp);
+#endif
         /* Initialize default values */
         obj->slaveRxNbData = 0;
         obj->slaveMode = SLAVE_MODE_LISTEN;
@@ -1060,6 +1072,68 @@ i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials)
   }
   return ret;
 }
+
+#if defined(HAL_PWR_MODULE_ENABLED)
+/**
+  * @brief  Function called to configure the i2c interface for low power
+  * @param  hi2c : pointer to I2C handle
+  * @retval None
+  */
+void i2c_config_lowpower(I2C_HandleTypeDef *hi2c)
+{
+  if (hi2c == NULL) {
+    return;
+  }
+  /* Ensure HSI clock is enable */
+  enableClock(HSI_CLOCK);
+
+  hsem_lock(CFG_HW_RCC_CRRCR_CCIPR_SEMID, HSEM_LOCK_DEFAULT_RETRY);
+  /* Configure HSI as source clock for low power wakeup clock */
+#if defined(I2C1_BASE) && defined(__HAL_RCC_I2C1_CONFIG)
+  if (hi2c->Instance == I2C1) {
+    if (__HAL_RCC_GET_I2C1_SOURCE() != RCC_I2C1CLKSOURCE_HSI) {
+      __HAL_RCC_I2C1_CONFIG(RCC_I2C1CLKSOURCE_HSI);
+    }
+  }
+#endif
+#if defined(I2C2_BASE) && defined(__HAL_RCC_I2C2_CONFIG)
+  if (hi2c->Instance == I2C2) {
+    if (__HAL_RCC_GET_I2C2_SOURCE() != RCC_I2C2CLKSOURCE_HSI) {
+      __HAL_RCC_I2C2_CONFIG(RCC_I2C2CLKSOURCE_HSI);
+    }
+  }
+#endif
+#if defined(I2C3_BASE) && defined(__HAL_RCC_I2C3_CONFIG)
+  if (hi2c->Instance == I2C3) {
+    if (__HAL_RCC_GET_I2C3_SOURCE() != RCC_I2C3CLKSOURCE_HSI) {
+      __HAL_RCC_I2C3_CONFIG(RCC_I2C3CLKSOURCE_HSI);
+    }
+  }
+#endif
+#if defined(I2C4_BASE) && defined(__HAL_RCC_I2C4_CONFIG)
+  if (hi2c->Instance == I2C4) {
+    if (__HAL_RCC_GET_I2C4_SOURCE() != RCC_I2C4CLKSOURCE_HSI) {
+      __HAL_RCC_I2C4_CONFIG(RCC_I2C4CLKSOURCE_HSI);
+    }
+  }
+#endif
+#if defined(I2C5_BASE) && defined(__HAL_RCC_I2C5_CONFIG)
+  if (hi2c->Instance == I2C5) {
+    if (__HAL_RCC_GET_I2C5_SOURCE() != RCC_I2C5CLKSOURCE_HSI) {
+      __HAL_RCC_I2C5_CONFIG(RCC_I2C5CLKSOURCE_HSI);
+    }
+  }
+#endif
+#if defined(I2C6_BASE) && defined(__HAL_RCC_I2C6_CONFIG)
+  if (hi2c->Instance == I2C6) {
+    if (__HAL_RCC_GET_I2C6_SOURCE() != RCC_I2C6CLKSOURCE_HSI) {
+      __HAL_RCC_I2C6_CONFIG(RCC_I2C6CLKSOURCE_HSI);
+    }
+  }
+#endif
+  hsem_unlock(CFG_HW_RCC_CRRCR_CCIPR_SEMID);
+}
+#endif
 
 /* Aim of the function is to get i2c_s pointer using hi2c pointer */
 /* Highly inspired from magical linux kernel's "container_of" */

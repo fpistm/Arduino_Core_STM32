@@ -52,6 +52,11 @@ extern "C" {
 /* offsetof is a gcc built-in function, this is the manual implementation */
 #define OFFSETOF(type, member) ((uint32_t) (&(((type *)(0))->member)))
 
+#if defined(HAL_I2C_MODULE_ENABLED) && !defined(HAL_I2C_MODULE_ONLY) \
+  && defined(I2C_CR1_WUPEN)
+#define I2C_WKUP_SUPPORT
+#endif
+
 /* Interrupt priority */
 #ifndef I2C_IRQ_PRIO
 #define I2C_IRQ_PRIO       2
@@ -138,7 +143,7 @@ typedef enum {
 
 /* Exported functions ------------------------------------------------------- */
 void i2c_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode,
-                     uint32_t ownAddress);
+              uint32_t ownAddress, bool enableWakeUp);
 void i2c_deinit(i2c_t *obj);
 void i2c_setTiming(i2c_t *obj, uint32_t frequency);
 i2c_status_e i2c_master_write(i2c_t *obj, uint8_t dev_address, uint8_t *data, uint16_t size);
@@ -146,6 +151,10 @@ i2c_status_e i2c_slave_write_IT(i2c_t *obj, uint8_t *data, uint16_t size);
 i2c_status_e i2c_master_read(i2c_t *obj, uint8_t dev_address, uint8_t *data, uint16_t size);
 
 i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials);
+
+#if defined(HAL_PWR_MODULE_ENABLED)
+void i2c_config_lowpower(I2C_HandleTypeDef *hi2c);
+#endif
 
 void i2c_attachSlaveRxEvent(i2c_t *obj, void (*function)(i2c_t *));
 void i2c_attachSlaveTxEvent(i2c_t *obj, void (*function)(i2c_t *));

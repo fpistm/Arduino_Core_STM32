@@ -61,6 +61,7 @@ class TwoWire : public Stream {
 
     uint8_t ownAddress;
     i2c_t _i2c;
+    bool _enableWakeUp;
 
     std::function<void(int)> user_onReceive;
     std::function<void(void)> user_onRequest;
@@ -74,7 +75,9 @@ class TwoWire : public Stream {
     void resetRxBuffer(void);
     void resetTxBuffer(void);
     void recoverBus(void);
-
+#if defined(I2C_WKUP_SUPPORT)
+    void configForLowPower(void);
+#endif
   public:
     TwoWire(uint32_t sda = SDA, uint32_t scl = SCL);
     ~TwoWire();
@@ -144,6 +147,7 @@ class TwoWire : public Stream {
     {
       return &(_i2c.handle);
     }
+    friend class STM32LowPower;
 };
 
 
