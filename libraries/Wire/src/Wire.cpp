@@ -33,13 +33,6 @@ static const uint8_t MASTER_ADDRESS = 0x01;
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-TwoWire::TwoWire()
-{
-  memset((void *)&_i2c, 0, sizeof(_i2c));
-  _i2c.sda = digitalPinToPinName(SDA);
-  _i2c.scl = digitalPinToPinName(SCL);
-}
-
 TwoWire::TwoWire(uint32_t sda, uint32_t scl)
 {
   memset((void *)&_i2c, 0, sizeof(_i2c));
