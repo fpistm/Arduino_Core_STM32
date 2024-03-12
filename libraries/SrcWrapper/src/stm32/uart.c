@@ -601,12 +601,17 @@ void uart_deinit(serial_t *obj)
 #if defined(HAL_PWR_MODULE_ENABLED) && (defined(UART_IT_WUF) || defined(LPUART1_BASE))
 /**
   * @brief  Function called to configure the uart interface for low power
-  * @param  obj : pointer to serial_t structure
+  * @param  huart : pointer to UART handle
   * @retval None
   */
-void uart_config_lowpower(serial_t *obj)
+void uart_config_lowpower(UART_HandleTypeDef *huart)
 {
-  if (obj == NULL) {
+  serial_t *obj = NULL;
+  if (huart == NULL) {
+    return;
+  }
+  obj = get_serial_obj(huart);
+  if (!obj) {
     return;
   }
   /* Ensure HSI clock is enable */
