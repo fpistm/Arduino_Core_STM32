@@ -2132,6 +2132,9 @@ GenF1.build.st_extra_flags=-D{build.product_line} {build.enable_usb} {build.xSer
 GenF1.build.flash_offset=0x0
 GenF1.upload.maximum_size=0
 GenF1.upload.maximum_data_size=0
+# DFU mode on built-in booloader not available, assuming using STM32duino-bootloader
+GenF1.upload.vid=0xleaf
+GenF1.upload.pid=0x0003
 
 # BLUEPILL_F103C6 board
 GenF1.menu.pnum.BLUEPILL_F103C6=BluePill F103C6 (32K)
@@ -2861,7 +2864,6 @@ GenF1.menu.upload_method.hidMethod.build.bootloader_flags=-DBL_HID
 GenF1.menu.upload_method.dfu2Method=Maple DFU Bootloader 2.0
 GenF1.menu.upload_method.dfu2Method.upload.protocol=maple
 GenF1.menu.upload_method.dfu2Method.upload.tool=maple_upload
-GenF1.menu.upload_method.dfu2Method.upload.usbID=1EAF:0003
 GenF1.menu.upload_method.dfu2Method.upload.altID=2
 GenF1.menu.upload_method.dfu2Method.build.flash_offset=0x2000
 GenF1.menu.upload_method.dfu2Method.build.bootloader_flags=-DBL_LEGACY_LEAF
@@ -2869,7 +2871,6 @@ GenF1.menu.upload_method.dfu2Method.build.bootloader_flags=-DBL_LEGACY_LEAF
 GenF1.menu.upload_method.dfuoMethod=Maple DFU Bootloader original
 GenF1.menu.upload_method.dfuoMethod.upload.protocol=maple
 GenF1.menu.upload_method.dfuoMethod.upload.tool=maple_upload
-GenF1.menu.upload_method.dfuoMethod.upload.usbID=1EAF:0003
 GenF1.menu.upload_method.dfuoMethod.upload.altID=1
 GenF1.menu.upload_method.dfuoMethod.build.flash_offset=0x5000
 GenF1.menu.upload_method.dfuoMethod.build.bootloader_flags=-DBL_LEGACY_LEAF
@@ -7343,8 +7344,6 @@ GenG4.menu.pnum.GENERIC_G4A1VETX.build.board=GENERIC_G4A1VETX
 GenG4.menu.pnum.GENERIC_G4A1VETX.build.product_line=STM32G4A1xx
 GenG4.menu.pnum.GENERIC_G4A1VETX.build.variant=STM32G4xx/G491V(C-E)T_G4A1VET
 
-
-
 # Upload menu
 GenG4.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenG4.menu.upload_method.swdMethod.upload.protocol=0
@@ -10913,6 +10912,8 @@ GenFlight.menu.pnum.AFROFLIGHT_F103CB.build.board=AFROFLIGHT_F103CB
 GenFlight.menu.pnum.AFROFLIGHT_F103CB.build.product_line=STM32F103xB
 GenFlight.menu.pnum.AFROFLIGHT_F103CB.build.variant=STM32F1xx/F103C8T_F103CB(T-U)
 GenFlight.menu.pnum.AFROFLIGHT_F103CB.build.variant_h=variant_AFROFLIGHT_F103CB_XX.h
+GenFlight.menu.pnum.AFROFLIGHT_F103CB.upload.vid=0xleaf
+GenFlight.menu.pnum.AFROFLIGHT_F103CB.upload.pid=0x0003
 
 GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M=Afro Flight Rev5 (12MHz)
 GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.upload.maximum_size=131072
@@ -10923,6 +10924,8 @@ GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.build.board=AFROFLIGHT_F103CB_12M
 GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.build.product_line=STM32F103xB
 GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.build.variant=STM32F1xx/F103C8T_F103CB(T-U)
 GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.build.variant_h=variant_AFROFLIGHT_F103CB_XX.h
+GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.upload.vid=0xleaf
+GenFlight.menu.pnum.AFROFLIGHT_F103CB_12M.upload.pid=0x0003
 
 # Sparky_V1 board
 GenFlight.menu.pnum.Sparky_V1=Sparky V1 F303 FC
@@ -10966,7 +10969,6 @@ GenFlight.menu.upload_method.hidMethod.build.bootloader_flags=-DBL_HID
 GenFlight.menu.upload_method.dfu2Method=Maple DFU Bootloader 2.0
 GenFlight.menu.upload_method.dfu2Method.upload.protocol=maple
 GenFlight.menu.upload_method.dfu2Method.upload.tool=maple_upload
-GenFlight.menu.upload_method.dfu2Method.upload.usbID=1EAF:0003
 GenFlight.menu.upload_method.dfu2Method.upload.altID=2
 GenFlight.menu.upload_method.dfu2Method.build.flash_offset=0x2000
 GenFlight.menu.upload_method.dfu2Method.build.bootloader_flags=-DBL_LEGACY_LEAF
@@ -10974,7 +10976,6 @@ GenFlight.menu.upload_method.dfu2Method.build.bootloader_flags=-DBL_LEGACY_LEAF
 GenFlight.menu.upload_method.dfuoMethod=Maple DFU Bootloader original
 GenFlight.menu.upload_method.dfuoMethod.upload.protocol=maple
 GenFlight.menu.upload_method.dfuoMethod.upload.tool=maple_upload
-GenFlight.menu.upload_method.dfuoMethod.upload.usbID=1EAF:0003
 GenFlight.menu.upload_method.dfuoMethod.upload.altID=1
 GenFlight.menu.upload_method.dfuoMethod.build.flash_offset=0x5000
 GenFlight.menu.upload_method.dfuoMethod.build.bootloader_flags=-DBL_LEGACY_LEAF
