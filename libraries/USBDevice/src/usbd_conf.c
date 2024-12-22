@@ -54,7 +54,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
 
 #if defined(PIN_UCPD_TCPP)
   /* Set TCPP default state: Type-C legacy */
-  pinMode(PIN_UCPD_TCPP, OUTPUT_OPEN_DRAIN);
+  pinMode(PIN_UCPD_TCPP, OUTPUT_OPENDRAIN);
   digitalWriteFast(digitalPinToPinName(PIN_UCPD_TCPP), LOW);
 #endif
 #if defined(PWR_CR3_USB33DEN) || defined(PWR_USBSCR_USB33DEN)

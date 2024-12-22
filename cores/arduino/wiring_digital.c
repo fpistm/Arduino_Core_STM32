@@ -26,7 +26,7 @@ extern "C" {
 
 extern uint32_t g_anOutputPinConfigured[MAX_NB_PORT];
 
-void pinMode(uint32_t ulPin, uint32_t ulMode)
+void pinMode(pin_size_t ulPin, PinMode ulMode)
 {
   PinName p = digitalPinToPinName(ulPin);
 
@@ -51,7 +51,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
     }
 #endif
     switch (ulMode) {
-      case INPUT: /* INPUT_FLOATING */
+      case INPUT:
         pin_function(p, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
         break;
       case INPUT_PULLUP:
@@ -66,7 +66,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
       case OUTPUT:
         pin_function(p, STM_PIN_DATA(STM_MODE_OUTPUT_PP, GPIO_NOPULL, 0));
         break;
-      case OUTPUT_OPEN_DRAIN:
+      case OUTPUT_OPENDRAIN:
         pin_function(p, STM_PIN_DATA(STM_MODE_OUTPUT_OD, GPIO_NOPULL, 0));
         break;
       default:
@@ -76,19 +76,19 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
   }
 }
 
-void digitalWrite(uint32_t ulPin, uint32_t ulVal)
+void digitalWrite(pin_size_t pinNumber, PinStatus status)
 {
-  digitalWriteFast(digitalPinToPinName(ulPin), ulVal);
+  digitalWriteFast(digitalPinToPinName(pinNumber), status);
 }
 
-int digitalRead(uint32_t ulPin)
+PinStatus digitalRead(pin_size_t pinNumber)
 {
-  return digitalReadFast(digitalPinToPinName(ulPin));
+  return digitalReadFast(digitalPinToPinName(pinNumber));
 }
 
-void digitalToggle(uint32_t ulPin)
+void digitalToggle(pin_size_t pinNumber)
 {
-  digitalToggleFast(digitalPinToPinName(ulPin));
+  digitalToggleFast(digitalPinToPinName(pinNumber));
 }
 
 #ifdef __cplusplus

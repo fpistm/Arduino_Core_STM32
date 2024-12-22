@@ -33,6 +33,9 @@
   #include "SrcWrapper.h"
 #endif
 
+
+#include "api/ArduinoAPI.h"
+
 #include "wiring.h"
 
 /* sketch */
@@ -47,7 +50,6 @@ extern void initVariant() __attribute__((weak));
 extern void setup(void) ;
 extern void loop(void) ;
 
-void yield(void);
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus

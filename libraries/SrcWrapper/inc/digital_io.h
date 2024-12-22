@@ -37,7 +37,8 @@
 #define __DIGITAL_IO_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "wiring_constants.h"
+// #include "wiring_constants.h"
+#include "api/Common.h"
 #include "PinNames.h"
 #include "pinmap.h"
 #include "stm32yyxx_ll_gpio.h"

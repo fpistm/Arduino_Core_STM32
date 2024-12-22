@@ -19,11 +19,12 @@
 #ifndef _WIRING_INTERRUPTS_
 #define _WIRING_INTERRUPTS_
 
+#include "api/Common.h"
 #include <stdint.h>
 #include <functional>
 
 typedef std::function<void(void)> callback_function_t;
-void attachInterrupt(uint32_t pin, callback_function_t callback, uint32_t mode);
-void detachInterrupt(uint32_t pin);
+void attachInterrupt(pin_size_t pin, callback_function_t callback, PinStatus mode);
+void detachInterrupt(pin_size_t pin);
 
 #endif /* _WIRING_INTERRUPTS_ */

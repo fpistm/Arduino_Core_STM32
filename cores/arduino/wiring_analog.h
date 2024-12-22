@@ -24,39 +24,6 @@ extern "C" {
 #endif
 
 /*
- * \brief SAM3 products have only one reference for ADC
- * This is kept only for compatibility with existing AVR based API.
- */
-typedef enum _eAnalogReference {
-  AR_DEFAULT,
-} eAnalogReference ;
-
-/*
- * \brief Configures the reference voltage used for analog input (i.e. the value used as the top of the input range).
- * This function is kept only for compatibility with existing AVR based API.
- *
- * \param ulMmode Should be set to AR_DEFAULT.
- */
-extern void analogReference(eAnalogReference ulMode) ;
-
-/*
- * \brief Writes an analog value (PWM wave) to a pin.
- *
- * \param ulPin
- * \param ulValue
- */
-extern void analogWrite(uint32_t ulPin, uint32_t ulValue) ;
-
-/*
- * \brief Reads the value from the specified analog pin.
- *
- * \param ulPin
- *
- * \return Read value from selected pin, if no error.
- */
-extern uint32_t analogRead(uint32_t ulPin) ;
-
-/*
  * \brief Set the resolution of analogRead return values. Default is 10 bits (range from 0 to 1023).
  *
  * \param res
@@ -76,9 +43,6 @@ extern void analogWriteResolution(int res);
  * \param freq
  */
 extern void analogWriteFrequency(uint32_t freq);
-
-
-extern void analogOutputInit(void) ;
 
 #ifdef __cplusplus
 }

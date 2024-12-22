@@ -71,6 +71,9 @@
 #endif
 
 // Here define some compatibility
+#define INPUT_ANALOG      ANALOG
+#define OUTPUT_OPEN_DRAIN OUTPUT_OPENDRAIN
+
 #if !defined (ADC1) && defined (ADC)
   #define ADC1 ADC
 #endif

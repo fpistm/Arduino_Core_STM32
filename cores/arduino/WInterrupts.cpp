@@ -17,12 +17,11 @@
 */
 
 #include "WInterrupts.h"
-#include "Arduino.h"
-
+#include "pins_arduino.h"
 #include "PinAF_STM32F1.h"
 #include "interrupt.h"
 
-void attachInterrupt(uint32_t pin, callback_function_t callback, uint32_t mode)
+void attachInterrupt(pin_size_t pin, callback_function_t callback, PinStatus mode)
 {
 #if !defined(HAL_EXTI_MODULE_DISABLED)
   uint32_t it_mode;
@@ -61,7 +60,7 @@ void attachInterrupt(uint32_t pin, callback_function_t callback, uint32_t mode)
 #endif
 }
 
-void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
+void attachInterrupt(pin_size_t pin, void (*callback)(void), PinStatus mode)
 {
 #if !defined(HAL_EXTI_MODULE_DISABLED)
   callback_function_t _c = callback;
@@ -74,7 +73,7 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
 
 }
 
-void detachInterrupt(uint32_t pin)
+void detachInterrupt(pin_size_t pin)
 {
 #if !defined(HAL_EXTI_MODULE_DISABLED)
   PinName p = digitalPinToPinName(pin);
