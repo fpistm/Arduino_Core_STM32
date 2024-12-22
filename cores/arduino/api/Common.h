@@ -41,6 +41,8 @@ typedef enum {
   INPUT_PULLUP     = 0x2,
   INPUT_PULLDOWN   = 0x3,
   OUTPUT_OPENDRAIN = 0x4,
+  OUTPUT_OPEN_DRAIN = OUTPUT_OPENDRAIN,
+  INPUT_ANALOG      = 0x5,
 } PinMode;
 
 typedef enum {
