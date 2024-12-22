@@ -32,21 +32,17 @@
 
 #include "wiring_analog.h"
 #include "wiring_constants.h"
-#include "wiring_digital.h"
 #include "wiring_pulse.h"
-#include "wiring_shift.h"
 #include "wiring_time.h"
 
 #include <board.h>
 
 #ifdef __cplusplus
   #include "HardwareTimer.h"
-  #include "Tone.h"
   #include "WCharacter.h"
   #include "WInterrupts.h"
   #include "WMath.h"
   #include "WSerial.h"
-  #include "WString.h"
 #endif // __cplusplus
 
 
