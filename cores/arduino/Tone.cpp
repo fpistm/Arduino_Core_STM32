@@ -103,7 +103,7 @@ static void timerTonePinInit(PinName p, uint32_t frequency, uint32_t duration)
 }
 
 // frequency (in hertz) and duration (in milliseconds).
-void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
+void tone(pin_size_t _pin, unsigned int frequency, unsigned long duration)
 {
   PinName p = digitalPinToPinName(_pin);
 
@@ -118,7 +118,7 @@ void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
   }
 }
 
-void noTone(uint8_t _pin, bool destruct)
+void noTone(pin_size_t _pin, bool destruct)
 {
   PinName p = digitalPinToPinName(_pin);
   if ((p != NC) && (TimerTone_pinInfo.pin == p) && (TimerTone != NULL)) {
@@ -133,14 +133,14 @@ void noTone(uint8_t _pin, bool destruct)
 }
 #else
 #warning "TIMER_TONE or HAL_TIM_MODULE_ENABLED not defined"
-void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
+void tone(pin_size_t _pin, unsigned int frequency, unsigned long duration)
 {
   UNUSED(_pin);
   UNUSED(frequency);
   UNUSED(duration);
 }
 
-void noTone(uint8_t _pin, bool destruct)
+void noTone(pin_size_t _pin, bool destruct)
 {
   UNUSED(_pin);
   UNUSED(destruct);

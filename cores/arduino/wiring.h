@@ -32,7 +32,6 @@
 
 #include "wiring_analog.h"
 #include "wiring_constants.h"
-#include "wiring_pulse.h"
 #include "wiring_time.h"
 
 #include <board.h>

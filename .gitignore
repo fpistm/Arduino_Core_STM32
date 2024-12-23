@@ -33,3 +33,6 @@ __pycache__/
 .vscode/*
 *.code-workspace
 .vscode-ctags
+
+#api
+cores/arduino/api
