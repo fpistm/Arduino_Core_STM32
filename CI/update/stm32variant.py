@@ -1257,12 +1257,12 @@ def manage_syswkup():
         if syswkup_list[0][2].replace("SYS_WKUP", "") == "0":
             base_index = 0
             max_range += 1
-        if max_range > 8:
-            print(
-                f"Error: SYS_WKUP range exceeds the current maximum range of 8 --> {max_range}."
-            )
-            exit(1)
-        syswkup_pins_list = [[] for _ in range(8)]
+        # if max_range > 8:
+        #     print(
+        #         f"Error: SYS_WKUP range exceeds the current maximum range of 8 --> {max_range}."
+        #     )
+        #     exit(1)
+        syswkup_pins_list = [[] for _ in range(max_range)]
         for p in syswkup_list:
             num = p[2].replace("SYS_WKUP", "")
             num = int(num) if num else 1
