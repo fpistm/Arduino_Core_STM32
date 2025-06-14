@@ -13164,7 +13164,7 @@ GenWB0.menu.pnum.GENERIC_WB09TEFX.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenWB0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWB0.menu.upload_method.swdMethod.upload.protocol=swd
-GenWB0.menu.upload_method.swdMethod.upload.options=
+GenWB0.menu.upload_method.swdMethod.upload.options=-a 0x10040000 -m hwRstPulse
 GenWB0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWB0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
