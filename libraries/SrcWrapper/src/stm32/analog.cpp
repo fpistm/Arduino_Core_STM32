@@ -926,7 +926,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
       AdcHandle.Init.DownSamplerConfig.DataWidth          = ADC_DS_DATA_WIDTH_16_BIT;
       break;
   }
-  AdcHandle.Init.DownSamplerConfig.DataRatio = ADC_DS_RATIO_1;
+  AdcHandle.Init.DownSamplerConfig.DataRatio = ADC_DS_RATIO_8;
   AdcHandle.Init.InvertOutputMode      = ADC_DATA_INVERT_NONE;
   AdcHandle.Init.Overrun               = ADC_NEW_DATA_IS_LOST;
 #else
