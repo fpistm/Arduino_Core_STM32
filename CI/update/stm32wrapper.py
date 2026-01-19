@@ -1,4 +1,5 @@
 import argparse
+import json
 import re
 import sys
 from collections import OrderedDict
@@ -8,7 +9,7 @@ from pathlib import Path
 
 script_path = Path(__file__).parent.resolve()
 sys.path.append(str(script_path.parent))
-from utils import createFolder, deleteFolder, genSTM32Dict
+from utils import createFolder, deleteFolder
 
 # Base path
 core_path = script_path.parent.parent
@@ -40,7 +41,7 @@ system_stm32_outfile = ""
 
 # List of STM32 series
 stm32_series = []
-stm32_dict = OrderedDict()  # key: serie, value: nx
+stm32_dict = OrderedDict()  # key: series, value: nx
 
 # Templating
 templates_dir = script_path / "templates"
@@ -155,7 +156,7 @@ def printSystemSTM32(log):
             print(f"Number of system stm32 files: {len(filelist)}")
         system_list = []
         for fp in filelist:
-            system_list.append({"serie": fp.parent.name, "fn": fp.name})
+            system_list.append({"series": fp.parent.name, "fn": fp.name})
         with open(system_stm32_outfile, "w", newline="\n") as out_file:
             out_file.write(system_stm32_template.render(system_list=system_list))
     else:
@@ -167,7 +168,11 @@ def wrap(arg_core, arg_cmsis, log):
     global stm32_series
     # check config have to be done first
     checkConfig(arg_core, arg_cmsis)
-    stm32_dict = genSTM32Dict(HALDrivers_path)
+    # Load stm32 series from json file
+    stm32_series_file = script_path / "stm32_series.json"
+    with open(stm32_series_file, "r") as json_file:
+        stm32_dict = json.load(json_file)["series"]
+
     stm32_series = sorted(list(stm32_dict.keys()))
     # Remove old file
     deleteFolder(HALoutSrc_path)
@@ -179,20 +184,20 @@ def wrap(arg_core, arg_cmsis, log):
     if CMSIS_Startupfile.is_file():
         CMSIS_Startupfile.unlink()
     all_ll_h_list = []
-    # key: peripheral, value: serie list
+    # key: peripheral, value: series list
     ll_h_dict = {}
     ll_c_dict = {}
     hal_c_dict = {}
     # Search all files for each series
-    for serie in stm32_series:
-        nx = stm32_dict[serie]
-        src = HALDrivers_path / f"STM32{serie}{nx}_HAL_Driver" / "Src"
-        inc = HALDrivers_path / f"STM32{serie}{nx}_HAL_Driver" / "Inc"
+    for series in stm32_series:
+        nx = stm32_dict[series]
+        src = HALDrivers_path / f"STM32{series}{nx}_HAL_Driver" / "Src"
+        inc = HALDrivers_path / f"STM32{series}{nx}_HAL_Driver" / "Inc"
 
         if src.exists():
             if log:
-                print(f"Generating for {serie}...")
-            lower = serie.lower()
+                print(f"Generating for {series}...")
+            lower = series.lower()
 
             # Search stm32yyxx_[hal|ll]*.c file
             filelist = src.glob(f"**/stm32{lower}{nx}_*.c")
@@ -211,14 +216,14 @@ def wrap(arg_core, arg_cmsis, log):
                             current_list = ll_c_dict.pop(peripheral)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
-                            current_list.append((lower, legacy, stm32_dict[serie]))
+                            current_list.append((lower, legacy, stm32_dict[series]))
                             ll_c_dict[peripheral] = current_list
                         else:
                             ll_c_dict[peripheral].append(
-                                (lower, legacy, stm32_dict[serie])
+                                (lower, legacy, stm32_dict[series])
                             )
                     else:
-                        ll_c_dict[peripheral] = [(lower, legacy, stm32_dict[serie])]
+                        ll_c_dict[peripheral] = [(lower, legacy, stm32_dict[series])]
                 else:
                     if peripheral in hal_c_dict:
                         if legacy:
@@ -226,14 +231,14 @@ def wrap(arg_core, arg_cmsis, log):
                             current_list = hal_c_dict.pop(peripheral)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
-                            current_list.append((lower, legacy, stm32_dict[serie]))
+                            current_list.append((lower, legacy, stm32_dict[series]))
                             hal_c_dict[peripheral] = current_list
                         else:
                             hal_c_dict[peripheral].append(
-                                (lower, legacy, stm32_dict[serie])
+                                (lower, legacy, stm32_dict[series])
                             )
                     else:
-                        hal_c_dict[peripheral] = [(lower, legacy, stm32_dict[serie])]
+                        hal_c_dict[peripheral] = [(lower, legacy, stm32_dict[series])]
 
             # Search stm32yyxx_ll_*.h file
             filelist = inc.glob(f"stm32{lower}{nx}_ll_*.h")
@@ -247,9 +252,9 @@ def wrap(arg_core, arg_cmsis, log):
                 # Amend all LL header list
                 all_ll_h_list.append(fn.replace(f"{lower}{nx}", "yyxx"))
                 if peripheral in ll_h_dict:
-                    ll_h_dict[peripheral].append((lower, stm32_dict[serie]))
+                    ll_h_dict[peripheral].append((lower, stm32_dict[series]))
                 else:
-                    ll_h_dict[peripheral] = [(lower, stm32_dict[serie])]
+                    ll_h_dict[peripheral] = [(lower, stm32_dict[series])]
 
     # Generate stm32yyxx_hal_*.c file
     for key, value in hal_c_dict.items():

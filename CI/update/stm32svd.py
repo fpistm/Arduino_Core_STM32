@@ -6,11 +6,17 @@ from xml.dom.minidom import parse
 
 script_path = Path(__file__).parent.resolve()
 sys.path.append(str(script_path.parent))
-from utils import copyFile, copyFolder, createFolder, deleteFolder
-from utils import defaultConfig, genSTM32Dict
+from utils import (
+    copyFile,
+    copyFolder,
+    createFolder,
+    deleteFolder,
+    defaultConfig,
+    loadSTM32Series,
+)
 
 stm32_list = []  # series
-stm32_dict = OrderedDict()  # key: serie, value: nx
+stm32_dict = OrderedDict()  # key: series, value: nx
 svd_dict = {}  # 'svd file': 'name'
 root_path = script_path.parent.parent.resolve()
 hal_path = root_path / "system" / "Drivers"
@@ -72,7 +78,6 @@ def checkConfig():
 
 
 def parse_stm32targets(stm32targets_file: Path):
-    global svd_dict
 
     xml_stm32targets = parse(str(stm32targets_file))
     mcu_nodes = xml_stm32targets.getElementsByTagName("mcu")
@@ -83,26 +88,26 @@ def parse_stm32targets(stm32targets_file: Path):
         cpu_node_name = cpus_node_name[0].getElementsByTagName("cpu")
         svd_node = cpu_node_name[0].getElementsByTagName("svd")
         svd_file = svd_node[0].getElementsByTagName("name")[0].firstChild.data
-        serie = (
+        series = (
             parent_node_name.upper()
             .removeprefix("STM32")
             .removesuffix("SINGLE")
             .removesuffix("DUAL")
         )
-        if serie == "L4PLUS":
-            serie = "L4"
+        if series == "L4PLUS":
+            series = "L4"
         else:
             if mcu_node_name.startswith("STM32H7R") or mcu_node_name.startswith(
                 "STM32H7S"
             ):
-                serie = "H7RS"
-        svd_dict[svd_file] = serie
+                series = "H7RS"
+        svd_dict[svd_file] = series
         # Check if a second cpu is defined
         if cpu_node_name.length > 1:
             svd_node = cpu_node_name[1].getElementsByTagName("svd")
             svd_file = svd_node[0].getElementsByTagName("name")[0].firstChild.data
-            serie = parent_node_name.upper().removeprefix("STM32").removesuffix("DUAL")
-            svd_dict[svd_file] = serie
+            series = parent_node_name.upper().removeprefix("STM32").removesuffix("DUAL")
+            svd_dict[svd_file] = series
     xml_stm32targets.unlink()
 
 
@@ -111,8 +116,8 @@ def main():
     global stm32_list
     # Check config have to be done first
     checkConfig()
-    # Get list of STM32 series from HAL driver directory
-    stm32_dict = genSTM32Dict(hal_path, None)
+    # Get list of STM32 series
+    stm32_dict = loadSTM32Series(script_path)
     stm32_list = sorted(list(stm32_dict.keys()))
     # Parse STM32Targets.xml to get list of STM32 series and svd file
     # one per Cube reference
@@ -134,9 +139,9 @@ def main():
     # Copy the version
     copyFile(cubeclt_path / ".version", stm32_svd_dir / "STM32CubeCLT.version")
     # Create all directories
-    for serie in stm32_list:
-        nx = stm32_dict[serie]
-        createFolder(stm32_svd_dir / f"STM32{serie}{nx}")
+    for series in stm32_list:
+        nx = stm32_dict[series]
+        createFolder(stm32_svd_dir / f"STM32{series}{nx}")
     # Get all svd files
     svd_list = sorted(cubeclt_svd_path.glob("STM32*.svd"))
 
@@ -155,21 +160,21 @@ def main():
             if svd_name.startswith("STM32GBK"):
                 copyFile(svd_file, stm32_svd_dir / "STM32G4xx")
             else:
-                for serie in stm32_list:
-                    nx = stm32_dict[serie]
-                    if svd_name.startswith(f"STM32{serie}"):
-                        copyFile(svd_file, stm32_svd_dir / f"STM32{serie}{nx}")
+                for series in stm32_list:
+                    nx = stm32_dict[series]
+                    if svd_name.startswith(f"STM32{series}"):
+                        copyFile(svd_file, stm32_svd_dir / f"STM32{series}{nx}")
                         break
                 else:
                     print(f"File {svd_name} not copied.")
 
     # Check if created folder is empty and delete it
-    for serie in stm32_list:
-        nx = stm32_dict[serie]
-        serie_dir = stm32_svd_dir / f"STM32{serie}{nx}"
-        if not any(serie_dir.glob("*")):
-            print(f"Folder {serie_dir} is empty.")
-            serie_dir.rmdir()
+    for series in stm32_list:
+        nx = stm32_dict[series]
+        series_dir = stm32_svd_dir / f"STM32{series}{nx}"
+        if not any(series_dir.glob("*")):
+            print(f"Folder {series_dir} is empty.")
+            series_dir.rmdir()
 
 
 if __name__ == "__main__":

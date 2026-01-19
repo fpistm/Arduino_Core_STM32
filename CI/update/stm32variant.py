@@ -19,13 +19,13 @@ from utils import (
     deleteFolder,
     execute_cmd,
     getRepoBranchName,
-    genSTM32Dict,
+    loadSTM32Series,
 )
 
 stm32_list = []  # series
-stm32_dict = OrderedDict()  # key: serie, value: nx
+stm32_dict = OrderedDict()  # key: series, value: nx
 ignored_stm32_list = []  # series
-aggregate_serie_list = []  # series
+aggregate_series_list = []  # series
 mcu_list = []  # 'name'
 io_list = []  # 'PIN','name'
 alt_list = []  # 'PIN','name'
@@ -156,7 +156,6 @@ def parse_mcu_file():
     global gpiofile
     global mcu_family
     global mcu_refname
-    global mcu_core
 
     tim_regex = r"^(TIM\d+)$"
     usb_regex = r"^(USB(?!PD|_HOST|_DEVICE|X).*)$"
@@ -184,8 +183,8 @@ def parse_mcu_file():
     # Check if mcu_family is supported by the core
     if (
         mcu_family not in stm32_list
-        or args.serie
-        and serie_pattern.search(mcu_family) is None
+        or args.series
+        and series_pattern.search(mcu_family) is None
     ):
         if mcu_family not in ignored_stm32_list and mcu_family not in stm32_list:
             ignored_stm32_list.append(mcu_family)
@@ -1731,7 +1730,6 @@ def search_product_line(valueline: str, extra: str) -> str:
 
 
 def parse_stm32targets():
-    global svd_dict
     xml_stm32targets = parse(str(stm32targets_file))
     mcu_nodes = xml_stm32targets.getElementsByTagName("mcu")
     for mcu_node in mcu_nodes:
@@ -2403,13 +2401,13 @@ def aggregate_dir():
     mcu_dir2_files_list = []
 
     # Compare per family
-    for mcu_family_name in aggregate_serie_list:
+    for mcu_family_name in aggregate_series_list:
         nx = stm32_dict[mcu_family_name.removeprefix("STM32")]
         mcu_family_path = out_temp_path / f"{mcu_family_name}{nx}"
         out_family_path = root_dir / "variants" / mcu_family_path.name
         # Get all mcu_dir
         mcu_dirs = sorted(mcu_family_path.glob("*/"))
-        # Get original directory list of current serie STM32YYxx
+        # Get original directory list of current series STM32YYxx
         mcu_out_dirs_ori = sorted(out_family_path.glob("*/**"))
         mcu_out_dirs_up = []
         # Group mcu directories when only expressions and xml file name are different
@@ -2485,7 +2483,7 @@ def aggregate_dir():
                     fname.unlink()
                 else:
                     fname.replace(out_path / fname.name)
-            # Append updated directory to the list of current serie STM32YYxx
+            # Append updated directory to the list of current series STM32YYxx
             mcu_out_dirs_up.append(out_path)
             del group_mcu_dir[:]
             del mcu_dir1_files_list[:]
@@ -2510,8 +2508,7 @@ def aggregate_dir():
                     print(f"  - {d.name} (deleted)")
                 else:
                     print(f"  - {d.name}")
-            print(
-                """
+            print("""
   --> For each directory not deleted, it requires manual update as it was renamed:
     - Find new directory name.
     - Move custom boards definition files, if any.
@@ -2519,8 +2516,7 @@ def aggregate_dir():
     - Copy 'SystemClock_Config(void)' function to the new generic clock config file.
   --> Then remove it and update old path in boards.txt
      (for custom board(s) as well as generic ones).
-"""
-            )
+""")
         del mcu_out_dirs_ori[:]
         del mcu_out_dirs_up[:]
 
@@ -2649,7 +2645,7 @@ root_dir = script_path.parents[1]
 system_path = root_dir / "system"
 templates_dir = script_path / "templates"
 mcu_family_dir = ""
-filtered_serie = ""
+filtered_series = ""
 periph_c_filename = "PeripheralPins.c"
 pinvar_h_filename = "PinNamesVar.h"
 config_filename = script_path / "update_config.json"
@@ -2669,8 +2665,7 @@ checkConfig()
 
 # By default, generate for all mcu xml files description
 parser = argparse.ArgumentParser(
-    description=textwrap.dedent(
-        f"""
+    description=textwrap.dedent(f"""
 By default, generates:
  - {periph_c_filename},
  - {pinvar_h_filename},
@@ -2685,14 +2680,11 @@ It can be the one from STM32CubeMX directory if defined:
 or the one from GitHub:
 \t{gh_url}
 
-"""
-    ),
-    epilog=textwrap.dedent(
-        """\
+"""),
+    epilog=textwrap.dedent("""\
 After files generation, review them carefully and please report any issue to GitHub:
 \thttps://github.com/stm32duino/Arduino_Core_STM32/issues
-"""
-    ),
+"""),
     formatter_class=RawTextHelpFormatter,
 )
 group = parser.add_mutually_exclusive_group()
@@ -2705,19 +2697,17 @@ group.add_argument(
 
 group.add_argument(
     "-s",
-    "--serie",
+    "--series",
     metavar="pattern",
-    help="Generate all files for specified STM32 serie(s) pattern.",
+    help="Generate all files for specified STM32 series(s) pattern.",
 )
 
 parser.add_argument(
     "-c",
     "--cube",
-    help=textwrap.dedent(
-        f"""\
+    help=textwrap.dedent(f"""\
 Use STM32CubeMX internal database. Default use GitHub {repo_name} repository.
-"""
-    ),
+"""),
     action="store_true",
 )
 parser.add_argument(
@@ -2738,12 +2728,10 @@ if not args.cube:
         fallback = True
 if fallback or args.cube:
     if not (cubemxdir.is_dir()):
-        print(
-            f"""
+        print(f"""
 Cube Mx seems not to be installed or not at the specified location.
 
-Please check the value set for 'CUBEMX_DIRECTORY' in '{config_filename}' file."""
-        )
+Please check the value set for 'CUBEMX_DIRECTORY' in '{config_filename}' file.""")
         quit()
 
     dirMCU = cubemxdir / "db" / "mcu"
@@ -2772,9 +2760,9 @@ else:
     print(f"{stm32targets_file} does not exits!")
     exit(1)
 
-if args.serie:
-    serie = args.serie.upper()
-    serie_pattern = re.compile(rf"STM32({serie})$", re.IGNORECASE)
+if args.series:
+    series = args.series.upper()
+    series_pattern = re.compile(rf"STM32({series})$", re.IGNORECASE)
 # Get all xml files
 mcu_list = sorted(dirMCU.glob("STM32*.xml"))
 
@@ -2783,7 +2771,7 @@ if args.list:
     for f in mcu_list:
         print(f.name)
     quit()
-stm32_dict = genSTM32Dict(system_path / "Drivers")
+stm32_dict = loadSTM32Series(script_path)
 stm32_list = sorted([f"STM32{stm32}" for stm32 in stm32_dict.keys()])
 
 if not stm32_list:
@@ -2809,8 +2797,8 @@ for mcu_file in mcu_list:
         continue
 
     # Add mcu family to the list of directory to aggregate
-    if mcu_family not in aggregate_serie_list:
-        aggregate_serie_list.append(mcu_family)
+    if mcu_family not in aggregate_series_list:
+        aggregate_series_list.append(mcu_family)
     nx = stm32_dict[mcu_family.removeprefix("STM32")]
 
     print(f"Generating files for '{mcu_file.name}'...")
