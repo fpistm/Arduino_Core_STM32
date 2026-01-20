@@ -8,13 +8,17 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-{% for series, nx in serieslist %}
+{% for series, nx, halv2 in serieslist %}
   {% if loop.first %}
 #ifdef STM32{{series.upper()}}{{nx}}
   {% else %}
 #elif STM32{{series.upper()}}{{nx}}
   {% endif %}
+  {% if halv2 %}
+  #include "stm32_utils_{{feat}}.h"
+  {% else %}
   #include "stm32{{series}}{{nx}}_util_{{feat}}.h"
+  {% endif %}
   {% if loop.last %}
 #endif
   {% endif %}

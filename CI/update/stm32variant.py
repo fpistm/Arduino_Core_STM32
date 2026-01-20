@@ -2856,7 +2856,7 @@ if args.list:
     for f in mcu_list:
         print(f.name)
     quit()
-stm32_dict = loadSTM32Series(script_path)
+stm32_dict = loadSTM32Series(script_path, True, True)
 stm32_list = sorted([f"STM32{stm32}" for stm32 in stm32_dict.keys()])
 
 if not stm32_list:

@@ -1,5 +1,4 @@
 import argparse
-import json
 import re
 import sys
 from collections import OrderedDict
@@ -9,7 +8,7 @@ from pathlib import Path
 
 script_path = Path(__file__).parent.resolve()
 sys.path.append(str(script_path.parent))
-from utils import createFolder, deleteFolder
+from utils import createFolder, deleteFolder, loadSTM32Series
 
 # Base path
 core_path = script_path.parent.parent
@@ -67,6 +66,7 @@ system_stm32_template = j2_env.get_template(system_stm32_file)
 feat_c_regex = re.compile(r"stm32[^_]+_(.*).c$")
 feat_h_regex = re.compile(r"stm32[^_]+_(.*).h$")
 feat_util_h_regex = re.compile(r"stm32[^_]+_util_(.*).h$")
+feat_utils_h_regex = re.compile(r"stm32_utils_(.*).h$")
 
 
 def checkConfig(arg_core, arg_cmsis):
@@ -170,11 +170,7 @@ def wrap(arg_core, arg_cmsis, log):
     global stm32_series
     # check config have to be done first
     checkConfig(arg_core, arg_cmsis)
-    # Load stm32 series from json file
-    stm32_series_file = script_path / "stm32_series.json"
-    with open(stm32_series_file, "r") as json_file:
-        stm32_dict = json.load(json_file)["series"]
-
+    stm32_dict = loadSTM32Series(script_path, True, True)
     stm32_series = sorted(list(stm32_dict.keys()))
     # Remove old file
     deleteFolder(HALoutSrc_path)
@@ -269,9 +265,23 @@ def wrap(arg_core, arg_cmsis, log):
                 feature = found.group(1)
                 # Add to util_h_dict to generate a header file for it
                 if feature in util_h_dict:
-                    util_h_dict[feature].append((lower, stm32_dict[series]))
+                    util_h_dict[feature].append((lower, stm32_dict[series], False))
                 else:
-                    util_h_dict[feature] = [(lower, stm32_dict[series])]
+                    util_h_dict[feature] = [(lower, stm32_dict[series], False)]
+            # Search stm32yyxx_util_.*.h file
+            filelist = inc.glob(f"stm32_utils_*.h")
+            for fp in filelist:
+                # File name
+                fn = fp.name
+                found = feat_utils_h_regex.match(fn)
+                if not found:
+                    continue
+                feature = found.group(1)
+                # Add to util_h_dict to generate a header file for it
+                if feature in util_h_dict:
+                    util_h_dict[feature].append((lower, stm32_dict[series], True))
+                else:
+                    util_h_dict[feature] = [(lower, stm32_dict[series], True)]
 
     # Generate stm32yyxx_hal_*.c file
     for key, value in hal_c_dict.items():

@@ -117,7 +117,8 @@ def main():
     # Check config have to be done first
     checkConfig()
     # Get list of STM32 series
-    stm32_dict = loadSTM32Series(script_path)
+    # V2 series are not considered for svd update yet
+    stm32_dict = loadSTM32Series(script_path, True, False)
     stm32_list = sorted(list(stm32_dict.keys()))
     # Parse STM32Targets.xml to get list of STM32 series and svd file
     # one per Cube reference
