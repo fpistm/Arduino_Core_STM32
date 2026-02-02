@@ -34,6 +34,7 @@ LLoutInc_path = ""
 
 # Out startup files
 CMSIS_Startupfile = ""
+CMSIS_Startupfile_source = ""
 
 # Out system stm32 files
 system_stm32_outfile = ""
@@ -48,6 +49,7 @@ all_ll_h_file = "stm32yyxx_ll.h"
 ll_h_file = "stm32yyxx_ll_ppp.h"
 c_file = "stm32yyxx_feat.c"
 stm32_def_build_file = "stm32_def_build.h"
+startup_stm32yyxx_file = "startup_stm32yyxx.c"
 system_stm32_file = "system_stm32yyxx.c"
 
 # Create the jinja2 environment.
@@ -60,6 +62,7 @@ util_h_file_template = j2_env.get_template("stm32yyxx_util_ppp.h")
 c_file_template = j2_env.get_template(c_file)
 dsp_file_template = Template('#include "../Source/{{ dsp_dir }}/{{ dsp_name }}"\n\n')
 stm32_def_build_template = j2_env.get_template(stm32_def_build_file)
+startup_stm32yyxx_template = j2_env.get_template(startup_stm32yyxx_file)
 system_stm32_template = j2_env.get_template(system_stm32_file)
 
 # re
@@ -79,6 +82,7 @@ def checkConfig(arg_core, arg_cmsis):
     global CMSIS_DSP_lib_path
     global CMSIS_DSP_outSrc_path
     global CMSIS_Startupfile
+    global CMSIS_Startupfile_source
     global system_path
     global system_stm32_outfile
     global HALoutSrc_path
@@ -100,6 +104,9 @@ def checkConfig(arg_core, arg_cmsis):
     CMSIS_DSP_lib_path = core_path / "libraries" / "CMSIS_DSP"
     CMSIS_DSP_outSrc_path = CMSIS_DSP_lib_path / "src"
     CMSIS_Startupfile = core_path / "cores" / "arduino" / "stm32" / stm32_def_build_file
+    CMSIS_Startupfile_source = (
+        core_path / "cores" / "arduino" / "stm32" / startup_stm32yyxx_file
+    )
     system_stm32_outfile = SrcWrapper_path / "src" / "stm32" / system_stm32_file
 
     HALoutSrc_path = SrcWrapper_path / "src" / "HAL"
@@ -149,6 +156,36 @@ def printCMSISStartup(log):
     else:
         if log:
             print("No startup files found!")
+    # v2
+    filelist = sorted(CMSIS_Device_ST_path.glob("**/startup_*.c"))
+    filelist = [pth.name for pth in filelist]
+    if len(filelist):
+        if log:
+            print(f"Number of source startup files: {len(filelist)}")
+        # Some mcu have two startup files
+        # Ex: WL one for cm0plus and one for cm4
+        # In that case this is the same value line so add an extra defined
+        # to use the correct one.
+        group_startup_list = [
+            list(g) for _, g in groupby(filelist, lambda x: re.split("_|\\.", x)[1])
+        ]
+        cmsis_list = []
+        for fn_list in group_startup_list:
+            if len(fn_list) == 1:
+                valueline = re.split("_|\\.", fn_list[0])
+                vline = valueline[1].upper().replace("X", "x")
+                cmsis_list.append({"vline": vline, "fn": fn_list[0], "cm": ""})
+            else:
+                for fn in fn_list:
+                    valueline = re.split("_|\\.", fn)
+                    vline = valueline[1].upper().replace("X", "x")
+                    cm = valueline[2].upper()
+                    cmsis_list.append({"vline": vline, "fn": fn, "cm": cm})
+        with open(CMSIS_Startupfile_source, "w", newline="\n") as out_file:
+            out_file.write(startup_stm32yyxx_template.render(cmsis_list=cmsis_list))
+    else:
+        if log:
+            print("No startup files found!")
 
 
 def printSystemSTM32(log):
@@ -181,6 +218,8 @@ def wrap(arg_core, arg_cmsis, log):
     createFolder(LLoutInc_path)
     if CMSIS_Startupfile.is_file():
         CMSIS_Startupfile.unlink()
+    if CMSIS_Startupfile_source.is_file():
+        CMSIS_Startupfile_source.unlink()
     all_ll_h_list = []
     # key: peripheral, value: series list
     ll_h_dict = {}
