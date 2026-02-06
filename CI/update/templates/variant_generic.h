@@ -129,7 +129,11 @@
 // Extra HAL modules
   {% for hal_module in hal_modules_list %}
 #if !defined(HAL_{{hal_module}}_MODULE_DISABLED)
+    {% if halv2 %}
+  #define USE_HAL_{{hal_module}}_MODULE    1U
+    {% else %}
   #define HAL_{{hal_module}}_MODULE_ENABLED
+    {% endif %}
 #endif
   {% endfor %}
 
