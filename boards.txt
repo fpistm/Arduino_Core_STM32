@@ -2126,6 +2126,88 @@ GenC0.menu.upload_method.OpenOCDDapLink.upload.tool=openocd_upload
 GenC0.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.0=interface/cmsis-dap.cfg
 GenC0.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.1={runtime.platform.path}/debugger/select_swd.cfg
 
+################################################################################
+# Generic C5
+GenC5.name=Generic STM32C5 series
+
+GenC5.build.core=arduino
+GenC5.build.board=GenC5
+GenC5.build.st_extra_flags=-D{build.product_line} {build.enable_usb} {build.xSerial}
+GenC5.build.mcu=cortex-m33
+GenC5.build.fpu=-mfpu=fpv5-sp-d16
+GenC5.build.float-abi=-mfloat-abi=hard
+GenC5.build.series=STM32C5xx
+GenC5.build.hal=-DUSE_HALV2_DRIVER
+GenC5.build.flash_offset=0x0
+GenC5.upload.maximum_size=0
+GenC5.upload.maximum_data_size=0
+# Current openocd version does not support C5
+# GenC5.openocd.target=stm32c5x
+GenC5.vid.0=0x0483
+GenC5.pid.0=0x5740
+
+# Generic C552RCTx
+GenC5.menu.pnum.GENERIC_C552RCTX=Generic C552RCTx
+GenC5.menu.pnum.GENERIC_C552RCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C552RCTX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C552RCTX.build.board=GENERIC_C552RCTX
+GenC5.menu.pnum.GENERIC_C552RCTX.build.product_line=STM32C552xx
+GenC5.menu.pnum.GENERIC_C552RCTX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C552RCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
+
+# Generic C552RETx
+GenC5.menu.pnum.GENERIC_C552RETX=Generic C552RETx
+GenC5.menu.pnum.GENERIC_C552RETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C552RETX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C552RETX.build.board=GENERIC_C552RETX
+GenC5.menu.pnum.GENERIC_C552RETX.build.product_line=STM32C552xx
+GenC5.menu.pnum.GENERIC_C552RETX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C552RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
+
+# Generic C562RETx
+GenC5.menu.pnum.GENERIC_C562RETX=Generic C562RETx
+GenC5.menu.pnum.GENERIC_C562RETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C562RETX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C562RETX.build.board=GENERIC_C562RETX
+GenC5.menu.pnum.GENERIC_C562RETX.build.product_line=STM32C562xx
+GenC5.menu.pnum.GENERIC_C562RETX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C562RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C562.svd
+
+# Upload menu
+GenC5.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
+GenC5.menu.upload_method.swdMethod.upload.protocol=swd
+GenC5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start}
+GenC5.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
+
+GenC5.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
+GenC5.menu.upload_method.jlinkMethod.upload.protocol=jlink
+GenC5.menu.upload_method.jlinkMethod.upload.options=-a {upload.address} -s {upload.start}
+GenC5.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
+
+GenC5.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
+GenC5.menu.upload_method.serialMethod.upload.protocol=serial
+GenC5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenC5.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
+
+GenC5.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
+GenC5.menu.upload_method.dfuMethod.upload.protocol=dfu
+GenC5.menu.upload_method.dfuMethod.upload.options=-v {upload.vid} -p {upload.pid} -a {upload.address} -s {upload.start}
+GenC5.menu.upload_method.dfuMethod.upload.tool=stm32CubeProg
+
+GenC5.menu.upload_method.bmpMethod=BMP (Black Magic Probe)
+GenC5.menu.upload_method.bmpMethod.upload.protocol=gdb_bmp
+GenC5.menu.upload_method.bmpMethod.upload.tool=bmp_upload
+
+GenC5.menu.upload_method.OpenOCDSTLink=OpenOCD STLink (SWD)
+GenC5.menu.upload_method.OpenOCDSTLink.upload.protocol=stlink
+GenC5.menu.upload_method.OpenOCDSTLink.upload.tool=openocd_upload
+
+GenC5.menu.upload_method.OpenOCDDapLink=OpenOCD DapLink (SWD)
+GenC5.menu.upload_method.OpenOCDDapLink.upload.protocol=cmsis-dap
+GenC5.menu.upload_method.OpenOCDDapLink.upload.tool=openocd_upload
+GenC5.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.0=interface/cmsis-dap.cfg
+GenC5.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.1={runtime.platform.path}/debugger/select_swd.cfg
+
 ###############################
 # Generic F0
 GenF0.name=Generic STM32F0 series
@@ -15256,6 +15338,12 @@ GenC0.menu.xserial.none.build.xSerial=-DHAL_UART_MODULE_ENABLED -DHWSERIAL_NONE
 GenC0.menu.xserial.disabled=Disabled (no Serial support)
 GenC0.menu.xserial.disabled.build.xSerial=
 
+GenC5.menu.xserial.generic=Enabled (generic 'Serial')
+GenC5.menu.xserial.none=Enabled (no generic 'Serial')
+GenC5.menu.xserial.none.build.xSerial=-DHAL_UART_MODULE_ENABLED -DHWSERIAL_NONE
+GenC5.menu.xserial.disabled=Disabled (no Serial support)
+GenC5.menu.xserial.disabled.build.xSerial=
+
 GenF0.menu.xserial.generic=Enabled (generic 'Serial')
 GenF0.menu.xserial.none=Enabled (no generic 'Serial')
 GenF0.menu.xserial.none.build.xSerial=-DHAL_UART_MODULE_ENABLED -DHWSERIAL_NONE
@@ -15532,6 +15620,14 @@ GenC0.menu.usb.CDC=CDC (no generic 'Serial')
 GenC0.menu.usb.CDC.build.enable_usb={build.usb_flags} -DUSBD_USE_CDC -DDISABLE_GENERIC_SERIALUSB
 GenC0.menu.usb.HID=HID (keyboard and mouse)
 GenC0.menu.usb.HID.build.enable_usb={build.usb_flags} -DUSBD_USE_HID_COMPOSITE
+
+GenC5.menu.usb.none=None
+GenC5.menu.usb.CDCgen=CDC (generic 'Serial' supersede U(S)ART)
+GenC5.menu.usb.CDCgen.build.enable_usb={build.usb_flags} -DUSBD_USE_CDC
+GenC5.menu.usb.CDC=CDC (no generic 'Serial')
+GenC5.menu.usb.CDC.build.enable_usb={build.usb_flags} -DUSBD_USE_CDC -DDISABLE_GENERIC_SERIALUSB
+GenC5.menu.usb.HID=HID (keyboard and mouse)
+GenC5.menu.usb.HID.build.enable_usb={build.usb_flags} -DUSBD_USE_HID_COMPOSITE
 
 GenF0.menu.usb.none=None
 GenF0.menu.usb.CDCgen=CDC (generic 'Serial' supersede U(S)ART)
@@ -15970,6 +16066,24 @@ GenC0.menu.opt.o3lto=Fastest (-O3) with LTO
 GenC0.menu.opt.o3lto.build.flags.optimize=-O3 -flto
 GenC0.menu.opt.ogstd=Debug (-Og)
 GenC0.menu.opt.ogstd.build.flags.optimize=-Og
+
+GenC5.menu.opt.osstd=Smallest (-Os default)
+GenC5.menu.opt.oslto=Smallest (-Os) with LTO
+GenC5.menu.opt.oslto.build.flags.optimize=-Os -flto
+GenC5.menu.opt.o1std=Fast (-O1)
+GenC5.menu.opt.o1std.build.flags.optimize=-O1
+GenC5.menu.opt.o1lto=Fast (-O1) with LTO
+GenC5.menu.opt.o1lto.build.flags.optimize=-O1 -flto
+GenC5.menu.opt.o2std=Faster (-O2)
+GenC5.menu.opt.o2std.build.flags.optimize=-O2
+GenC5.menu.opt.o2lto=Faster (-O2) with LTO
+GenC5.menu.opt.o2lto.build.flags.optimize=-O2 -flto
+GenC5.menu.opt.o3std=Fastest (-O3)
+GenC5.menu.opt.o3std.build.flags.optimize=-O3
+GenC5.menu.opt.o3lto=Fastest (-O3) with LTO
+GenC5.menu.opt.o3lto.build.flags.optimize=-O3 -flto
+GenC5.menu.opt.ogstd=Debug (-Og)
+GenC5.menu.opt.ogstd.build.flags.optimize=-Og
 
 GenF0.menu.opt.osstd=Smallest (-Os default)
 GenF0.menu.opt.oslto=Smallest (-Os) with LTO
@@ -16708,6 +16822,10 @@ GenC0.menu.dbg.none=None
 GenC0.menu.dbg.enable=Symbols Enabled (-g)
 GenC0.menu.dbg.enable.build.flags.debug=-g
 
+GenC5.menu.dbg.none=None
+GenC5.menu.dbg.enable=Symbols Enabled (-g)
+GenC5.menu.dbg.enable.build.flags.debug=-g
+
 GenF0.menu.dbg.none=None
 GenF0.menu.dbg.enable_sym=Symbols Enabled (-g)
 GenF0.menu.dbg.enable_sym.build.flags.debug=-g -DNDEBUG
@@ -17050,6 +17168,16 @@ GenC0.menu.rtlib.nanofps=Newlib Nano + Float Printf/Scanf
 GenC0.menu.rtlib.nanofps.build.flags.ldspecs=--specs=nano.specs -u _printf_float -u _scanf_float
 GenC0.menu.rtlib.full=Newlib Standard
 GenC0.menu.rtlib.full.build.flags.ldspecs=
+
+GenC5.menu.rtlib.nano=Newlib Nano (default)
+GenC5.menu.rtlib.nanofp=Newlib Nano + Float Printf
+GenC5.menu.rtlib.nanofp.build.flags.ldspecs=--specs=nano.specs -u _printf_float
+GenC5.menu.rtlib.nanofs=Newlib Nano + Float Scanf
+GenC5.menu.rtlib.nanofs.build.flags.ldspecs=--specs=nano.specs -u _scanf_float
+GenC5.menu.rtlib.nanofps=Newlib Nano + Float Printf/Scanf
+GenC5.menu.rtlib.nanofps.build.flags.ldspecs=--specs=nano.specs -u _printf_float -u _scanf_float
+GenC5.menu.rtlib.full=Newlib Standard
+GenC5.menu.rtlib.full.build.flags.ldspecs=
 
 GenF0.menu.rtlib.nano=Newlib Nano (default)
 GenF0.menu.rtlib.nanofp=Newlib Nano + Float Printf
