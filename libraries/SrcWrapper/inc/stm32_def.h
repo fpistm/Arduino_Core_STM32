@@ -74,6 +74,10 @@
   #error "STM32YYxx chip series is not defined in boards.txt."
 #endif
 
+#if defined(USE_HALV2_DRIVER)
+  #include "stm32_hal.h"
+#endif /* USE_HALV2_DRIVER */
+
 #ifndef F_CPU
   #define F_CPU SystemCoreClock
 #endif
