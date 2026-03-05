@@ -22,8 +22,6 @@
   #include "stm32g4xx_hal.c"
 #elif STM32H5xx
   #include "stm32h5xx_hal.c"
-#elif STM32H5xx
-  #include "stm32h5xx_hal.c"
 #elif STM32H7xx
   #include "stm32h7xx_hal.c"
 #elif STM32L0xx
@@ -38,8 +36,6 @@
   #include "stm32mp1xx_hal.c"
 #elif STM32U0xx
   #include "stm32u0xx_hal.c"
-#elif STM32U3xx
-  #include "stm32u3xx_hal.c"
 #elif STM32U3xx
   #include "stm32u3xx_hal.c"
 #elif STM32U5xx
