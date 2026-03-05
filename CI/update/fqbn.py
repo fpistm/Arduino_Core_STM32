@@ -5,12 +5,12 @@ import json
 import subprocess
 import argparse
 
-
 # List
 fqbn_list = []
 arduino_cli = ""
 arduino_cli_path = ""
-stm32_url = "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json"
+file_index = "package_stmicroelectronics_index.json"
+stm32_url = f"https://github.com/stm32duino/BoardManagerFiles/raw/main/{file_index}"
 arduino_platform = "STMicroelectronics:stm32"
 
 # Parser

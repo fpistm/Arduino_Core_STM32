@@ -1,8 +1,8 @@
 {% for system in system_list %}
   {% if loop.first %}
-#ifdef {{system.serie}}
+#ifdef {{system.series}}
   {% else %}
-#elif {{system.serie}}
+#elif {{system.series}}
   {% endif %}
   #include "{{system.fn}}"
 {% endfor %}
