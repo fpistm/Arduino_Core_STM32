@@ -1,5 +1,5 @@
-#ifndef _STM32YYXX_LL_{{periph.upper()}}_H_
-#define _STM32YYXX_LL_{{periph.upper()}}_H_
+#ifndef _STM32YYXX_{{feat.upper()}}_H_
+#define _STM32YYXX_{{feat.upper()}}_H_
 /* LL raised several warnings, ignore them */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -14,11 +14,11 @@
   {% else %}
 #elif STM32{{series.upper()}}{{nx}}
   {% endif %}
-  #include "stm32{{series}}{{nx}}_ll_{{periph}}.h"
+  #include "stm32{{series}}{{nx}}_{{feat}}.h"
   {% if loop.last %}
 #endif
   {% endif %}
 {% endfor %}
 #pragma GCC diagnostic pop
-#endif /* _STM32YYXX_LL_{{periph.upper()}}_H_ */
+#endif /* _STM32YYXX_{{feat.upper()}}_H_ */
 

@@ -1,4 +1,4 @@
-/* {{type.upper()}} raised several warnings, ignore them */
+/* {{type}} raised several warnings, ignore them */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -8,14 +8,10 @@
   {% else %}
 #elif STM32{{series.upper()}}{{nx}}
   {% endif %}
-  {% if type == periph %}
-  #include "stm32{{series}}{{nx}}_{{type}}.c"
-  {% else %}
-    {% if legacy %}
-  #include "Legacy/stm32{{series}}{{nx}}_{{type}}_{{periph}}.c"
-    {% endif %}
-  #include "stm32{{series}}{{nx}}_{{type}}_{{periph}}.c"
+  {% if legacy %}
+  #include "Legacy/stm32{{series}}{{nx}}_{{feat}}.c"
   {% endif %}
+  #include "stm32{{series}}{{nx}}_{{feat}}.c"
   {% if loop.last %}
 #endif
   {% endif %}

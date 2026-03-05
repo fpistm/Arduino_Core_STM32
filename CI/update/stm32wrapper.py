@@ -47,7 +47,7 @@ stm32_dict = OrderedDict()  # key: series, value: nx
 templates_dir = script_path / "templates"
 all_ll_h_file = "stm32yyxx_ll.h"
 ll_h_file = "stm32yyxx_ll_ppp.h"
-c_file = "stm32yyxx_zz_ppp.c"
+c_file = "stm32yyxx_feat.c"
 stm32_def_build_file = "stm32_def_build.h"
 system_stm32_file = "system_stm32yyxx.c"
 
@@ -63,8 +63,8 @@ stm32_def_build_template = j2_env.get_template(stm32_def_build_file)
 system_stm32_template = j2_env.get_template(system_stm32_file)
 
 # re
-peripheral_c_regex = re.compile(r"stm32\w+_[h]?[al][l]_(.*).c$")
-peripheral_h_regex = re.compile(r"stm32\w+_[h]?[al][l]_(.*).h$")
+feat_c_regex = re.compile(r"stm32[^_]+_(.*).c$")
+feat_h_regex = re.compile(r"stm32[^_]+_(.*).h$")
 
 
 def checkConfig(arg_core, arg_cmsis):
@@ -205,79 +205,75 @@ def wrap(arg_core, arg_cmsis, log):
                 legacy = fp.parent.name == "Legacy"
                 # File name
                 fn = fp.name
-                found = peripheral_c_regex.match(fn)
                 if "_template" in fn:
                     continue
-                peripheral = found.group(1) if found else "hal"
+                found = feat_c_regex.match(fn)
+                if not found:
+                    print(f"File {fn} does not match the expected pattern!")
+                    continue
+                feat = found.group(1)
                 if "_ll_" in fn:
-                    if peripheral in ll_c_dict:
+                    if feat in ll_c_dict:
                         if legacy:
                             # Change legacy value if exists
-                            current_list = ll_c_dict.pop(peripheral)
+                            current_list = ll_c_dict.pop(feat)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
                             current_list.append((lower, legacy, stm32_dict[series]))
-                            ll_c_dict[peripheral] = current_list
+                            ll_c_dict[feat] = current_list
                         else:
-                            ll_c_dict[peripheral].append(
-                                (lower, legacy, stm32_dict[series])
-                            )
+                            ll_c_dict[feat].append((lower, legacy, stm32_dict[series]))
                     else:
-                        ll_c_dict[peripheral] = [(lower, legacy, stm32_dict[series])]
+                        ll_c_dict[feat] = [(lower, legacy, stm32_dict[series])]
                 else:
-                    if peripheral in hal_c_dict:
+                    if feat in hal_c_dict:
                         if legacy:
                             # Change legacy value if exists
-                            current_list = hal_c_dict.pop(peripheral)
+                            current_list = hal_c_dict.pop(feat)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
                             current_list.append((lower, legacy, stm32_dict[series]))
-                            hal_c_dict[peripheral] = current_list
+                            hal_c_dict[feat] = current_list
                         else:
-                            hal_c_dict[peripheral].append(
-                                (lower, legacy, stm32_dict[series])
-                            )
+                            hal_c_dict[feat].append((lower, legacy, stm32_dict[series]))
                     else:
-                        hal_c_dict[peripheral] = [(lower, legacy, stm32_dict[series])]
+                        hal_c_dict[feat] = [(lower, legacy, stm32_dict[series])]
 
             # Search stm32yyxx_ll_*.h file
             filelist = inc.glob(f"stm32{lower}{nx}_ll_*.h")
             for fp in filelist:
                 # File name
                 fn = fp.name
-                found = peripheral_h_regex.match(fn)
+                found = feat_h_regex.match(fn)
                 if not found:
                     continue
-                peripheral = found.group(1)
+                feature = found.group(1)
                 # Amend all LL header list
                 all_ll_h_list.append(fn.replace(f"{lower}{nx}", "yyxx"))
-                if peripheral in ll_h_dict:
-                    ll_h_dict[peripheral].append((lower, stm32_dict[series]))
+                if feature in ll_h_dict:
+                    ll_h_dict[feature].append((lower, stm32_dict[series]))
                 else:
-                    ll_h_dict[peripheral] = [(lower, stm32_dict[series])]
+                    ll_h_dict[feature] = [(lower, stm32_dict[series])]
 
     # Generate stm32yyxx_hal_*.c file
     for key, value in hal_c_dict.items():
-        if key == "hal":
-            filepath = HALoutSrc_path / c_file.replace("zz", "hal").replace("_ppp", "")
-        else:
-            filepath = HALoutSrc_path / c_file.replace("zz", "hal").replace("ppp", key)
+        filepath = HALoutSrc_path / f"stm32yyxx_{key}.c"
         with open(filepath, "w", newline="\n") as out_file:
             out_file.write(
-                c_file_template.render(periph=key, type="hal", serieslist=value)
+                c_file_template.render(feat=key, type="HAL", serieslist=value)
             )
     # Generate stm32yyxx_ll_*.c file
     for key, value in ll_c_dict.items():
-        filepath = LLoutSrc_path / c_file.replace("zz", "ll").replace("ppp", key)
+        filepath = LLoutSrc_path / f"stm32yyxx_{key}.c"
         with open(filepath, "w", newline="\n") as out_file:
             out_file.write(
-                c_file_template.render(periph=key, type="ll", serieslist=value)
+                c_file_template.render(feat=key, type="LL", serieslist=value)
             )
     # Generate stm32yyxx_ll_*.h file
     for key, value in ll_h_dict.items():
-        filepath = LLoutInc_path / ll_h_file.replace("ppp", key)
+        filepath = LLoutInc_path / f"stm32yyxx_{key}.h"
         with open(filepath, "w", newline="\n") as out_file:
-            out_file.write(ll_h_file_template.render(periph=key, serieslist=value))
+            out_file.write(ll_h_file_template.render(feat=key, serieslist=value))
     if log:
         print("done")
 
