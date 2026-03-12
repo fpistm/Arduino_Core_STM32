@@ -47,6 +47,7 @@
 #include "stm32yyxx_ll_mrsubg_timer.h"
 #include "stm32yyxx_ll_opamp.h"
 #include "stm32yyxx_ll_pka.h"
+#include "stm32yyxx_ll_play.h"
 #include "stm32yyxx_ll_pwr.h"
 #include "stm32yyxx_ll_radio.h"
 #include "stm32yyxx_ll_radio_timer.h"
