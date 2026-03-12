@@ -221,7 +221,10 @@ def parse_mcu_file():
             if inst:
                 if "OTG" in inst.group(1):
                     if "FS" in inst.group(1):
-                        usb_inst["otg_fs"] = inst.group(1)
+                        if inst.group(1).endswith("FS1"):
+                            usb_inst["otg_fs"] = inst.group(1)[:-1]
+                        else:
+                            usb_inst["otg_fs"] = inst.group(1)
                     else:
                         if inst.group(1).endswith("HS1"):
                             usb_inst["otg_hs"] = inst.group(1)[:-1]
