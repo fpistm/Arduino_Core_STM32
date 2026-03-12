@@ -8,5 +8,7 @@
   #include "stm32u3xx_ll_dlyb.c"
 #elif STM32U5xx
   #include "stm32u5xx_ll_dlyb.c"
+#elif STM32WBAxx
+  #include "stm32wbaxx_ll_dlyb.c"
 #endif
 #pragma GCC diagnostic pop

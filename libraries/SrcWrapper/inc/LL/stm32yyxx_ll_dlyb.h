@@ -14,6 +14,8 @@
   #include "stm32u3xx_ll_dlyb.h"
 #elif STM32U5xx
   #include "stm32u5xx_ll_dlyb.h"
+#elif STM32WBAxx
+  #include "stm32wbaxx_ll_dlyb.h"
 #endif
 #pragma GCC diagnostic pop
 #endif /* _STM32YYXX_LL_DLYB_H_ */

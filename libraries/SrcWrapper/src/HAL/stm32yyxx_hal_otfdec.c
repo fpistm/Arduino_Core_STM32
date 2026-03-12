@@ -10,5 +10,7 @@
   #include "stm32l5xx_hal_otfdec.c"
 #elif STM32U5xx
   #include "stm32u5xx_hal_otfdec.c"
+#elif STM32WBAxx
+  #include "stm32wbaxx_hal_otfdec.c"
 #endif
 #pragma GCC diagnostic pop
