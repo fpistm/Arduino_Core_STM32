@@ -43,24 +43,24 @@ extern "C" {
   */
 
 /*!< Values needed for MPCBB_Attribute_ConfigTypeDef structure sizing */
-#define GTZC_MCPBB_NB_VCTR_REG_MAX      (12U)
-              /*!< Maximum number of super-blocks (32 consecutive blocks, block size is 512 bytes) */
+#define GTZC_MCPBB_NB_VCTR_REG_MAX      (20U)
+/*!< Maximum number of super-blocks (32 consecutive blocks, block size is 512 bytes) */
 #define GTZC_MCPBB_NB_LCK_VCTR_REG_MAX  (1U)
-              /*!< Maximum number of lock configuration registers to manage super-blocks */
+/*!< Maximum number of lock configuration registers to manage super-blocks */
 
-  typedef struct
+typedef struct
 {
   uint32_t MPCBB_SecConfig_array[GTZC_MCPBB_NB_VCTR_REG_MAX];
-                        /*!< Each element specifies secure access mode for a super-block.
-                             Each bit corresponds to a block inside the super-block.
-                             0 means non-secure, 1 means secure */
+  /*!< Each element specifies secure access mode for a super-block.
+       Each bit corresponds to a block inside the super-block.
+       0 means non-secure, 1 means secure */
   uint32_t MPCBB_PrivConfig_array[GTZC_MCPBB_NB_VCTR_REG_MAX];
-                        /*!< Each element specifies privilege access mode for a super-block.
-                             Each bit corresponds to a block inside the super-block.
-                             0 means non-privilege, 1 means privilege */
+  /*!< Each element specifies privilege access mode for a super-block.
+       Each bit corresponds to a block inside the super-block.
+       0 means non-privilege, 1 means privilege */
   uint32_t MPCBB_LockConfig_array[GTZC_MCPBB_NB_LCK_VCTR_REG_MAX];
-                        /*!< Each bit specifies the lock configuration of a super-block (32 blocks).
-                             0 means unlocked, 1 means locked */
+  /*!< Each bit specifies the lock configuration of a super-block (32 blocks).
+       0 means unlocked, 1 means locked */
 } MPCBB_Attribute_ConfigTypeDef;
 
 typedef struct
@@ -170,13 +170,17 @@ typedef struct
 #define GTZC_PERIPH_UART4         (GTZC_PERIPH_REG1 | GTZC_CFGR1_UART4_Pos)
 #define GTZC_PERIPH_UART5         (GTZC_PERIPH_REG1 | GTZC_CFGR1_UART5_Pos)
 #define GTZC_PERIPH_I2C1          (GTZC_PERIPH_REG1 | GTZC_CFGR1_I2C1_Pos)
+#if defined(I2C2)
 #define GTZC_PERIPH_I2C2          (GTZC_PERIPH_REG1 | GTZC_CFGR1_I2C2_Pos)
+#endif /* I2C2 */
 #define GTZC_PERIPH_CRS           (GTZC_PERIPH_REG1 | GTZC_CFGR1_CRS_Pos)
 #if defined(I2C4)
 #define GTZC_PERIPH_I2C4          (GTZC_PERIPH_REG1 | GTZC_CFGR1_I2C4_Pos)
 #endif /* I2C4 */
 #define GTZC_PERIPH_LPTIM2        (GTZC_PERIPH_REG1 | GTZC_CFGR1_LPTIM2_Pos)
+#if defined(FDCAN1)
 #define GTZC_PERIPH_FDCAN1        (GTZC_PERIPH_REG1 | GTZC_CFGR1_FDCAN1_Pos)
+#endif /* FDCAN1 */
 #if defined(FDCAN2)
 #define GTZC_PERIPH_FDCAN2        (GTZC_PERIPH_REG1 | GTZC_CFGR1_FDCAN2_Pos)
 #endif /* FDCAN2 */
@@ -197,18 +201,25 @@ typedef struct
 #define GTZC_PERIPH_TIM15         (GTZC_PERIPH_REG2 | GTZC_CFGR2_TIM15_Pos)
 #define GTZC_PERIPH_TIM16         (GTZC_PERIPH_REG2 | GTZC_CFGR2_TIM16_Pos)
 #define GTZC_PERIPH_TIM17         (GTZC_PERIPH_REG2 | GTZC_CFGR2_TIM17_Pos)
+#if defined(SAI1)
 #define GTZC_PERIPH_SAI1          (GTZC_PERIPH_REG2 | GTZC_CFGR2_SAI1_Pos)
+#endif /* SAI1 */
 #if defined(TIM12)
 #define GTZC_PERIPH_TIM12         (GTZC_PERIPH_REG2 | GTZC_CFGR2_TIM12_Pos)
 #endif /* TIM12 */
 #define GTZC_PERIPH_USB           (GTZC_PERIPH_REG2 | GTZC_CFGR2_USB_Pos)
+#if defined(I3C2)
 #define GTZC_PERIPH_I3C2          (GTZC_PERIPH_REG2 | GTZC_CFGR2_I3C2_Pos)
+#endif /* I3C2 */
 #define GTZC_PERIPH_LPUART1       (GTZC_PERIPH_REG2 | GTZC_CFGR2_LPUART1_Pos)
 #define GTZC_PERIPH_I2C3          (GTZC_PERIPH_REG2 | GTZC_CFGR2_I2C3_Pos)
 #define GTZC_PERIPH_LPTIM1        (GTZC_PERIPH_REG2 | GTZC_CFGR2_LPTIM1_Pos)
 #define GTZC_PERIPH_LPTIM3        (GTZC_PERIPH_REG2 | GTZC_CFGR2_LPTIM3_Pos)
 #define GTZC_PERIPH_LPTIM4        (GTZC_PERIPH_REG2 | GTZC_CFGR2_LPTIM4_Pos)
 #define GTZC_PERIPH_COMP          (GTZC_PERIPH_REG2 | GTZC_CFGR2_COMP_Pos)
+#if defined(LCD)
+#define GTZC_PERIPH_LCD           (GTZC_PERIPH_REG2 | GTZC_CFGR2_LCD_Pos)
+#endif /* LCD */
 
 #define GTZC_PERIPH_CRC           (GTZC_PERIPH_REG3 | GTZC_CFGR3_CRC_Pos)
 #define GTZC_PERIPH_TSC           (GTZC_PERIPH_REG3 | GTZC_CFGR3_TSC_Pos)
@@ -272,8 +283,10 @@ typedef struct
  */
 #if defined(HSP1)
 #define GTZC_TZSC_PERIPH_NUMBER   (HAL_GTZC_GET_ARRAY_INDEX(GTZC_PERIPH_HSP1) + 1U)
-#else
+#elif defined(ADF1)
 #define GTZC_TZSC_PERIPH_NUMBER   (HAL_GTZC_GET_ARRAY_INDEX(GTZC_PERIPH_ADF1) + 1U)
+#else
+#define GTZC_TZSC_PERIPH_NUMBER   (HAL_GTZC_GET_ARRAY_INDEX(GTZC_PERIPH_DAC1) + 1U)
 #endif /* HSP1 */
 
 #if defined(SRAM4_BASE)

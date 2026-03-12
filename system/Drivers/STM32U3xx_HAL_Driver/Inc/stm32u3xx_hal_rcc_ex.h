@@ -67,11 +67,15 @@ typedef struct
   uint32_t I2c1ClockSelection;            /*!< Specifies I2C1 clock source.
                                                This parameter can be a value of @ref RCCEx_I2C1_Clock_Source */
 
+#if defined(I2C2)
   uint32_t I2c2ClockSelection;            /*!< Specifies I2C2 clock source.
                                                This parameter can be a value of @ref RCCEx_I2C2_Clock_Source */
+#endif /* I2C2 */
 
+#if defined(I3C2)
   uint32_t I3c2ClockSelection;            /*!< Specifies I3C2 clock source.
                                                This parameter can be a value of @ref RCCEx_I3C2_Clock_Source */
+#endif /* I3C2 */
 
   uint32_t Spi2ClockSelection;            /*!< Specifies SPI2 clock source
                                                This parameter can be a value of @ref RCCEx_SPI2_Clock_Source */
@@ -85,8 +89,10 @@ typedef struct
   uint32_t SystickClockSelection;         /*!< Specifies SYSTICK clock source.
                                                This parameter can be a value of @ref RCCEx_SYSTICK_Clock_Source */
 
+#if defined(FDCAN1)
   uint32_t FdcanClockSelection;           /*!< Specifies FDCAN clock source.
                                                This parameter can be a value of @ref RCCEx_FDCAN_Clock_Source */
+#endif /* FDCAN1 */
 
   uint32_t IclkClockSelection;            /*!< Specifies ICLK Intermediate clock source.
                                                This parameter can be a value of @ref RCCEx_ICLK_Clock_Source */
@@ -97,14 +103,19 @@ typedef struct
   uint32_t TimIcClockSelection;           /*!< Specifies TIMIC clock source.
                                                This parameter can be a value of @ref RCCEx_TIMIC_Clock_Source */
 
+#if defined(ADF1)
   uint32_t Adf1ClockSelection;            /*!< Specifies ADF1 clock source
                                                This parameter can be a value of @ref RCCEx_ADF1_Clock_Source */
+#endif /* ADF1 */
 
+#if defined(SPI3)
   uint32_t Spi3ClockSelection;            /*!< Specifies SPI3 clock source
                                                This parameter can be a value of @ref RCCEx_SPI3_Clock_Source */
-
+#endif /* SPI3 */
+#if defined(SAI1)
   uint32_t Sai1ClockSelection;            /*!< Specifies SAI1 clock source.
                                                This parameter can be a value of @ref RCCEx_SAI1_Clock_Source */
+#endif /* SAI1 */
 
   uint32_t RngClockSelection;             /*!< Specifies RNG clock source
                                                This parameter can be a value of @ref RCCEx_RNG_Clock_Source */
@@ -116,10 +127,12 @@ typedef struct
                                                This parameter can be a value of @ref RCCEx_ADCDACDIV_Clock_Divider */
 
   uint32_t Dac1SampleHoldClockSelection;  /*!< Specifies DAC1 sample and hold clock source.
-                                               This parameter can be a value of @ref RCCEx_DAC1_Sample_Hold_Clock_Source */
-
+                                               This parameter can be a value of
+                                               @ref RCCEx_DAC1_Sample_Hold_Clock_Source */
+#if defined(OCTOSPI1)
   uint32_t Octospi1ClockSelection;        /*!< Specifies OCTOSPI1 interface clock source.
                                                This parameter can be a value of @ref RCCEx_OCTOSPI1_Clock_Source */
+#endif /* OCTOSPI1 */
 
   uint32_t Lpuart1ClockSelection;         /*!< Specifies LPUART1 clock source
                                                This parameter can be a value of @ref RCCEx_LPUART1_Clock_Source */
@@ -135,7 +148,7 @@ typedef struct
 
 #if defined(USART2)
   uint32_t Usart2ClockSelection;          /*!< Specifies USART2 clock source.
-                                               This parameter can be a value of @ref RCCEx_UART2_Clock_Source */
+                                               This parameter can be a value of @ref RCCEx_USART2_Clock_Source */
 #endif /* USART2 */
 
 #if defined(I2C4)
@@ -190,15 +203,19 @@ typedef struct
   uint32_t Polarity;              /*!< Specifies the input polarity for the SYNC signal source.
                                        This parameter can be a value of @ref RCCEx_CRS_SynchroPolarity */
 
-  uint32_t ReloadValue;           /*!< Specifies the value to be loaded in the frequency error counter with each SYNC event.
-                                       It can be calculated in using macro __HAL_RCC_CRS_RELOADVALUE_CALCULATE(__FTARGET__, __FSYNC__)
-                                       This parameter must be a number between 0 and 0xFFFF or a value of @ref RCCEx_CRS_ReloadValueDefault .*/
+  uint32_t ReloadValue;           /*!< Specifies the value to be loaded in the frequency error
+                                       counter with each SYNC event.It can be calculated in using macro
+                                       __HAL_RCC_CRS_RELOADVALUE_CALCULATE(__FTARGET__, __FSYNC__)
+                                       This parameter must be a number between 0 and 0xFFFF or a value of
+                                       @ref RCCEx_CRS_ReloadValueDefault .*/
 
   uint32_t ErrorLimitValue;       /*!< Specifies the value to be used to evaluate the captured frequency error value.
-                                       This parameter must be a number between 0 and 0xFF or a value of @ref RCCEx_CRS_ErrorLimitDefault */
+                                       This parameter must be a number between 0 and 0xFF or a value of
+                                       @ref RCCEx_CRS_ErrorLimitDefault */
 
   uint32_t HSI48CalibrationValue; /*!< Specifies a user-programmable trimming value to the HSI48 oscillator.
-                                       This parameter must be a number between 0 and 0x7F or a value of @ref RCCEx_CRS_HSI48CalibrationDefault */
+                                       This parameter must be a number between 0 and 0x7F or a value of
+                                       @ref RCCEx_CRS_HSI48CalibrationDefault */
 
 } RCC_CRSInitTypeDef;
 
@@ -238,11 +255,17 @@ typedef struct
 #define RCC_PERIPHCLK_USART1                0x00000001U
 #define RCC_PERIPHCLK_USART3                0x00000002U
 #define RCC_PERIPHCLK_UART4                 0x00000004U
+#if defined (UART5)
 #define RCC_PERIPHCLK_UART5                 0x00000008U
+#endif /* UART5 */
 #define RCC_PERIPHCLK_I3C1                  0x00000010U
 #define RCC_PERIPHCLK_I2C1                  0x00000020U
+#if defined(I2C2)
 #define RCC_PERIPHCLK_I2C2                  0x00000040U
+#endif /* I2C2 */
+#if defined(I3C2)
 #define RCC_PERIPHCLK_I3C2                  0x00000080U
+#endif /* I3C2 */
 #define RCC_PERIPHCLK_SPI2                  0x00000100U
 #define RCC_PERIPHCLK_LPTIM2                0x00000200U
 #define RCC_PERIPHCLK_SPI1                  0x00000400U
@@ -251,13 +274,21 @@ typedef struct
 #define RCC_PERIPHCLK_ICLK                  0x00002000U
 #define RCC_PERIPHCLK_USB1                  0x00004000U
 #define RCC_PERIPHCLK_TIMIC                 0x00008000U
+#if defined(ADF1)
 #define RCC_PERIPHCLK_ADF1                  0x00010000U
+#endif /* ADF1 */
+#if defined(SPI3)
 #define RCC_PERIPHCLK_SPI3                  0x00020000U
+#endif /* SPI3 */
+#if defined(SAI1)
 #define RCC_PERIPHCLK_SAI1                  0x00040000U
+#endif /* SAI1 */
 #define RCC_PERIPHCLK_RNG                   0x00080000U
 #define RCC_PERIPHCLK_ADCDAC                0x00100000U
 #define RCC_PERIPHCLK_DAC1SH                0x00200000U
+#if defined(OCTOSPI1)
 #define RCC_PERIPHCLK_OCTOSPI1              0x00400000U
+#endif /* OCTOSPI1 */
 #define RCC_PERIPHCLK_LPUART1               0x00800000U
 #define RCC_PERIPHCLK_I2C3                  0x01000000U
 #define RCC_PERIPHCLK_LPTIM34               0x02000000U
@@ -303,7 +334,7 @@ typedef struct
 /**
   * @}
   */
-
+#if defined (UART5)
 /** @defgroup RCCEx_UART5_Clock_Source UART5 Clock Source
   * @{
   */
@@ -312,7 +343,7 @@ typedef struct
 /**
   * @}
   */
-
+#endif /* UART5 */
 /** @defgroup RCCEx_I3C1_Clock_Source I3C1 Clock Source
   * @{
   */
@@ -331,6 +362,7 @@ typedef struct
   * @}
   */
 
+#if defined(I2C2)
 /** @defgroup RCCEx_I2C2_Clock_Source I2C2 Clock Source
   * @{
   */
@@ -339,7 +371,9 @@ typedef struct
 /**
   * @}
   */
+#endif /* I2C2 */
 
+#if defined(I3C2)
 /** @defgroup RCCEx_I3C2_Clock_Source I3C2 Clock Source
   * @{
   */
@@ -348,7 +382,7 @@ typedef struct
 /**
   * @}
   */
-
+#endif /* I3C2*/
 
 /** @defgroup RCCEx_SPI2_Clock_Source SPI2 Clock Source
   * @{
@@ -389,6 +423,7 @@ typedef struct
   * @}
   */
 
+#if defined(FDCAN1)
 /** @defgroup RCCEx_FDCAN_Clock_Source FDCAN Clock Source
   * @{
   */
@@ -397,7 +432,7 @@ typedef struct
 /**
   * @}
   */
-
+#endif /* FDCAN1 */
 
 /** @defgroup RCCEx_ICLK_Clock_Source ICLK Clock Source
   * @{
@@ -438,18 +473,22 @@ typedef struct
   */
 
 
+#if defined(ADF1)
 /** @defgroup RCCEx_ADF1_Clock_Source ADF1 Clock Source
   * @{
   */
 #define RCC_ADF1CLKSOURCE_HCLK              0x00000000U
 #define RCC_ADF1CLKSOURCE_PIN               RCC_CCIPR2_ADF1SEL_0
 #define RCC_ADF1CLKSOURCE_MSIK              RCC_CCIPR2_ADF1SEL_1
+#if defined(SAI1)
 #define RCC_ADF1CLKSOURCE_SAI1K             (RCC_CCIPR2_ADF1SEL_1 | RCC_CCIPR2_ADF1SEL_0)
+#endif /* SAI1 */
 /**
   * @}
   */
+#endif /* ADF1 */
 
-
+#if defined(SPI3)
 /** @defgroup RCCEx_SPI3_Clock_Source SPI3 Clock Source
   * @{
   */
@@ -458,7 +497,9 @@ typedef struct
 /**
   * @}
   */
+#endif /* SPI3 */
 
+#if defined(SAI1)
 /** @defgroup RCCEx_SAI1_Clock_Source SAI1 Clock Source
   * @{
   */
@@ -468,6 +509,7 @@ typedef struct
 /**
   * @}
   */
+#endif /* SAI1 */
 
 /** @defgroup RCCEx_RNG_Clock_Source  RCCEx RNG Clock Source
   * @{
@@ -509,12 +551,13 @@ typedef struct
 /** @defgroup RCCEx_DAC1_Sample_Hold_Clock_Source DAC1 Sample and Hold Clock Source
   * @{
   */
-#define RCC_DAC1SHCLKSOURCE_LSI             0x00000000U
-#define RCC_DAC1SHCLKSOURCE_LSE             RCC_CCIPR2_DAC1SHSEL
+#define RCC_DAC1SHCLKSOURCE_LSE             0x00000000U
+#define RCC_DAC1SHCLKSOURCE_LSI             RCC_CCIPR2_DAC1SHSEL
 /**
   * @}
   */
 
+#if defined(OCTOSPI1)
 /** @defgroup RCCEx_OCTOSPI1_Clock_Source OCTOSPI1 Clock Source
   * @{
   */
@@ -523,6 +566,7 @@ typedef struct
 /**
   * @}
   */
+#endif /* OCTOSPI1 */
 
 /** @defgroup RCCEx_LPUART1_Clock_Source LPUART1 Clock Source
   * @{
@@ -669,7 +713,7 @@ typedef struct
   */
 #define RCC_MSIRC1_PLLN_732                 0x00000000U                                     /*!< MSIRC1 frequency is  23.9862 MHz */
 #define RCC_MSIRC1_PLLN_689                 RCC_ICSCR1_MSIPLL1N_1                           /*!< MSIRC1 frequency is  22.5772 MHz */
-#define RCC_MSIRC1_PLLN_780                 (RCC_ICSCR1_MSIPLL1N_1 | RCC_ICSCR1_MSIPLL1N_0) /*!< MSIRC1 frequency is  24.576 MHz */
+#define RCC_MSIRC1_PLLN_750                 (RCC_ICSCR1_MSIPLL1N_1 | RCC_ICSCR1_MSIPLL1N_0) /*!< MSIRC1 frequency is  24.576 MHz */
 /**
   * @}
   */
@@ -745,14 +789,22 @@ typedef struct
 /** @defgroup RCCEx_CRS_SynchroDivider RCCEx CRS SynchroDivider
   * @{
   */
-#define RCC_CRS_SYNC_DIV1                   0x00000000U                               /*!< Synchro Signal not divided (default) */
-#define RCC_CRS_SYNC_DIV2                   CRS_CFGR_SYNCDIV_0                        /*!< Synchro Signal divided by 2 */
-#define RCC_CRS_SYNC_DIV4                   CRS_CFGR_SYNCDIV_1                        /*!< Synchro Signal divided by 4 */
-#define RCC_CRS_SYNC_DIV8                   (CRS_CFGR_SYNCDIV_1 | CRS_CFGR_SYNCDIV_0) /*!< Synchro Signal divided by 8 */
-#define RCC_CRS_SYNC_DIV16                  CRS_CFGR_SYNCDIV_2                        /*!< Synchro Signal divided by 16 */
-#define RCC_CRS_SYNC_DIV32                  (CRS_CFGR_SYNCDIV_2 | CRS_CFGR_SYNCDIV_0) /*!< Synchro Signal divided by 32 */
-#define RCC_CRS_SYNC_DIV64                  (CRS_CFGR_SYNCDIV_2 | CRS_CFGR_SYNCDIV_1) /*!< Synchro Signal divided by 64 */
-#define RCC_CRS_SYNC_DIV128                 CRS_CFGR_SYNCDIV                          /*!< Synchro Signal divided by 128 */
+#define RCC_CRS_SYNC_DIV1                   0x00000000U                               /*!< Synchro Signal not divided
+                                                                                           (default) */
+#define RCC_CRS_SYNC_DIV2                   CRS_CFGR_SYNCDIV_0                        /*!< Synchro Signal divided
+                                                                                           by 2 */
+#define RCC_CRS_SYNC_DIV4                   CRS_CFGR_SYNCDIV_1                        /*!< Synchro Signal divided
+                                                                                           by 4 */
+#define RCC_CRS_SYNC_DIV8                   (CRS_CFGR_SYNCDIV_1 | CRS_CFGR_SYNCDIV_0) /*!< Synchro Signal divided
+                                                                                           by 8 */
+#define RCC_CRS_SYNC_DIV16                  CRS_CFGR_SYNCDIV_2                        /*!< Synchro Signal divided
+                                                                                           by 16 */
+#define RCC_CRS_SYNC_DIV32                  (CRS_CFGR_SYNCDIV_2 | CRS_CFGR_SYNCDIV_0) /*!< Synchro Signal divided
+                                                                                           by 32 */
+#define RCC_CRS_SYNC_DIV64                  (CRS_CFGR_SYNCDIV_2 | CRS_CFGR_SYNCDIV_1) /*!< Synchro Signal divided
+                                                                                           by 64 */
+#define RCC_CRS_SYNC_DIV128                 CRS_CFGR_SYNCDIV                          /*!< Synchro Signal divided
+                                                                                           by 128 */
 /**
   * @}
   */
@@ -770,7 +822,8 @@ typedef struct
   * @{
   */
 #define RCC_CRS_RELOADVALUE_DEFAULT         0x0000BB7FU   /*!< The reset value of the RELOAD field corresponds
-                                                               to a target frequency of 48 MHz and a synchronization signal frequency of 1 kHz (SOF signal from USB). */
+                                                               to a target frequency of 48 MHz and a synchronization
+                                                               signal frequency of 1 kHz (SOF signal from USB). */
 /**
   * @}
   */
@@ -786,9 +839,10 @@ typedef struct
 /** @defgroup RCCEx_CRS_HSI48CalibrationDefault RCCEx CRS HSI48CalibrationDefault
   * @{
   */
-#define RCC_CRS_HSI48CALIBRATION_DEFAULT    0x00000040U /*!< The default value is 64, which corresponds to the middle of the trimming interval.
-                                                             The trimming step is specified in the product datasheet. A higher TRIM value
-                                                             corresponds to a higher output frequency */
+#define RCC_CRS_HSI48CALIBRATION_DEFAULT    0x00000040U /*!< The default value is 64, which corresponds to the middle
+                                                             of the trimming interval. The trimming step is specified
+                                                             in the product datasheet. A higher TRIM value corresponds
+                                                             to a higher output frequency */
 /**
   * @}
   */
@@ -796,8 +850,10 @@ typedef struct
 /** @defgroup RCCEx_CRS_FreqErrorDirection RCCEx CRS FreqErrorDirection
   * @{
   */
-#define RCC_CRS_FREQERRORDIR_UP             0x00000000U   /*!< Upcounting direction, the actual frequency is above the target */
-#define RCC_CRS_FREQERRORDIR_DOWN           CRS_ISR_FEDIR /*!< Downcounting direction, the actual frequency is below the target */
+#define RCC_CRS_FREQERRORDIR_UP             0x00000000U   /*!< Upcounting direction, the actual frequency is above
+                                                               the target */
+#define RCC_CRS_FREQERRORDIR_DOWN           CRS_ISR_FEDIR /*!< Downcounting direction, the actual frequency is below
+                                                               the target */
 /**
   * @}
   */
@@ -890,6 +946,7 @@ typedef struct
   */
 #define __HAL_RCC_GET_UART4_SOURCE()       READ_BIT(RCC->CCIPR1, RCC_CCIPR1_UART4SEL)
 
+#if defined (UART5)
 /** @brief  Macro to configure the UART5 clock (UART5CLK).
   * @param  __UART5_CLKSOURCE__ specifies the UART5 clock source.
   *          This parameter can be one of the following values:
@@ -906,6 +963,8 @@ typedef struct
   *            @arg @ref RCC_UART5CLKSOURCE_HSI    HSI selected as UART5 clock
   */
 #define __HAL_RCC_GET_UART5_SOURCE()       READ_BIT(RCC->CCIPR1, RCC_CCIPR1_UART5SEL)
+#endif /* UART5 */
+
 
 /** @brief  Macro to configure the I3C1 clock (I3C1CLK).
   * @param  __I3C1_CLKSOURCE__ specifies the I3C1 clock source.
@@ -941,6 +1000,7 @@ typedef struct
   */
 #define __HAL_RCC_GET_I2C1_SOURCE()         READ_BIT(RCC->CCIPR1, RCC_CCIPR1_I2C1SEL)
 
+#if defined(I2C2)
 /** @brief  Macro to configure the I2C2 clock (I2C2CLK).
   * @param  __I2C2_CLKSOURCE__ specifies the I2C2 clock source.
   *          This parameter can be one of the following values:
@@ -957,7 +1017,9 @@ typedef struct
   *            @arg @ref RCC_I2C2CLKSOURCE_MSIK   MSIK selected as I2C2 clock
   */
 #define __HAL_RCC_GET_I2C2_SOURCE()         READ_BIT(RCC->CCIPR1, RCC_CCIPR1_I2C2SEL)
+#endif /* I2C2 */
 
+#if defined(I3C2)
 /** @brief  Macro to configure the I3C2 clock (I3C2CLK).
   * @param  __I3C2_CLKSOURCE__ specifies the I3C2 clock source.
   *          This parameter can be one of the following values:
@@ -974,6 +1036,7 @@ typedef struct
   *            @arg @ref RCC_I3C2CLKSOURCE_MSIK   MSIK selected as I3C2 clock
   */
 #define __HAL_RCC_GET_I3C2_SOURCE()         READ_BIT(RCC->CCIPR1, RCC_CCIPR1_I3C2SEL)
+#endif /* I3C2 */
 
 /** @brief  macro to configure the SPI2 clock source.
   * @param  __SPI2_CLKSOURCE__ specifies the SPI2 clock source.es:
@@ -1044,6 +1107,7 @@ typedef struct
   */
 #define __HAL_RCC_GET_SYSTICK_SOURCE()      READ_BIT(RCC->CCIPR1, RCC_CCIPR1_SYSTICKSEL)
 
+#if defined(FDCAN1)
 /** @brief  macro to configure the FDCAN clock source.
   * @param  __FDCAN_CLKSOURCE__ specifies the FDCAN clock source.
   *            @arg RCC_FDCANCLKSOURCE_SYSCLK  SYSCLK divided by 8 Clock selected as FDCAN clock
@@ -1058,6 +1122,7 @@ typedef struct
   *            @arg RCC_FDCANCLKSOURCE_MSIK    MSIK Clock selected as FDCAN clock
   */
 #define __HAL_RCC_GET_FDCAN_SOURCE()       READ_BIT(RCC->CCIPR1, RCC_CCIPR1_FDCANSEL)
+#endif /* FDCAN1 */
 
 /** @brief  Macro to configure the ICLK clock.
   * @param  __ICLK_CLKSOURCE__ specifies the ICLK clock source.
@@ -1099,10 +1164,14 @@ typedef struct
 /** @brief  macro to configure the TIMIC clock source.
   * @param  __TIMIC_CLKSOURCE__ specifies the TIMIC clock source.
   *            @arg RCC_TIMICCLKSOURCE_DISABLE                Input capture clock selection disable
-  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSISDIV4   HSI/256, MSIS/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSIKDIV4   HSI/256, MSIS/1024 and MSIK/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSISDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSIKDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSISDIV4   HSI/256, MSIS/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSIKDIV4   HSI/256, MSIS/1024 and MSIK/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSISDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSIKDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
   */
 #define __HAL_RCC_TIMIC_CONFIG(__TIMIC_CLKSOURCE__) \
   MODIFY_REG(RCC->CCIPR1, RCC_CCIPR1_TIMICSEL, (__TIMIC_CLKSOURCE__))
@@ -1110,13 +1179,18 @@ typedef struct
 /** @brief  macro to get the TIMIC clock source.
   * @retval The clock source can be one of the following values:
   *            @arg RCC_TIMICCLKSOURCE_DISABLE                Input capture clock selection disable
-  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSISDIV4   HSI/256, MSIS/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSIKDIV4   HSI/256, MSIS/1024 and MSIK/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSISDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
-  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSIKDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17 and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSISDIV4   HSI/256, MSIS/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSISDIV1024_MSIKDIV4   HSI/256, MSIS/1024 and MSIK/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSISDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
+  *            @arg RCC_TIMICCLKSOURCE_MSIKDIV1024_MSIKDIV4   HSI/256, MSIK/1024 and MSIS/4 selected by TIM16, TIM17
+  *                                                           and LPTIM2 as internal input capture
   */
 #define __HAL_RCC_GET_TIMIC_SOURCE()        READ_BIT(RCC->CCIPR1, RCC_CCIPR1_TIMICSEL)
 
+#if defined(ADF1)
 /** @brief  Macro to configure the ADF1 clock.
   * @param  __ADF1_CLKSOURCE__ specifies the ADF1 clock source.
   *          This parameter can be one of the following values:
@@ -1137,7 +1211,9 @@ typedef struct
   *            @arg @ref RCC_ADF1CLKSOURCE_SAI1K  SAI1 kernel clock selected as ADF1 clock
   */
 #define __HAL_RCC_GET_ADF1_SOURCE()         READ_BIT(RCC->CCIPR2, RCC_CCIPR2_ADF1SEL)
+#endif /* ADF1 */
 
+#if defined(SPI3)
 /** @brief  macro to configure the SPI3 clock source.
   * @param  __SPI3_CLKSOURCE__ specifies the SPI3 clock source.es:
   *            @arg RCC_SPI3CLKSOURCE_PCLK1   PCLK1 selected as SPI3 clock
@@ -1152,7 +1228,9 @@ typedef struct
   *            @arg RCC_SPI3CLKSOURCE_MSIK    MSIK Clock selected as SPI3 clock
   */
 #define __HAL_RCC_GET_SPI3_SOURCE()         READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SPI3SEL)
+#endif /* SPI3 */
 
+#if defined(SAI1)
 /**
   * @brief  Macro to configure the SAI1 clock source.
   * @param  __SAI1_CLKSOURCE__ defines the SAI1 clock source. This clock is derived
@@ -1173,6 +1251,7 @@ typedef struct
   *             @arg @ref RCC_SAI1CLKSOURCE_HSE   HSE Clock selected as SPI3 clock
   */
 #define __HAL_RCC_GET_SAI1_SOURCE()         READ_BIT(RCC->CCIPR2, RCC_CCIPR2_SAI1SEL)
+#endif /* SAI1 */
 
 /** @brief macro to configure the RNG clock source.
   * @param  __RNG_CLKSOURCE__: specifies the RNG clock source.
@@ -1363,7 +1442,7 @@ typedef struct
   * @param  __USART2_CLKSOURCE__ specifies the USART2 clock source.
   *          This parameter can be one of the following values:
   *            @arg @ref RCC_USART2CLKSOURCE_PCLK1  PCLK1 selected as USART2 clock
-  *            @arg @ref RCC_USART2CLKSOURCE_HSI16  HSI16 selected as USART2 clock
+  *            @arg @ref RCC_USART2CLKSOURCE_HSI  HSI16 selected as USART2 clock
   * @retval None
   */
 #define __HAL_RCC_USART2_CONFIG(__USART2_CLKSOURCE__) \
@@ -1372,7 +1451,7 @@ typedef struct
 /** @brief  Macro to get the USART2 clock source.
   * @retval The clock source can be one of the following values:
   *            @arg @ref RCC_USART2CLKSOURCE_PCLK1  PCLK1 selected as USART2 clock
-  *            @arg @ref RCC_USART2CLKSOURCE_HSI16  HSI16 selected as USART2 clock
+  *            @arg @ref RCC_USART2CLKSOURCE_HSI  HSI16 selected as USART2 clock
   */
 #define __HAL_RCC_GET_USART2_SOURCE()       READ_BIT(RCC->CCIPR2, RCC_CCIPR2_USART2SEL)
 #endif /* USART2 */
@@ -1473,7 +1552,8 @@ typedef struct
 #define __HAL_RCC_CRS_CLEAR_IT(__INTERRUPT__)  do { \
                                                     if(((__INTERRUPT__) & RCC_CRS_IT_ERROR_MASK) != 0U) \
                                                     { \
-                                                      WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__INTERRUPT__) & ~RCC_CRS_IT_ERROR_MASK)); \
+                                                      WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__INTERRUPT__) & \
+                                                                                          ~RCC_CRS_IT_ERROR_MASK)); \
                                                     } \
                                                     else \
                                                     { \
@@ -1507,7 +1587,8 @@ typedef struct
   *              @arg @ref RCC_CRS_FLAG_TRIMOVF  Trimming overflow or underflow
   *              @arg @ref RCC_CRS_FLAG_SYNCERR  SYNC error
   *              @arg @ref RCC_CRS_FLAG_SYNCMISS  SYNC missed
-  * @note RCC_CRS_FLAG_ERR clears RCC_CRS_FLAG_TRIMOVF, RCC_CRS_FLAG_SYNCERR, RCC_CRS_FLAG_SYNCMISS and consequently RCC_CRS_FLAG_ERR
+  * @note RCC_CRS_FLAG_ERR clears RCC_CRS_FLAG_TRIMOVF, RCC_CRS_FLAG_SYNCERR, RCC_CRS_FLAG_SYNCMISS and consequently
+  *       RCC_CRS_FLAG_ERR
   * @retval None
   */
 /* CRS Flag Error Mask */
@@ -1516,7 +1597,8 @@ typedef struct
 #define __HAL_RCC_CRS_CLEAR_FLAG(__FLAG__)     do { \
                                                     if(((__FLAG__) & RCC_CRS_FLAG_ERROR_MASK) != 0U) \
                                                     { \
-                                                      WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__FLAG__) & ~RCC_CRS_FLAG_ERROR_MASK)); \
+                                                      WRITE_REG(CRS->ICR, CRS_ICR_ERRC | ((__FLAG__) & \
+                                                                                          ~RCC_CRS_FLAG_ERROR_MASK)); \
                                                     } \
                                                     else \
                                                     { \
@@ -1635,18 +1717,57 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
   * @{
   */
 /* Define used for IS_RCC_* macros below */
-#if defined(STM32U385xx) || defined(STM32U375xx)
-#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4   | \
-                                             RCC_PERIPHCLK_UART5  | RCC_PERIPHCLK_I3C1     | RCC_PERIPHCLK_I2C1    | \
-                                             RCC_PERIPHCLK_I2C2   | RCC_PERIPHCLK_I3C2     | RCC_PERIPHCLK_SPI2    | \
-                                             RCC_PERIPHCLK_LPTIM2 | RCC_PERIPHCLK_SPI1     | RCC_PERIPHCLK_SYSTICK | \
-                                             RCC_PERIPHCLK_FDCAN  | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1    | \
-                                             RCC_PERIPHCLK_TIMIC  | RCC_PERIPHCLK_ADF1     | RCC_PERIPHCLK_SPI3    | \
-                                             RCC_PERIPHCLK_SAI1   | RCC_PERIPHCLK_RNG      | RCC_PERIPHCLK_ADCDAC  | \
-                                             RCC_PERIPHCLK_DAC1SH | RCC_PERIPHCLK_OCTOSPI1 | RCC_PERIPHCLK_LPUART1 | \
-                                             RCC_PERIPHCLK_I2C3   | RCC_PERIPHCLK_LPTIM34  | RCC_PERIPHCLK_LPTIM1  | \
+#if defined(STM32U335xx) || defined(STM32U345xx)
+#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4    | \
+                                             RCC_PERIPHCLK_I3C1    | RCC_PERIPHCLK_I2C1     | \
+                                             RCC_PERIPHCLK_SPI2    | RCC_PERIPHCLK_LPTIM2   | RCC_PERIPHCLK_SPI1     | \
+                                             RCC_PERIPHCLK_SYSTICK | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1     | \
+                                             RCC_PERIPHCLK_TIMIC   | RCC_PERIPHCLK_RNG      | \
+                                             RCC_PERIPHCLK_ADCDAC  | RCC_PERIPHCLK_DAC1SH   | \
+                                             RCC_PERIPHCLK_LPUART1 | RCC_PERIPHCLK_I2C3     | RCC_PERIPHCLK_LPTIM34  | \
+                                             RCC_PERIPHCLK_LPTIM1  | RCC_PERIPHCLK_RTC)
+#elif defined(STM32U356xx) || defined(STM32U366xx)
+#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4    | \
+                                             RCC_PERIPHCLK_UART5   | RCC_PERIPHCLK_I3C1     | RCC_PERIPHCLK_I2C1     | \
+                                             RCC_PERIPHCLK_SPI2    | RCC_PERIPHCLK_LPTIM2   | RCC_PERIPHCLK_SPI1     | \
+                                             RCC_PERIPHCLK_SYSTICK | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1     | \
+                                             RCC_PERIPHCLK_TIMIC   | RCC_PERIPHCLK_SPI3     | RCC_PERIPHCLK_RNG      | \
+                                             RCC_PERIPHCLK_ADCDAC  | RCC_PERIPHCLK_DAC1SH   | RCC_PERIPHCLK_OCTOSPI1 | \
+                                             RCC_PERIPHCLK_LPUART1 | RCC_PERIPHCLK_I2C3     | RCC_PERIPHCLK_LPTIM34  | \
+                                             RCC_PERIPHCLK_LPTIM1  | RCC_PERIPHCLK_RTC)
+#elif defined(STM32U385xx) || defined(STM32U375xx)
+#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4   | \
+                                             RCC_PERIPHCLK_UART5   | RCC_PERIPHCLK_I3C1     | RCC_PERIPHCLK_I2C1    | \
+                                             RCC_PERIPHCLK_I2C2    | RCC_PERIPHCLK_I3C2     | RCC_PERIPHCLK_SPI2    | \
+                                             RCC_PERIPHCLK_LPTIM2  | RCC_PERIPHCLK_SPI1     | RCC_PERIPHCLK_SYSTICK | \
+                                             RCC_PERIPHCLK_FDCAN   | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1    | \
+                                             RCC_PERIPHCLK_TIMIC   | RCC_PERIPHCLK_ADF1     | RCC_PERIPHCLK_SPI3    | \
+                                             RCC_PERIPHCLK_SAI1    | RCC_PERIPHCLK_RNG      | RCC_PERIPHCLK_ADCDAC  | \
+                                             RCC_PERIPHCLK_DAC1SH  | RCC_PERIPHCLK_OCTOSPI1 | RCC_PERIPHCLK_LPUART1 | \
+                                             RCC_PERIPHCLK_I2C3    | RCC_PERIPHCLK_LPTIM34  | RCC_PERIPHCLK_LPTIM1  | \
                                              RCC_PERIPHCLK_RTC)
-#endif /* STM32U385xx || STM32U375xx */
+#elif defined(STM32U3B5xx) || defined(STM32U3C5xx)
+#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4   | \
+                                             RCC_PERIPHCLK_UART5   | RCC_PERIPHCLK_I3C1     | RCC_PERIPHCLK_I2C1    | \
+                                             RCC_PERIPHCLK_I2C2    | RCC_PERIPHCLK_I3C2     | RCC_PERIPHCLK_SPI2    | \
+                                             RCC_PERIPHCLK_LPTIM2  | RCC_PERIPHCLK_SPI1     | RCC_PERIPHCLK_SYSTICK | \
+                                             RCC_PERIPHCLK_FDCAN   | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1    | \
+                                             RCC_PERIPHCLK_TIMIC   | RCC_PERIPHCLK_ADF1     | RCC_PERIPHCLK_SPI3    | \
+                                             RCC_PERIPHCLK_SAI1    | RCC_PERIPHCLK_RNG      | RCC_PERIPHCLK_ADCDAC  | \
+                                             RCC_PERIPHCLK_DAC1SH  | RCC_PERIPHCLK_OCTOSPI1 | RCC_PERIPHCLK_LPUART1 | \
+                                             RCC_PERIPHCLK_I2C3    | RCC_PERIPHCLK_LPTIM34  | RCC_PERIPHCLK_LPTIM1  | \
+                                             RCC_PERIPHCLK_USART2  | RCC_PERIPHCLK_I2C4     | RCC_PERIPHCLK_SPI4    | \
+                                             RCC_PERIPHCLK_RTC)
+#elif defined(STM32U396xx) || defined(STM32U3A6xx)
+#define RCC_PERIPHCLOCK_ALL                 (RCC_PERIPHCLK_USART1  | RCC_PERIPHCLK_USART3   | RCC_PERIPHCLK_UART4   | \
+                                             RCC_PERIPHCLK_UART5   | RCC_PERIPHCLK_I3C1     | RCC_PERIPHCLK_I2C1    | \
+                                             RCC_PERIPHCLK_SPI2    | RCC_PERIPHCLK_LPTIM2   | RCC_PERIPHCLK_SPI1    | \
+                                             RCC_PERIPHCLK_SYSTICK | RCC_PERIPHCLK_ICLK     | RCC_PERIPHCLK_USB1    | \
+                                             RCC_PERIPHCLK_TIMIC   | RCC_PERIPHCLK_SPI3     | RCC_PERIPHCLK_RNG     | \
+                                             RCC_PERIPHCLK_ADCDAC  | RCC_PERIPHCLK_DAC1SH   | RCC_PERIPHCLK_OCTOSPI1 | \
+                                             RCC_PERIPHCLK_LPUART1 | RCC_PERIPHCLK_I2C3     | RCC_PERIPHCLK_LPTIM34  | \
+                                             RCC_PERIPHCLK_LPTIM1  | RCC_PERIPHCLK_RTC)
+#endif /* STM32U356xx || STM32U366xx */
 
 /**
   * @}
@@ -1677,11 +1798,15 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_I2C1CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_I2C1CLKSOURCE_PCLK1)  || \
                                                    ((__SOURCE__) == RCC_I2C1CLKSOURCE_MSIK))
 
+#if defined(I2C2)
 #define IS_RCC_I2C2CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_I2C2CLKSOURCE_PCLK1)  || \
                                                    ((__SOURCE__) == RCC_I2C2CLKSOURCE_MSIK))
+#endif /* I2C2 */
 
+#if defined(I3C2)
 #define IS_RCC_I3C2CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_I3C2CLKSOURCE_PCLK2)  || \
                                                    ((__SOURCE__) == RCC_I3C2CLKSOURCE_MSIK))
+#endif /* I3C2 */
 
 #define IS_RCC_SPI2CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_SPI2CLKSOURCE_PCLK1)  || \
                                                    ((__SOURCE__) == RCC_SPI2CLKSOURCE_MSIK))
@@ -1698,8 +1823,10 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                                                    ((__SOURCE__) == RCC_SYSTICKCLKSOURCE_LSI)        || \
                                                    ((__SOURCE__) == RCC_SYSTICKCLKSOURCE_LSE))
 
+#if defined(FDCAN1)
 #define IS_RCC_FDCANCLKSOURCE(__SOURCE__)         (((__SOURCE__) == RCC_FDCANCLKSOURCE_SYSCLK)  || \
                                                    ((__SOURCE__) == RCC_FDCANCLKSOURCE_MSIK))
+#endif /* FDCAN1 */
 
 #define IS_RCC_ICLKCLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_ICLKCLKSOURCE_HSI48)  || \
                                                    ((__SOURCE__) == RCC_ICLKCLKSOURCE_MSIK)   || \
@@ -1715,17 +1842,27 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                                                    ((__SOURCE__) == RCC_TIMICCLKSOURCE_MSIKDIV1024_MSISDIV4)  || \
                                                    ((__SOURCE__) == RCC_TIMICCLKSOURCE_MSIKDIV1024_MSIKDIV4))
 
+#if defined(ADF1) && defined(SAI1)
 #define IS_RCC_ADF1CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_ADF1CLKSOURCE_HCLK)   || \
                                                    ((__SOURCE__) == RCC_ADF1CLKSOURCE_PIN)    || \
                                                    ((__SOURCE__) == RCC_ADF1CLKSOURCE_MSIK)   || \
                                                    ((__SOURCE__) == RCC_ADF1CLKSOURCE_SAI1K))
+#elif defined(ADF1) && !defined(SAI1)
+#define IS_RCC_ADF1CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_ADF1CLKSOURCE_HCLK)   || \
+                                                   ((__SOURCE__) == RCC_ADF1CLKSOURCE_PIN)    || \
+                                                   ((__SOURCE__) == RCC_ADF1CLKSOURCE_MSIK))
+#endif /* defined(ADF1) && defined(SAI1) */
 
+#if defined(SPI3)
 #define IS_RCC_SPI3CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_SPI3CLKSOURCE_PCLK1)  || \
                                                    ((__SOURCE__) == RCC_SPI3CLKSOURCE_MSIK))
+#endif /* SPI3 */
 
+#if defined(SAI1)
 #define IS_RCC_SAI1CLKSOURCE(__SOURCE__)          (((__SOURCE__) == RCC_SAI1CLKSOURCE_MSIK) || \
                                                    ((__SOURCE__) == RCC_SAI1CLKSOURCE_PIN)  || \
                                                    ((__SOURCE__) == RCC_SAI1CLKSOURCE_HSE))
+#endif /* SAI1 */
 
 #define IS_RCC_RNGCLKSOURCE(__SOURCE__)           (((__SOURCE__) == RCC_RNGCLKSOURCE_HSI48) || \
                                                    ((__SOURCE__) == RCC_RNGCLKSOURCE_MSIK))
@@ -1747,7 +1884,6 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #define IS_RCC_DAC1SHCLKSOURCE(__SOURCE__)        (((__SOURCE__) == RCC_DAC1SHCLKSOURCE_LSI) || \
                                                    ((__SOURCE__) == RCC_DAC1SHCLKSOURCE_LSE))
-
 
 #define IS_RCC_OCTOSPICLKSOURCE(__SOURCE__)       (((__SOURCE__) == RCC_OCTOSPICLKSOURCE_SYSCLK) || \
                                                    ((__SOURCE__) == RCC_OCTOSPICLKSOURCE_MSIK))
@@ -1814,7 +1950,7 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 
 #define IS_RCC_MSI_PLL_NVALUE(__VALUE__)          (((__VALUE__) == RCC_MSIRC1_PLLN_732)   || \
                                                    ((__VALUE__) == RCC_MSIRC1_PLLN_689)  || \
-                                                   ((__VALUE__) == RCC_MSIRC1_PLLN_780))
+                                                   ((__VALUE__) == RCC_MSIRC1_PLLN_750))
 
 #define IS_RCC_STOP_WKUP_SYSCLK(__SOURCE__)       (((__SOURCE__) == RCC_STOP_WKUP_SYSCLK_MSIS) || \
                                                    ((__SOURCE__) == RCC_STOP_WKUP_SYSCLK_HSI))
@@ -1822,8 +1958,10 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
 #define IS_RCC_KERNEL_CLK(__SOURCE__)             (((__SOURCE__) == RCC_KERNELCLK_MSIK) || \
                                                    ((__SOURCE__) == RCC_KERNELCLK_HSI))
 
-#define IS_RCC_MULTI_KERNEL_CLK(__SOURCE__)       ((((__SOURCE__) & (RCC_KERNELCLK_MSIK | RCC_KERNELCLK_HSI)) != 0x00UL) && \
-                                                   (((__SOURCE__) & ~(RCC_KERNELCLK_MSIK | RCC_KERNELCLK_HSI)) == 0x00UL))
+#define IS_RCC_MULTI_KERNEL_CLK(__SOURCE__)       ((((__SOURCE__) & \
+                                                     (RCC_KERNELCLK_MSIK | RCC_KERNELCLK_HSI)) != 0x00UL) && \
+                                                   (((__SOURCE__) & \
+                                                     ~(RCC_KERNELCLK_MSIK | RCC_KERNELCLK_HSI)) == 0x00UL))
 
 #define IS_RCC_MSI_STANDBY_DIV(__DIV__)           (((__DIV__) == RCC_MSI_DIV2) || ((__DIV__) == RCC_MSI_DIV4) || \
                                                    ((__DIV__) == RCC_MSI_DIV8))
@@ -1841,10 +1979,14 @@ void              HAL_RCCEx_CRS_ErrorCallback(uint32_t Error);
                                                    ((__SOURCE__) == RCC_CRS_SYNC_SOURCE_LSE) || \
                                                    ((__SOURCE__) == RCC_CRS_SYNC_SOURCE_USB))
 
-#define IS_RCC_CRS_SYNC_DIV(__DIV__)              (((__DIV__) == RCC_CRS_SYNC_DIV1)  || ((__DIV__) == RCC_CRS_SYNC_DIV2)  || \
-                                                   ((__DIV__) == RCC_CRS_SYNC_DIV4)  || ((__DIV__) == RCC_CRS_SYNC_DIV8)  || \
-                                                   ((__DIV__) == RCC_CRS_SYNC_DIV16) || ((__DIV__) == RCC_CRS_SYNC_DIV32) || \
-                                                   ((__DIV__) == RCC_CRS_SYNC_DIV64) || ((__DIV__) == RCC_CRS_SYNC_DIV128))
+#define IS_RCC_CRS_SYNC_DIV(__DIV__)              (((__DIV__) == RCC_CRS_SYNC_DIV1)  || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV2)  || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV4)  || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV8)  || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV16) || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV32) || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV64) || \
+                                                   ((__DIV__) == RCC_CRS_SYNC_DIV128))
 
 #define IS_RCC_CRS_SYNC_POLARITY(__POLARITY__)    (((__POLARITY__) == RCC_CRS_SYNC_POLARITY_RISING) || \
                                                    ((__POLARITY__) == RCC_CRS_SYNC_POLARITY_FALLING))

@@ -10,6 +10,8 @@
   #include "stm32l4xx_hal_lcd.c"
 #elif STM32U0xx
   #include "stm32u0xx_hal_lcd.c"
+#elif STM32U3xx
+  #include "stm32u3xx_hal_lcd.c"
 #elif STM32WBxx
   #include "stm32wbxx_hal_lcd.c"
 #elif STM32WL3x
