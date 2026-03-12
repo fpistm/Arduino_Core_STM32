@@ -51,9 +51,9 @@ extern "C" {
   */
 /* Defines used to perform offsets*/
 /* Offset used to access to RCC_CCIPR1, RCC_CCIPR2 and RCC_CCIPR3 registers */
-#define RCC_OFFSET_CCIPR1       0U
-#define RCC_OFFSET_CCIPR2       1U
-#define RCC_OFFSET_CCIPR3       2U
+#define RCC_OFFSET_CCIPR1       0UL
+#define RCC_OFFSET_CCIPR2       1UL
+#define RCC_OFFSET_CCIPR3       2UL
 
 static __IO uint32_t *ccipr_addr_reg[3] =
 {
@@ -226,6 +226,15 @@ typedef struct
   */
 #define LL_RCC_LSCO_CLKSOURCE_LSI          0U                     /*!< LSI selection for low speed clock  */
 #define LL_RCC_LSCO_CLKSOURCE_LSE          RCC_BDCR_LSCOSEL       /*!< LSE selection for low speed clock  */
+/**
+  * @}
+  */
+
+/** @defgroup RCC_LL_EC_LCD_CLKSOURCE  LCD Selection
+  * @{
+  */
+#define LL_RCC_LCD_CLKSOURCE_LSI          0U                     /*!< LSE selection for low speed clock  */
+#define LL_RCC_LCD_CLKSOURCE_LSE          RCC_BDCR_LCDSEL        /*!< LSI selection for low speed clock  */
 /**
   * @}
   */
@@ -478,9 +487,15 @@ typedef struct
 #if defined(USART2)
 #define LL_RCC_USART2_CLKSOURCE         ((RCC_OFFSET_CCIPR2 << 24U) | (RCC_CCIPR2_USART2SEL_Pos << 16U) | ((RCC_CCIPR2_USART2SEL_Msk >> RCC_CCIPR2_USART2SEL_Pos) << 8U))  /*!< Mask to get USART2SEL clock source      */
 #endif /* USART2 */
+#if defined(USART3)
 #define LL_RCC_USART3_CLKSOURCE         ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_USART3SEL_Pos << 16U) | ((RCC_CCIPR1_USART3SEL_Msk >> RCC_CCIPR1_USART3SEL_Pos) << 8U))  /*!< Mask to get USART3SEL clock source      */
+#endif /* USART3 */
+#if defined(UART4)
 #define LL_RCC_UART4_CLKSOURCE          ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_UART4SEL_Pos << 16U) | ((RCC_CCIPR1_UART4SEL_Msk >> RCC_CCIPR1_UART4SEL_Pos) << 8U))     /*!< Mask to get UART4SEL clock source      */
+#endif /* UART4 */
+#if defined(UART5)
 #define LL_RCC_UART5_CLKSOURCE          ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_UART5SEL_Pos << 16U) | ((RCC_CCIPR1_UART5SEL_Msk >> RCC_CCIPR1_UART5SEL_Pos) << 8U))     /*!< Mask to get UART5SEL clock source      */
+#endif /* UART5 */
 /**
   * @}
   */
@@ -501,8 +516,11 @@ typedef struct
 #define LL_RCC_UART4_CLKSOURCE_PCLK1   (LL_RCC_UART4_CLKSOURCE | 0U)                                                                                                      /*!< PCLK1 clock used as UART4 clock source */
 #define LL_RCC_UART4_CLKSOURCE_HSI16   (LL_RCC_UART4_CLKSOURCE | (RCC_CCIPR1_UART4SEL >> RCC_CCIPR1_UART4SEL_Pos))                                                        /*!< HSI16 clock used as UART4 clock source */
 
+#if defined (UART5)
 #define LL_RCC_UART5_CLKSOURCE_PCLK1   (LL_RCC_UART5_CLKSOURCE | 0U)                                                                                                      /*!< PCLK1 clock used as UART5 clock source */
 #define LL_RCC_UART5_CLKSOURCE_HSI16   (LL_RCC_UART5_CLKSOURCE | (RCC_CCIPR1_UART5SEL >> RCC_CCIPR1_UART5SEL_Pos))                                                        /*!< HSI16 clock used as UART5 clock source */
+#endif /* UART5 */
+
 /**
   * @}
   */
@@ -516,14 +534,20 @@ typedef struct
                                                ((__VALUE__) == LL_RCC_USART3_CLKSOURCE))
 #endif /* USART2 */
 
+#if defined(UART4) && defined(UART5)
 #define IS_LL_RCC_UART_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_UART4_CLKSOURCE) || \
                                               ((__VALUE__) == LL_RCC_UART5_CLKSOURCE))
+#elif defined(UART4) && !defined(UART5)
+#define IS_LL_RCC_UART_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_UART4_CLKSOURCE))
+#endif /* defined(UART4) && defined(UART5) */
 
 /** @defgroup RCC_LL_EC_I3C Peripheral I3Cx get clock source
   * @{
   */
 #define LL_RCC_I3C1_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_I3C1SEL_Pos << 16U) | ((RCC_CCIPR1_I3C1SEL_Msk >> RCC_CCIPR1_I3C1SEL_Pos) << 8U))     /*!< Mask to get I3C1SEL clock source      */
+#if defined(I3C2)
 #define LL_RCC_I3C2_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_I3C2SEL_Pos << 16U) | ((RCC_CCIPR1_I3C2SEL_Msk >> RCC_CCIPR1_I3C2SEL_Pos) << 8U))     /*!< Mask to get I3C2SEL clock source      */
+#endif /* I3C2 */
 /**
   * @}
   */
@@ -533,20 +557,28 @@ typedef struct
 #define LL_RCC_I3C1_CLKSOURCE_PCLK1     (LL_RCC_I3C1_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as I3C1 clock source */
 #define LL_RCC_I3C1_CLKSOURCE_MSIK      (LL_RCC_I3C1_CLKSOURCE | (RCC_CCIPR1_I3C1SEL >> RCC_CCIPR1_I3C1SEL_Pos))                                                       /*!< MSIK clock used as I3C1 clock source  */
 
+#if defined(I3C2)
 #define LL_RCC_I3C2_CLKSOURCE_PCLK2     (LL_RCC_I3C2_CLKSOURCE | 0U)                                                                                                   /*!< PCLK2 clock used as I3C2 clock source */
 #define LL_RCC_I3C2_CLKSOURCE_MSIK      (LL_RCC_I3C2_CLKSOURCE | (RCC_CCIPR1_I3C2SEL >> RCC_CCIPR1_I3C2SEL_Pos))                                                       /*!< MSIK clock used as I3C2 clock source  */
+#endif /* I3C2 */
 /**
   * @}
   */
 
+#if defined(I3C2)
 #define IS_LL_RCC_I3C_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_I3C1_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_I3C2_CLKSOURCE))
+#else
+#define IS_LL_RCC_I3C_CLKSOURCE(__VALUE__)  ((__VALUE__) == LL_RCC_I3C1_CLKSOURCE)
+#endif /* I3C2 */
 
 /** @defgroup RCC_LL_EC_I2C Peripheral I2Cx get clock source
   * @{
   */
 #define LL_RCC_I2C1_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_I2C1SEL_Pos << 16U) | ((RCC_CCIPR1_I2C1SEL_Msk >> RCC_CCIPR1_I2C1SEL_Pos) << 8U))     /*!< Mask to get I2C1SEL clock source       */
+#if defined(I2C2)
 #define LL_RCC_I2C2_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_I2C2SEL_Pos << 16U) | ((RCC_CCIPR1_I2C2SEL_Msk >> RCC_CCIPR1_I2C2SEL_Pos) << 8U))     /*!< Mask to get I2C2SEL clock source       */
+#endif /* I2C2 */
 #define LL_RCC_I2C3_CLKSOURCE           ((RCC_OFFSET_CCIPR3 << 24U) | (RCC_CCIPR3_I2C3SEL_Pos << 16U) | ((RCC_CCIPR3_I2C3SEL_Msk >> RCC_CCIPR3_I2C3SEL_Pos) << 8U))     /*!< Mask to get I2C3SEL clock source       */
 #if defined(I2C4)
 #define LL_RCC_I2C4_CLKSOURCE           ((RCC_OFFSET_CCIPR2 << 24U) | (RCC_CCIPR2_I2C4SEL_Pos << 16U) | ((RCC_CCIPR2_I2C4SEL_Msk >> RCC_CCIPR2_I2C4SEL_Pos) << 8U))     /*!< Mask to get I2C4SEL clock source       */
@@ -560,8 +592,10 @@ typedef struct
 #define LL_RCC_I2C1_CLKSOURCE_PCLK1     (LL_RCC_I2C1_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as I2C1 clock source  */
 #define LL_RCC_I2C1_CLKSOURCE_MSIK      (LL_RCC_I2C1_CLKSOURCE | (RCC_CCIPR1_I2C1SEL >> RCC_CCIPR1_I2C1SEL_Pos))                                                       /*!< MSIK clock used as I2C1 clock source   */
 
+#if defined(I2C2)
 #define LL_RCC_I2C2_CLKSOURCE_PCLK1     (LL_RCC_I2C2_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as I2C2 clock source  */
 #define LL_RCC_I2C2_CLKSOURCE_MSIK      (LL_RCC_I2C2_CLKSOURCE | (RCC_CCIPR1_I2C2SEL >> RCC_CCIPR1_I2C2SEL_Pos))                                                       /*!< MSIK clock used as I2C2 clock source   */
+#endif /* I2C2 */
 
 #define LL_RCC_I2C3_CLKSOURCE_PCLK3     (LL_RCC_I2C3_CLKSOURCE | 0U)                                                                                                   /*!< PCLK3 clock used as I2C3 clock source  */
 #define LL_RCC_I2C3_CLKSOURCE_MSIK      (LL_RCC_I2C3_CLKSOURCE | (RCC_CCIPR3_I2C3SEL >> RCC_CCIPR3_I2C3SEL_Pos))                                                       /*!< MSIK clock used as I2C3 clock source   */
@@ -579,9 +613,12 @@ typedef struct
                                              ((__VALUE__) == LL_RCC_I2C2_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_I2C3_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_I2C4_CLKSOURCE))
-#else
+#elif defined(I2C2)
 #define IS_LL_RCC_I2C_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_I2C1_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_I2C2_CLKSOURCE) || \
+                                             ((__VALUE__) == LL_RCC_I2C3_CLKSOURCE))
+#else
+#define IS_LL_RCC_I2C_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_I2C1_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_I2C3_CLKSOURCE))
 #endif /* I2C4 */
 
@@ -590,7 +627,9 @@ typedef struct
   */
 #define LL_RCC_SPI1_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_SPI1SEL_Pos << 16U) | ((RCC_CCIPR1_SPI1SEL_Msk >> RCC_CCIPR1_SPI1SEL_Pos) << 8U))     /*!< Mask to get SPI1SEL clock source       */
 #define LL_RCC_SPI2_CLKSOURCE           ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_SPI2SEL_Pos << 16U) | ((RCC_CCIPR1_SPI2SEL_Msk >> RCC_CCIPR1_SPI2SEL_Pos) << 8U))     /*!< Mask to get SPI2SEL clock source       */
+#if defined(SPI3)
 #define LL_RCC_SPI3_CLKSOURCE           ((RCC_OFFSET_CCIPR2 << 24U) | (RCC_CCIPR2_SPI3SEL_Pos << 16U) | ((RCC_CCIPR2_SPI3SEL_Msk >> RCC_CCIPR2_SPI3SEL_Pos) << 8U))     /*!< Mask to get SPI3SEL clock source       */
+#endif /* SPI3 */
 #if defined(SPI4)
 #define LL_RCC_SPI4_CLKSOURCE           ((RCC_OFFSET_CCIPR2 << 24U) | (RCC_CCIPR2_SPI4SEL_Pos << 16U) | ((RCC_CCIPR2_SPI4SEL_Msk >> RCC_CCIPR2_SPI4SEL_Pos) << 8U))     /*!< Mask to get SPI4SEL clock source       */
 #endif /* SPI4 */
@@ -606,8 +645,10 @@ typedef struct
 #define LL_RCC_SPI2_CLKSOURCE_PCLK1     (LL_RCC_SPI2_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as SPI2 clock source  */
 #define LL_RCC_SPI2_CLKSOURCE_MSIK      (LL_RCC_SPI2_CLKSOURCE | (RCC_CCIPR1_SPI2SEL >> RCC_CCIPR1_SPI2SEL_Pos))                                                       /*!< MSIK clock used as SPI2 clock source   */
 
+#if defined(SPI3)
 #define LL_RCC_SPI3_CLKSOURCE_PCLK1     (LL_RCC_SPI3_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as SPI3 clock source  */
 #define LL_RCC_SPI3_CLKSOURCE_MSIK      (LL_RCC_SPI3_CLKSOURCE | (RCC_CCIPR2_SPI3SEL >> RCC_CCIPR2_SPI3SEL_Pos))                                                       /*!< MSIK clock used as SPI3 clock source   */
+#endif /* SPI3 */
 
 #if defined(SPI4)
 #define LL_RCC_SPI4_CLKSOURCE_PCLK1     (LL_RCC_SPI4_CLKSOURCE | 0U)                                                                                                   /*!< PCLK1 clock used as SPI4 clock source  */
@@ -617,16 +658,19 @@ typedef struct
   * @}
   */
 
-#if defined(SPI4)
+#if defined(SPI1) && defined(SPI2) && defined(SPI3) && defined(SPI4)
 #define IS_LL_RCC_SPI_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SPI1_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_SPI2_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_SPI3_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_SPI4_CLKSOURCE))
-#else
+#elif defined(SPI1) && defined(SPI2) && defined(SPI3)
 #define IS_LL_RCC_SPI_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SPI1_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_SPI2_CLKSOURCE) || \
                                              ((__VALUE__) == LL_RCC_SPI3_CLKSOURCE))
-#endif /* SPI4 */
+#elif defined(SPI1) && defined(SPI2)
+#define IS_LL_RCC_SPI_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SPI1_CLKSOURCE) || \
+                                             ((__VALUE__) == LL_RCC_SPI2_CLKSOURCE))
+#endif /* defined(SPI1) && defined(SPI2) && defined(SPI3) && defined(SPI4) */
 
 
 /** @defgroup RCC_LL_EC_LPTIM Peripheral LPTIMx get clock source
@@ -693,7 +737,7 @@ typedef struct
 /** @defgroup RCC_LL_EC_SYSTICK_CLKSOURCE Peripheral SYSTICK clock source selection
   * @{
   */
-#define LL_RCC_SYSTICK_CLKSOURCE_HCLKDIV8  (LL_RCC_SYSTICK_CLKSOURCE | 0U )                                                                                                       /*!< HCLKDIV8 clock used as SYSTICK clock source */
+#define LL_RCC_SYSTICK_CLKSOURCE_HCLKDIV8  (LL_RCC_SYSTICK_CLKSOURCE | 0U )                                                                                                     /*!< HCLKDIV8 clock used as SYSTICK clock source */
 #define LL_RCC_SYSTICK_CLKSOURCE_LSI       (LL_RCC_SYSTICK_CLKSOURCE | (RCC_CCIPR1_SYSTICKSEL_0 >> RCC_CCIPR1_SYSTICKSEL_Pos))                                                  /*!< LSI clock used as SYSTICK clock source      */
 #define LL_RCC_SYSTICK_CLKSOURCE_LSE       (LL_RCC_SYSTICK_CLKSOURCE | (RCC_CCIPR1_SYSTICKSEL_1 >> RCC_CCIPR1_SYSTICKSEL_Pos))                                                  /*!< LSE clock used as SYSTICK clock source      */
 /**
@@ -702,6 +746,7 @@ typedef struct
 
 #define IS_LL_RCC_SYSTICK_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SYSTICK_CLKSOURCE))
 
+#if defined(FDCAN1)
 /** @defgroup RCC_LL_EC_FDCAN Peripheral FDCAN get clock source
   * @{
   */
@@ -709,22 +754,26 @@ typedef struct
 /**
   * @}
   */
+
 /** @defgroup RCC_LL_EC_FDCAN_CLKSOURCE Peripheral FDCAN clock source selection
   * @{
   */
 #define LL_RCC_FDCAN_CLKSOURCE_SYSCLK   (LL_RCC_FDCAN_CLKSOURCE | 0U)                                                                                                        /*!< SYSCLK clock used as FDCAN clock source */
-#define LL_RCC_FDCAN_CLKSOURCE_MSIK     (LL_RCC_FDCAN_CLKSOURCE | (RCC_CCIPR1_FDCANSEL >> RCC_CCIPR1_FDCANSEL_Pos))                                                        /*!< MSIK clock used as FDCAN clock source    */
+#define LL_RCC_FDCAN_CLKSOURCE_MSIK     (LL_RCC_FDCAN_CLKSOURCE | (RCC_CCIPR1_FDCANSEL >> RCC_CCIPR1_FDCANSEL_Pos))                                                          /*!< MSIK clock used as FDCAN clock source    */
 /**
   * @}
   */
 
 #define IS_LL_RCC_FDCAN_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_FDCAN_CLKSOURCE))
+#endif /* FDCAN1 */
 
 /** @defgroup RCC_LL_EC_ICLK Peripheral ICLK get clock source
   * @{
   */
-#define LL_RCC_ICLK_CLKSOURCE            ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_ICLKSEL_Pos << 16U) | ((RCC_CCIPR1_ICLKSEL_Msk >> RCC_CCIPR1_ICLKSEL_Pos) << 8U))            /*!< Mask to get ICLK clock source       */
+#define LL_RCC_ICLK_CLKSOURCE            ((RCC_OFFSET_CCIPR1 << 24U) | (RCC_CCIPR1_ICLKSEL_Pos << 16U) | ((RCC_CCIPR1_ICLKSEL_Msk >> RCC_CCIPR1_ICLKSEL_Pos) << 8U))         /*!< Mask to get ICLK clock source       */
+#if defined(SDMMC1)
 #define LL_RCC_SDMMC1_CLKSOURCE          LL_RCC_ICLK_CLKSOURCE
+#endif /* SDMMC1 */
 /**
   * @}
   */
@@ -740,7 +789,9 @@ typedef struct
   */
 
 #define IS_LL_RCC_ICLK_CLKSOURCE(__VALUE__)   (((__VALUE__) == LL_RCC_ICLK_CLKSOURCE))
-#define IS_LL_RCC_SDMMC_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SDMMC1_CLKSOURCE))
+#if defined(SDMMC1)
+#define IS_LL_RCC_SDMMC_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SDMMC1_CLKSOURCE))                                                                                       /*!< Mask to get SDMMC1 clock source       */
+#endif /* SDMMC1 */
 
 /** @defgroup RCC_LL_EC_USB1 Peripheral USB1 get clock source
   * @{
@@ -781,6 +832,7 @@ typedef struct
 
 #define IS_LL_RCC_TIMIC_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_TIMIC_CLKSOURCE))
 
+#if defined(ADF1)
 /** @defgroup RCC_LL_EC_ADF1 Peripheral ADF1 get clock source
   * @{
   */
@@ -791,15 +843,18 @@ typedef struct
 /** @defgroup RCC_LL_EC_ADF1_CLKSOURCE  Peripheral ADF1 clock source selection
   * @{
   */
-#define LL_RCC_ADF1_CLKSOURCE_SAI1       (LL_RCC_ADF1_CLKSOURCE | 0U)                                                                                                           /*!< SAI1 clock used as ADF1 clock source */
+#define LL_RCC_ADF1_CLKSOURCE_HCLK       (LL_RCC_ADF1_CLKSOURCE | 0U)                                                                                                           /*!< HCLK clock used as ADF1 clock source */
 #define LL_RCC_ADF1_CLKSOURCE_AUDCLKIN   (LL_RCC_ADF1_CLKSOURCE | (RCC_CCIPR2_ADF1SEL_0 >> RCC_CCIPR2_ADF1SEL_Pos))                                                             /*!< input pin AUDIOCLK clock used as ADF1 clock source */
 #define LL_RCC_ADF1_CLKSOURCE_MSIK       (LL_RCC_ADF1_CLKSOURCE | (RCC_CCIPR2_ADF1SEL_1 >> RCC_CCIPR2_ADF1SEL_Pos))                                                             /*!< MSIK clock used as ADF1 clock source */
+#define LL_RCC_ADF1_CLKSOURCE_SAI1       (LL_RCC_ADF1_CLKSOURCE | ((RCC_CCIPR2_ADF1SEL_1 | RCC_CCIPR2_ADF1SEL_0)  >> RCC_CCIPR2_ADF1SEL_Pos))                                   /*!< SAI1 clock used as ADF1 clock source */
 /**
   * @}
   */
 
 #define IS_LL_RCC_ADF_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_ADF1_CLKSOURCE))
+#endif /* ADF1 */
 
+#if defined(SAI1)
 /** @defgroup RCC_LL_EC_SAI1 Peripheral SAI1 get clock source
   * @{
   */
@@ -818,6 +873,7 @@ typedef struct
   */
 
 #define IS_LL_RCC_SAI_CLKSOURCE(__VALUE__)  (((__VALUE__) == LL_RCC_SAI1_CLKSOURCE))
+#endif /* SAI1 */
 
 /** @defgroup RCC_LL_EC_RNG Peripheral RNG get clock source
   * @{
@@ -2530,6 +2586,71 @@ __STATIC_INLINE uint32_t LL_RCC_LSCO_GetSource(void)
   * @}
   */
 
+#if defined(LCD)
+/** @defgroup RCC_LL_EF_LCDKER LCDKER
+  * @{
+  */
+
+/**
+  * @brief  Enable Low speed clock
+  * @rmtoll BDCR        LCDKEN        LL_RCC_LCDK_Enable
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_LCDK_Enable(void)
+{
+  SET_BIT(RCC->BDCR, RCC_BDCR_LCDKEN);
+}
+
+/**
+  * @brief  Disable Low speed clock
+  * @rmtoll BDCR        LCDKEN        LL_RCC_LCDK_Disable
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_LCDK_Disable(void)
+{
+  CLEAR_BIT(RCC->BDCR, RCC_BDCR_LCDKEN);
+}
+
+/**
+  * @brief  Check if LCDK is enabled or not
+  * @rmtoll BDCR    LCDKEN        LL_RCC_LCDK_IsEnabled
+  * @retval 1 or 0
+  */
+__STATIC_INLINE uint32_t LL_RCC_LCDK_IsEnabled(void)
+{
+  return ((READ_BIT(RCC->BDCR, RCC_BDCR_LCDKEN) == RCC_BDCR_LCDKEN) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Configure Low speed clock selection
+  * @rmtoll BDCR        LCDSEL       LL_RCC_LCD_SetSource
+  * @param  Source This parameter can be one of the following values:
+  *         @arg @ref LL_RCC_LCD_CLKSOURCE_LSE
+  *         @arg @ref LL_RCC_LCD_CLKSOURCE_LSI
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_LCD_SetSource(uint32_t Source)
+{
+  MODIFY_REG(RCC->BDCR, RCC_BDCR_LCDSEL, Source);
+}
+
+/**
+  * @brief  Get Low speed clock selection
+  * @rmtoll BDCR        LCDSEL       LL_RCC_LCD_GetSource
+  * @retval Returned value can be one of the following values:
+  *         @arg @ref LL_RCC_LCD_CLKSOURCE_LSE
+  *         @arg @ref LL_RCC_LCD_CLKSOURCE_LSI
+  */
+__STATIC_INLINE uint32_t LL_RCC_LCD_GetSource(void)
+{
+  return (uint32_t)(READ_BIT(RCC->BDCR, RCC_BDCR_LCDSEL));
+}
+
+/**
+  * @}
+  */
+#endif /* LCD */
+
 /** @defgroup RCC_LL_EF_System System
   * @{
   */
@@ -3009,8 +3130,8 @@ __STATIC_INLINE uint32_t LL_RCC_GetUSARTClockSource(uint32_t USARTx_clksource)
   * @param  UARTxSource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_UART4_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_UART4_CLKSOURCE_HSI16
-  *         @arg @ref LL_RCC_UART5_CLKSOURCE_PCLK1
-  *         @arg @ref LL_RCC_UART5_CLKSOURCE_HSI16
+  *         @arg @ref LL_RCC_UART5_CLKSOURCE_PCLK1 if UART5 present
+  *         @arg @ref LL_RCC_UART5_CLKSOURCE_HSI16 if UART5 present
   * @retval None
   */
 __STATIC_INLINE void LL_RCC_SetUARTClockSource(uint32_t UARTxSource)
@@ -3032,8 +3153,8 @@ __STATIC_INLINE void LL_RCC_SetUARTClockSource(uint32_t UARTxSource)
   * @retval Returned value can be one of the following values:
   *         @arg @ref LL_RCC_UART4_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_UART4_CLKSOURCE_HSI16
-  *         @arg @ref LL_RCC_UART5_CLKSOURCE_PCLK1
-  *         @arg @ref LL_RCC_UART5_CLKSOURCE_HSI16
+  *         @arg @ref LL_RCC_UART5_CLKSOURCE_PCLK1 if UART5 present
+  *         @arg @ref LL_RCC_UART5_CLKSOURCE_HSI16 if UART5 present
   */
 __STATIC_INLINE uint32_t LL_RCC_GetUARTClockSource(uint32_t UARTx_clksource)
 {
@@ -3051,8 +3172,8 @@ __STATIC_INLINE uint32_t LL_RCC_GetUARTClockSource(uint32_t UARTx_clksource)
   * @param  I3CxSource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_I3C1_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_I3C1_CLKSOURCE_MSIK
-  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_PCLK2
-  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_MSIK
+  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_PCLK2 (*)
+  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_MSIK  (*)
   * @retval None
   */
 __STATIC_INLINE void LL_RCC_SetI3CClockSource(uint32_t I3CxSource)
@@ -3070,12 +3191,12 @@ __STATIC_INLINE void LL_RCC_SetI3CClockSource(uint32_t I3CxSource)
   *         CCIPR1       I3C2SEL     LL_RCC_GetI3CClockSource\n
   * @param  I3Cx_clksource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_I3C1_CLKSOURCE
-  *         @arg @ref LL_RCC_I3C2_CLKSOURCE
+  *         @arg @ref LL_RCC_I3C2_CLKSOURCE       (*)
   * @retval Returned value can be one of the following values:
   *         @arg @ref LL_RCC_I3C1_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_I3C1_CLKSOURCE_MSIK
-  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_PCLK2
-  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_MSIK
+  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_PCLK2 (*)
+  *         @arg @ref LL_RCC_I3C2_CLKSOURCE_MSIK  (*)
   */
 __STATIC_INLINE uint32_t LL_RCC_GetI3CClockSource(uint32_t I3Cx_clksource)
 {
@@ -3095,12 +3216,12 @@ __STATIC_INLINE uint32_t LL_RCC_GetI3CClockSource(uint32_t I3Cx_clksource)
   * @param  I2CxSource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_I2C1_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_I2C1_CLKSOURCE_MSIK
-  *         @arg @ref LL_RCC_I2C2_CLKSOURCE_PCLK1
-  *         @arg @ref LL_RCC_I2C2_CLKSOURCE_MSIK
+  *         @arg @ref LL_RCC_I2C2_CLKSOURCE_PCLK1 (*)
+  *         @arg @ref LL_RCC_I2C2_CLKSOURCE_MSIK  (*)
   *         @arg @ref LL_RCC_I2C3_CLKSOURCE_PCLK3
   *         @arg @ref LL_RCC_I2C3_CLKSOURCE_MSIK
   *         @arg @ref LL_RCC_I2C4_CLKSOURCE_PCLK1 (*)
-  *         @arg @ref LL_RCC_I2C4_CLKSOURCE_MSIK (*)
+  *         @arg @ref LL_RCC_I2C4_CLKSOURCE_MSIK  (*)
   *
   *        (*) value not defined in all devices.
   * @retval None
@@ -3122,7 +3243,7 @@ __STATIC_INLINE void LL_RCC_SetI2CClockSource(uint32_t I2CxSource)
   *         CCIPR2       I2C4SEL     LL_RCC_GetI2CClockSource\n
   * @param  I2Cx_clksource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_I2C1_CLKSOURCE
-  *         @arg @ref LL_RCC_I2C2_CLKSOURCE
+  *         @arg @ref LL_RCC_I2C2_CLKSOURCE       (*)
   *         @arg @ref LL_RCC_I2C3_CLKSOURCE
   *         @arg @ref LL_RCC_I2C4_CLKSOURCE
   * @retval Returned value can be one of the following values:
@@ -3133,7 +3254,7 @@ __STATIC_INLINE void LL_RCC_SetI2CClockSource(uint32_t I2CxSource)
   *         @arg @ref LL_RCC_I2C3_CLKSOURCE_PCLK3
   *         @arg @ref LL_RCC_I2C3_CLKSOURCE_MSIK
   *         @arg @ref LL_RCC_I2C4_CLKSOURCE_PCLK1 (*)
-  *         @arg @ref LL_RCC_I2C4_CLKSOURCE_MSIK (*)
+  *         @arg @ref LL_RCC_I2C4_CLKSOURCE_MSIK  (*)
   *
   *        (*) value not defined in all devices.
   */
@@ -3160,7 +3281,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetI2CClockSource(uint32_t I2Cx_clksource)
   *         @arg @ref LL_RCC_SPI3_CLKSOURCE_PCLK1
   *         @arg @ref LL_RCC_SPI3_CLKSOURCE_MSIK
   *         @arg @ref LL_RCC_SPI4_CLKSOURCE_PCLK1 (*)
-  *         @arg @ref LL_RCC_SPI4_CLKSOURCE_MSIK (*)
+  *         @arg @ref LL_RCC_SPI4_CLKSOURCE_MSIK  (*)
   *
   *        (*) value not defined in all devices.
   * @retval None
@@ -3267,6 +3388,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetLPTIMClockSource(uint32_t LPTIMx_clksource)
   return (uint32_t)((LPTIMx_clksource & 0xFFFFFF00U) | value);
 }
 
+#if defined(FDCAN1)
 /**
   * @brief  Set FDCANx clock source
   * @rmtoll CCIPR1      FDCANSEL    LL_RCC_SetFDCANClockSource
@@ -3301,6 +3423,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetFDCANClockSource(uint32_t FDCANx_clksource)
   uint32_t value = ((uint32_t)(READ_BIT(*addr, mask << pos)) >> pos) & 0x000000FFU;
   return (uint32_t)((FDCANx_clksource & 0xFFFFFF00U) | value);
 }
+#endif /* FDCAN1 */
 
 /**
   * @brief  Set ICLK clock source
@@ -3417,13 +3540,15 @@ __STATIC_INLINE uint32_t LL_RCC_GetTIMICClockSource(uint32_t TIMICx_clksource)
   return (uint32_t)((TIMICx_clksource & 0xFFFFFF00U) | value);
 }
 
+#if defined(ADF1)
 /**
   * @brief  Set ADFx clock source
   * @rmtoll CCIPR2      ADF1SEL    LL_RCC_SetADFClockSource
   * @param  ADFxSource This parameter can be one of the following values:
-  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_SAI1
+  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_HCLK
   *         @arg @ref LL_RCC_ADF1_CLKSOURCE_AUDCLKIN
   *         @arg @ref LL_RCC_ADF1_CLKSOURCE_MSIK
+  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_SAI1
   * @retval None
   */
 __STATIC_INLINE void LL_RCC_SetADFClockSource(uint32_t ADFxSource)
@@ -3441,9 +3566,10 @@ __STATIC_INLINE void LL_RCC_SetADFClockSource(uint32_t ADFxSource)
   * @param  ADFx_clksource This parameter can be one of the following values:
   *         @arg @ref LL_RCC_ADF1_CLKSOURCE
   * @retval Returned value can be one of the following values:
-  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_SAI1
+  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_HCLK
   *         @arg @ref LL_RCC_ADF1_CLKSOURCE_AUDCLKIN
   *         @arg @ref LL_RCC_ADF1_CLKSOURCE_MSIK
+  *         @arg @ref LL_RCC_ADF1_CLKSOURCE_SAI1
   */
 __STATIC_INLINE uint32_t LL_RCC_GetADFClockSource(uint32_t ADFx_clksource)
 {
@@ -3453,7 +3579,9 @@ __STATIC_INLINE uint32_t LL_RCC_GetADFClockSource(uint32_t ADFx_clksource)
   uint32_t value = ((uint32_t)(READ_BIT(*addr, mask << pos)) >> pos) & 0x000000FFU;
   return (uint32_t)((ADFx_clksource & 0xFFFFFF00U) | value);
 }
+#endif /* ADF1 */
 
+#if defined(SAI1)
 /**
   * @brief  Set SAIx clock source
   * @rmtoll CCIPR2      SAI1SEL    LL_RCC_SetSAIClockSource
@@ -3490,6 +3618,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetSAIClockSource(uint32_t SAIx_clksource)
   uint32_t value = ((uint32_t)(READ_BIT(*addr, mask << pos)) >> pos) & 0x000000FFU;
   return (uint32_t)((SAIx_clksource & 0xFFFFFF00U) | value);
 }
+#endif /* SAI1 */
 
 /**
   * @brief  Set RNGx clock source
