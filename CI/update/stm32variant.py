@@ -2796,8 +2796,8 @@ j2_env = Environment(
 # Clean temporary dir
 deleteFolder(tmp_dir)
 
-pl_regex = re.compile(r"([AQ])$")
-package_regex = re.compile(r"[\w][\w]([ANPQSXZ])?$")
+pl_regex = re.compile(r"([AGNPQSXZ])$")
+package_regex = re.compile(r"[\w][\w]([AGNPQSXZ])?$")
 flash_group_regex = re.compile(r"(.*)\((.*)\)(.*)")
 
 for mcu_file in mcu_list:
