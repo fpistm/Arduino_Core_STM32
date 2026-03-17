@@ -10,7 +10,7 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_GENERIC_WL5MOCHX)
+#if defined(ARDUINO_GENERIC_WL5MOCHX) || defined(ARDUINO_GENERIC_WL5MOCHXS)
 #include "pins_arduino.h"
 
 // Digital PinName array

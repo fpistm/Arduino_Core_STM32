@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U3B5ZGTx
+GenU3.menu.pnum.GENERIC_U3B5ZGTX=Generic U3B5ZGTx
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.upload.maximum_size=1048576
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.build.board=GENERIC_U3B5ZGTX
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.build.variant=STM32U3xx/U3B5Z(G-I)T_U3C5ZIT
+GenU3.menu.pnum.GENERIC_U3B5ZGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3B5ZITx
+GenU3.menu.pnum.GENERIC_U3B5ZITX=Generic U3B5ZITx
+GenU3.menu.pnum.GENERIC_U3B5ZITX.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3B5ZITX.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5ZITX.build.board=GENERIC_U3B5ZITX
+GenU3.menu.pnum.GENERIC_U3B5ZITX.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5ZITX.build.variant=STM32U3xx/U3B5Z(G-I)T_U3C5ZIT
+GenU3.menu.pnum.GENERIC_U3B5ZITX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3C5ZITx
+GenU3.menu.pnum.GENERIC_U3C5ZITX=Generic U3C5ZITx
+GenU3.menu.pnum.GENERIC_U3C5ZITX.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3C5ZITX.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3C5ZITX.build.board=GENERIC_U3C5ZITX
+GenU3.menu.pnum.GENERIC_U3C5ZITX.build.product_line=STM32U3C5xx
+GenU3.menu.pnum.GENERIC_U3C5ZITX.build.variant=STM32U3xx/U3B5Z(G-I)T_U3C5ZIT
+GenU3.menu.pnum.GENERIC_U3C5ZITX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3C5.svd
+

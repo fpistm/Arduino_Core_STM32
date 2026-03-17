@@ -13,7 +13,7 @@
 /*
  * Automatically generated from STM32L433C(B-C)Yx.xml, STM32L443CCFx.xml
  * STM32L443CCYx.xml
- * CubeMX DB release 6.0.160
+ * CubeMX DB release 6.0.170
  */
 #if !defined(CUSTOM_PERIPHERAL_PINS)
 #include "Arduino.h"

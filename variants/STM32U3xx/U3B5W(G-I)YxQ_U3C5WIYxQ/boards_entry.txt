@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U3B5WGYxQ
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ=Generic U3B5WGYxQ
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.upload.maximum_size=1048576
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.build.board=GENERIC_U3B5WGYXQ
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.build.variant=STM32U3xx/U3B5W(G-I)YxQ_U3C5WIYxQ
+GenU3.menu.pnum.GENERIC_U3B5WGYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3B5WIYxQ
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ=Generic U3B5WIYxQ
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.build.board=GENERIC_U3B5WIYXQ
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.build.variant=STM32U3xx/U3B5W(G-I)YxQ_U3C5WIYxQ
+GenU3.menu.pnum.GENERIC_U3B5WIYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3C5WIYxQ
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ=Generic U3C5WIYxQ
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.build.board=GENERIC_U3C5WIYXQ
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.build.product_line=STM32U3C5xx
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.build.variant=STM32U3xx/U3B5W(G-I)YxQ_U3C5WIYxQ
+GenU3.menu.pnum.GENERIC_U3C5WIYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3C5.svd
+

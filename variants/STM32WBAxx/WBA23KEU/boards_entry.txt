@@ -1,0 +1,14 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic WBA23KEUx
+GenWBA.menu.pnum.GENERIC_WBA23KEUX=Generic WBA23KEUx
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.upload.maximum_size=524288
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.upload.maximum_data_size=98304
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.build.board=GENERIC_WBA23KEUX
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.build.product_line=STM32WBA23xx
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.build.variant=STM32WBAxx/WBA23KEU
+GenWBA.menu.pnum.GENERIC_WBA23KEUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WBAxx/STM32WBA23.svd
+

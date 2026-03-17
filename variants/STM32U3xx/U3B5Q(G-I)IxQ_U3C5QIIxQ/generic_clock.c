@@ -1,6 +1,6 @@
 /*
  *******************************************************************************
- * Copyright (c) 2020, STMicroelectronics
+ * Copyright (c) 2020-2026, STMicroelectronics
  * All rights reserved.
  *
  * This software component is licensed by ST under BSD 3-Clause license,
@@ -10,7 +10,8 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_GENERIC_WL5MOCHX)
+#if defined(ARDUINO_GENERIC_U3B5QGIXQ) || defined(ARDUINO_GENERIC_U3B5QIIXQ) ||\
+    defined(ARDUINO_GENERIC_U3C5QIIXQ)
 #include "pins_arduino.h"
 
 /**

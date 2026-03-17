@@ -1,0 +1,14 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic WBA25HEFx
+GenWBA.menu.pnum.GENERIC_WBA25HEFX=Generic WBA25HEFx
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.upload.maximum_size=524288
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.upload.maximum_data_size=98304
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.build.board=GENERIC_WBA25HEFX
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.build.product_line=STM32WBA25xx
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.build.variant=STM32WBAxx/WBA25HEF
+GenWBA.menu.pnum.GENERIC_WBA25HEFX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WBAxx/STM32WBA25.svd
+

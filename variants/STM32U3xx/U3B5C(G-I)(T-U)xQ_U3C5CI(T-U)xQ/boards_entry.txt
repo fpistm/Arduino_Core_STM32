@@ -1,0 +1,59 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U3B5CGTxQ
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ=Generic U3B5CGTxQ
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.upload.maximum_size=1048576
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.build.board=GENERIC_U3B5CGTXQ
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3B5CGTXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3B5CGUxQ
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ=Generic U3B5CGUxQ
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.upload.maximum_size=1048576
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.build.board=GENERIC_U3B5CGUXQ
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3B5CGUXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3B5CITxQ
+GenU3.menu.pnum.GENERIC_U3B5CITXQ=Generic U3B5CITxQ
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.build.board=GENERIC_U3B5CITXQ
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3B5CITXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3B5CIUxQ
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ=Generic U3B5CIUxQ
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.build.board=GENERIC_U3B5CIUXQ
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.build.product_line=STM32U3B5xx
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3B5CIUXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3B5.svd
+
+# Generic U3C5CITxQ
+GenU3.menu.pnum.GENERIC_U3C5CITXQ=Generic U3C5CITxQ
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.build.board=GENERIC_U3C5CITXQ
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.build.product_line=STM32U3C5xx
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3C5CITXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3C5.svd
+
+# Generic U3C5CIUxQ
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ=Generic U3C5CIUxQ
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.upload.maximum_size=2097152
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.upload.maximum_data_size=655360
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.build.board=GENERIC_U3C5CIUXQ
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.build.product_line=STM32U3C5xx
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.build.variant=STM32U3xx/U3B5C(G-I)(T-U)xQ_U3C5CI(T-U)xQ
+GenU3.menu.pnum.GENERIC_U3C5CIUXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U3C5.svd
+
