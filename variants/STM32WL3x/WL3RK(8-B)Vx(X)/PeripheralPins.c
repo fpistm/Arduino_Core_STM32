@@ -13,7 +13,7 @@
 /*
  * Automatically generated from STM32WL3RK8Vx.xml, STM32WL3RK8VxX.xml
  * STM32WL3RKBVx.xml, STM32WL3RKBVxX.xml
- * CubeMX DB release 6.0.160
+ * CubeMX DB release 6.0.170
  */
 #if !defined(CUSTOM_PERIPHERAL_PINS)
 #include "Arduino.h"

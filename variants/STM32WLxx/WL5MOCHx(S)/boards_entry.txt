@@ -9,6 +9,15 @@ GenWL.menu.pnum.GENERIC_WL5MOCHX.upload.maximum_size=262144
 GenWL.menu.pnum.GENERIC_WL5MOCHX.upload.maximum_data_size=65536
 GenWL.menu.pnum.GENERIC_WL5MOCHX.build.board=GENERIC_WL5MOCHX
 GenWL.menu.pnum.GENERIC_WL5MOCHX.build.product_line=STM32WL5Mxx
-GenWL.menu.pnum.GENERIC_WL5MOCHX.build.variant=STM32WLxx/WL5MOCH
+GenWL.menu.pnum.GENERIC_WL5MOCHX.build.variant=STM32WLxx/WL5MOCHx(S)
 GenWL.menu.pnum.GENERIC_WL5MOCHX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WLxx/STM32WL5x_CM4.svd
+
+# Generic WL5MOCHxS
+GenWL.menu.pnum.GENERIC_WL5MOCHXS=Generic WL5MOCHxS
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.upload.maximum_size=262144
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.upload.maximum_data_size=65536
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.build.board=GENERIC_WL5MOCHXS
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.build.product_line=STM32WL5Mxx
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.build.variant=STM32WLxx/WL5MOCHx(S)
+GenWL.menu.pnum.GENERIC_WL5MOCHXS.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WLxx/STM32WL5x_CM4.svd
 

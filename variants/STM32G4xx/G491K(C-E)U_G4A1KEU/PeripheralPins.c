@@ -12,7 +12,7 @@
  */
 /*
  * Automatically generated from STM32G491K(C-E)Ux.xml, STM32G4A1KEUx.xml
- * CubeMX DB release 6.0.160
+ * CubeMX DB release 6.0.170
  */
 #if !defined(CUSTOM_PERIPHERAL_PINS)
 #include "Arduino.h"

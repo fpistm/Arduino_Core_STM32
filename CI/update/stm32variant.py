@@ -92,6 +92,35 @@ legacy_hal = {
     "CAN": ["F0", "F1", "F2", "F3", "F4", "F7", "L4"],
     "ETH": ["F4", "F7", "H7"],
 }
+
+# Flash size encoding in not always present in the mcu file but it is generally
+# encoded as a single character (number or letter) which can be  mapped to the
+# actual flash size in bytes.
+flash_size_dict = {
+    "0": 1024,  # 1Kb
+    "1": 2048,  # 2Kb
+    "2": 4096,  # 4Kb
+    "3": 8192,  # 8Kb
+    "4": 16384,  # 16Kb
+    "5": 24576,  # 24Kb
+    "6": 32768,  # 32Kb
+    "7": 49152,  # 48Kb
+    "8": 65536,  # 64Kb
+    "9": 73728,  # 72Kb
+    "A": 98304,  # 96Kb
+    "B": 131072,  # 128Kb
+    "Z": 196608,  # 192Kb
+    "C": 262144,  # 256Kb
+    "D": 393216,  # 384Kb
+    "E": 524288,  # 512Kb
+    "F": 786432,  # 768Kb
+    "G": 1048576,  # 1Mb
+    "H": 1572864,  # 1.5Mb
+    "I": 2097152,  # 2Mb
+    "K": 3145728,  # 3Mb
+    "J": 4194304,  # 4Mb
+}
+
 # Cube information
 product_line_dict = {}
 svd_dict = {}  # 'name':'svd file'
@@ -193,8 +222,12 @@ def parse_mcu_file():
             ignored_stm32_list.append(mcu_family)
         xml_mcu.unlink()
         return False
-
     mcu_refname = mcu_node.attributes["RefName"].value
+    # Skip STM32H5E/F series
+    if mcu_refname.startswith("STM32H5E") or mcu_refname.startswith("STM32H5F"):
+        print(f"Warning: {mcu_refname} series is not supported yet. Skipping.")
+        xml_mcu.unlink()
+        return False
     core_node = mcu_node.getElementsByTagName("Core")
     for f in core_node:
         # Strip last non digit characters and extract the number
@@ -206,9 +239,24 @@ def parse_mcu_file():
     ram_node = mcu_node.getElementsByTagName("Ram")
     for f in ram_node:
         mcu_ram.append(int(f.firstChild.nodeValue) * 1024)
-    flash_node = mcu_node.getElementsByTagName("Flash")
-    for f in flash_node:
-        mcu_flash.append(int(f.firstChild.nodeValue) * 1024)
+    # Test if Flash size is present in the mcu file, if not get it from flash_size array
+    if not mcu_node.getElementsByTagName("Flash"):
+        # flash id is the character after the series name and the two next characters
+        # (e.g. STM32F103xB -> flash id is 'B')
+        flash_id = mcu_refname[len(mcu_family) + 3]
+        # flash_id = mcu_refname.split("x")[-1]
+        if flash_id in flash_size_dict:
+            mcu_flash.append(flash_size_dict[flash_id])
+        else:
+            print(
+                f"Warning: Flash size '{flash_id}' not found in dict for MCU {mcu_refname}."
+            )
+            print("Flash size set to 0.")
+            mcu_flash.append(0)
+    else:
+        flash_node = mcu_node.getElementsByTagName("Flash")
+        for f in flash_node:
+            mcu_flash.append(int(f.firstChild.nodeValue) * 1024)
 
     itemlist = xml_mcu.getElementsByTagName("IP")
     for s in itemlist:
@@ -221,7 +269,10 @@ def parse_mcu_file():
             if inst:
                 if "OTG" in inst.group(1):
                     if "FS" in inst.group(1):
-                        usb_inst["otg_fs"] = inst.group(1)
+                        if inst.group(1).endswith("FS1"):
+                            usb_inst["otg_fs"] = inst.group(1)[:-1]
+                        else:
+                            usb_inst["otg_fs"] = inst.group(1)
                     else:
                         if inst.group(1).endswith("HS1"):
                             usb_inst["otg_hs"] = inst.group(1)[:-1]
@@ -2793,8 +2844,8 @@ j2_env = Environment(
 # Clean temporary dir
 deleteFolder(tmp_dir)
 
-pl_regex = re.compile(r"([AQ])$")
-package_regex = re.compile(r"[\w][\w]([ANPQSXZ])?$")
+pl_regex = re.compile(r"([AGNPQSXZ])$")
+package_regex = re.compile(r"[\w][\w]([AGNPQSXZ])?$")
 flash_group_regex = re.compile(r"(.*)\((.*)\)(.*)")
 
 for mcu_file in mcu_list:

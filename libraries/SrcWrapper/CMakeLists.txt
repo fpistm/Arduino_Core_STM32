@@ -69,6 +69,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_hcd.c
   src/HAL/stm32yyxx_hal_hrtim.c
   src/HAL/stm32yyxx_hal_hsem.c
+  src/HAL/stm32yyxx_hal_hsp.c
   src/HAL/stm32yyxx_hal_i2c.c
   src/HAL/stm32yyxx_hal_i2c_ex.c
   src/HAL/stm32yyxx_hal_i2s.c
@@ -101,6 +102,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_pcd.c
   src/HAL/stm32yyxx_hal_pcd_ex.c
   src/HAL/stm32yyxx_hal_pka.c
+  src/HAL/stm32yyxx_hal_play.c
   src/HAL/stm32yyxx_hal_pssi.c
   src/HAL/stm32yyxx_hal_pwr.c
   src/HAL/stm32yyxx_hal_pwr_ex.c
@@ -141,6 +143,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_usart_ex.c
   src/HAL/stm32yyxx_hal_wwdg.c
   src/HAL/stm32yyxx_hal_xspi.c
+  src/HAL/stm32yyxx_util_i3c.c
   src/HardwareTimer.cpp
   src/LL/stm32yyxx_ll_adc.c
   src/LL/stm32yyxx_ll_bdma.c
@@ -170,6 +173,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/LL/stm32yyxx_ll_mdma.c
   src/LL/stm32yyxx_ll_opamp.c
   src/LL/stm32yyxx_ll_pka.c
+  src/LL/stm32yyxx_ll_play.c
   src/LL/stm32yyxx_ll_pwr.c
   src/LL/stm32yyxx_ll_rcc.c
   src/LL/stm32yyxx_ll_rng.c
