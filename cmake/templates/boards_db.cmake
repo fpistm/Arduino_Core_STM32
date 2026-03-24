@@ -10,9 +10,15 @@ set({{pnum}}_FPCONF "{{config._fpconf}}")
 add_library({{pnum}} INTERFACE)
 target_compile_options({{pnum}} INTERFACE
   "SHELL:{{config.build.st_extra_flags}}"
+  {% if config.build.peripheral_pins|length  %}
   "SHELL:{{config.build.peripheral_pins}}"
+  {% endif %}
+  {% if config.build.startup_file|length  %}
   "SHELL:{{config.build.startup_file}}"
+  {% endif %}
+  {% if config.build.fpu|length  %}
   "SHELL:{{config.build.fpu}} {{config.build["float-abi"]}}"
+  {% endif %}
   -mcpu={{ "${" }}{{pnum}}_MCU{{ "}" }}
 )
 target_compile_definitions({{pnum}} INTERFACE
@@ -34,34 +40,44 @@ target_include_directories({{pnum}} INTERFACE
 target_link_options({{pnum}} INTERFACE
   "LINKER:--default-script={{ "${" }}{{pnum}}_VARIANT_PATH{{ "}" }}/{{config.build.ldscript or "ldscript.ld"}}"
   "LINKER:--defsym=LD_FLASH_OFFSET={{config.build.flash_offset or "0"}}"
-	"LINKER:--defsym=LD_MAX_SIZE={{config.upload.maximum_size}}"
-	"LINKER:--defsym=LD_MAX_DATA_SIZE={{config.upload.maximum_data_size}}"
+  "LINKER:--defsym=LD_MAX_SIZE={{config.upload.maximum_size}}"
+  "LINKER:--defsym=LD_MAX_DATA_SIZE={{config.upload.maximum_data_size}}"
+  {% if config.build.fpu|length  %}
   "SHELL:{{config.build.fpu}} {{config.build["float-abi"]}}"
+  {% endif %}
   -mcpu={{ "${" }}{{pnum}}_MCU{{ "}" }}
 )
 
 {% for label,subconfig in config.menu.xserial | dictsort %}
 add_library({{pnum}}_serial_{{label}} INTERFACE)
 target_compile_options({{pnum}}_serial_{{label}} INTERFACE
+  {% if subconfig.build.xSerial|length %}
   "SHELL:{{subconfig.build.xSerial}}"
+  {% endif %}
 )
 {% endfor %}
 {% for label,subconfig in config.menu.usb | dictsort %}
 add_library({{pnum}}_usb_{{label}} INTERFACE)
 target_compile_options({{pnum}}_usb_{{label}} INTERFACE
+  {% if subconfig.build.enable_usb|length %}
   "SHELL:{{subconfig.build.enable_usb}}"
+  {% endif %}
 )
 {% endfor %}
 {% for label,subconfig in config.menu.xusb | dictsort %}
 add_library({{pnum}}_xusb_{{label}} INTERFACE)
 target_compile_options({{pnum}}_xusb_{{label}} INTERFACE
+  {% if subconfig.build.usb_speed|length %}
   "SHELL:{{subconfig.build.usb_speed}}"
+  {% endif %}
 )
 {% endfor %}
 {% for label,subconfig in config.menu.virtio | dictsort %}
 add_library({{pnum}}_virtio_{{label}} INTERFACE)
 target_compile_options({{pnum}}_virtio_{{label}} INTERFACE
+  {% if subconfig.build.enable_virtio|length %}
   "SHELL:{{subconfig.build.enable_virtio}}"
+  {% endif %}
 )
 {% endfor %}
 
