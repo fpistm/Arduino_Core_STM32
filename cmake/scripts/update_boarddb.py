@@ -13,7 +13,7 @@ def get_fpconf(config):
 
 
 def boardstxt_filter(key):
-    # Remove menu entry labels and oopenocd config if any
+    # Remove menu entry labels and openocd config if any
     # In our data model, they conflict with the actual configuration
     # they are associated to
     # i.e. Nucleo_144.menu.pnum.NUCLEO_F207ZG would be both
