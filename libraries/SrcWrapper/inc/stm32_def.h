@@ -77,6 +77,10 @@
 #if defined(USE_HALV2_DRIVER)
   #include "stm32_hal.h"
 
+  #define _Min_Heap_Size HEAP_SIZE
+  #define _Min_Stack_Size STACK_SIZE
+  #define _end end
+
   /* Define to avoid any backward compatibility issues */
   /* but prefer avoid using it, use (void)variable instead */
   #ifndef UNUSED
