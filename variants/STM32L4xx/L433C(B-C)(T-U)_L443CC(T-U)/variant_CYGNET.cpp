@@ -109,14 +109,20 @@ WEAK void initVariant(void)
   {
     __HAL_RCC_GPIOH_CLK_ENABLE();
     GPIO_InitTypeDef  GPIO_InitStruct = {};
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-    /* PH0 is ENABLE_3V3, PH1 is DISCHARGE_3V3 */
-    GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+
+    /* PH0 is ENABLE_3V3 */
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pin = GPIO_PIN_0;
+    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+    /* PH1 is DISCHARGE_3V3 */
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+    GPIO_InitStruct.Pin = GPIO_PIN_1;
     HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
     /* Enable 3V3 regulator and disable discharging */
-    HAL_GPIO_WritePin(GPIOH, GPIO_InitStruct.Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOH, (GPIO_PIN_0 | GPIO_PIN_1), GPIO_PIN_SET);
   }
 }
 
