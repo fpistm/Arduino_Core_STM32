@@ -529,6 +529,22 @@ Nucleo_64.menu.pnum.NUCLEO_C092RC.build.st_extra_flags=-DSTM32C092xx {build.xSer
 Nucleo_64.menu.pnum.NUCLEO_C092RC.openocd.target=stm32c0x
 Nucleo_64.menu.pnum.NUCLEO_C092RC.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C0xx/STM32C092.svd
 
+# NUCLEO_C562RE board
+Nucleo_64.menu.pnum.NUCLEO_C562RE=Nucleo C562RE
+Nucleo_64.menu.pnum.NUCLEO_C562RE.node="NOD_C562RE"
+Nucleo_64.menu.pnum.NUCLEO_C562RE.upload.maximum_size=524288
+Nucleo_64.menu.pnum.NUCLEO_C562RE.upload.maximum_data_size=131072
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.mcu=cortex-m33
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.fpu=-mfpu=fpv5-sp-d16
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.float-abi=-mfloat-abi=hard
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.hal=-DUSE_HALV2_DRIVER
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.board=NUCLEO_C562RE
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.series=STM32C5xx
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.product_line=STM32C562xx
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+# Nucleo_64.menu.pnum.NUCLEO_C562RE.openocd.target=stm32c5x
+Nucleo_64.menu.pnum.NUCLEO_C562RE.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C562.svd
+
 # NUCLEO_F030R8 board
 Nucleo_64.menu.pnum.NUCLEO_F030R8=Nucleo F030R8
 Nucleo_64.menu.pnum.NUCLEO_F030R8.node="NODE_F030R8,NUCLEO"
