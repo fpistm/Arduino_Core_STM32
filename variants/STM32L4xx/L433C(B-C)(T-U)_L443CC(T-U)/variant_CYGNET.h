@@ -124,6 +124,12 @@
   #define VMAIN_ADC               PA4
   #define VMAIN_ADC_DIV_BOT_R     4.3f
   #define VMAIN_ADC_DIV_TOP_R     10.0f
+  #define VMAIN_DIV_K             ((double)((VMAIN_ADC_DIV_TOP_R + VMAIN_ADC_DIV_BOT_R) / VMAIN_ADC_DIV_BOT_R))
+#endif
+#ifndef VMAIN_MV
+  #define VMAIN_MV() ({ \
+    __HAL_ADC_CALC_DATA_TO_VOLTAGE(__LL_ADC_CALC_VREFANALOG_VOLTAGE(analogRead(AVREF), LL_ADC_GetResolution(ADC1)), analogRead(VMAIN_ADC), LL_ADC_GetResolution(ADC1)) * VMAIN_DIV_K; \
+  })
 #endif
 #ifndef CHARGE_DETECT
   #define CHARGE_DETECT           PA15
