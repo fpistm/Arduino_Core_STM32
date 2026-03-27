@@ -51,8 +51,12 @@ extern "C" {
 /**
   * @brief This is the HAL system configuration section
   */
+#if !defined(USE_HAL_TICK_INT_PRIORITY)
 #define  USE_HAL_TICK_INT_PRIORITY              HAL_TICK_INT_LOWEST_PRIORITY  /*!< tick interrupt priority (lowest by default) */
+#endif
+#if !defined(USE_HAL_PREFETCH_ENABLE)
 #define  USE_HAL_FLASH_PREFETCH                 1U     /*!< Enable FLASH prefetch */
+#endif
 /**
   * @}
   */
@@ -64,7 +68,9 @@ extern "C" {
 /**
   * @brief Used by the HAL PPP Acquire/Release APIs when the define USE_HAL_MUTEX is set to 1
   */
+#if !defined(USE_HAL_MUTEX)
 #define USE_HAL_MUTEX                           0U
+#endif
 /**
   * @}
   */
@@ -76,8 +82,12 @@ extern "C" {
 /**
   * @brief Run time parameter check activation
   */
+#if !defined(USE_HAL_CHECK_PARAM)
 #define USE_HAL_CHECK_PARAM                     0U
+#endif
+#if !defined(USE_HAL_SECURE_CHECK_PARAM)
 #define USE_HAL_SECURE_CHECK_PARAM              0U
+#endif
 /**
   * @}
   */
@@ -89,7 +99,9 @@ extern "C" {
 /**
   * @brief Enable protection of state transition in thread safe
   */
+#if !defined(USE_HAL_CHECK_PROCESS_STATE)
 #define USE_HAL_CHECK_PROCESS_STATE             0U
+#endif
 /**
   * @}
   */
