@@ -100,23 +100,23 @@
 
 // Macro functions for 3V3 regulator management
 #ifndef ENABLE_3V3_REGULATOR
-  #define ENABLE_3V3_REGULATOR()  do { \
-    digitalWrite(DISCHARGE_3V3, DISABLE_DISCHARGING); \
-    digitalWrite(ENABLE_3V3, HIGH); \
-  } while (0)
+#  define ENABLE_3V3_REGULATOR()  do { \
+     digitalWrite(DISCHARGE_3V3, DISABLE_DISCHARGING); \
+     digitalWrite(ENABLE_3V3, HIGH); \
+   } while (0)
 #endif
 #ifndef DISABLE_3V3_REGULATOR
-  #define DISABLE_3V3_REGULATOR() do { \
-    digitalWrite(ENABLE_3V3, LOW); \
-  } while (0)
+#  define DISABLE_3V3_REGULATOR() do { \
+     digitalWrite(ENABLE_3V3, LOW); \
+   } while (0)
 #endif
 #ifndef DRAIN_3V3_REGULATOR_MS
-  #define DRAIN_3V3_REGULATOR_MS(ms) do { \
-    if (digitalRead(ENABLE_3V3)) { break; } \
-    digitalWrite(DISCHARGE_3V3, ENABLE_DISCHARGING); \
-    delay(ms); \
-    digitalWrite(DISCHARGE_3V3, DISABLE_DISCHARGING); \
-  } while (0)
+#  define DRAIN_3V3_REGULATOR_MS(ms) do { \
+     if (digitalRead(ENABLE_3V3)) { break; } \
+     digitalWrite(DISCHARGE_3V3, ENABLE_DISCHARGING); \
+     delay(ms); \
+     digitalWrite(DISCHARGE_3V3, DISABLE_DISCHARGING); \
+   } while (0)
 #endif
 
 // Dedicated board pins
@@ -127,9 +127,9 @@
   #define VMAIN_DIV_K             ((double)((VMAIN_ADC_DIV_TOP_R + VMAIN_ADC_DIV_BOT_R) / VMAIN_ADC_DIV_BOT_R))
 #endif
 #ifndef VMAIN_MV
-  #define VMAIN_MV() ({ \
-    __HAL_ADC_CALC_DATA_TO_VOLTAGE(__LL_ADC_CALC_VREFANALOG_VOLTAGE(analogRead(AVREF), LL_ADC_GetResolution(ADC1)), analogRead(VMAIN_ADC), LL_ADC_GetResolution(ADC1)) * VMAIN_DIV_K; \
-  })
+#  define VMAIN_MV() ({ \
+     __HAL_ADC_CALC_DATA_TO_VOLTAGE(__LL_ADC_CALC_VREFANALOG_VOLTAGE(analogRead(AVREF), LL_ADC_GetResolution(ADC1)), analogRead(VMAIN_ADC), LL_ADC_GetResolution(ADC1)) * VMAIN_DIV_K; \
+   })
 #endif
 #ifndef CHARGE_DETECT
   #define CHARGE_DETECT           PA15
