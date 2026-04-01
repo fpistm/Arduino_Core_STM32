@@ -65,7 +65,11 @@ void osSystickHandler() __attribute__((weak, alias("noOsSystickHandler")));
 void SysTick_Handler(void)
 {
   HAL_IncTick();
+#if defined(USE_HALV2_DRIVER)
+  HAL_CORTEX_SYSTICK_IRQHandler();
+#else
   HAL_SYSTICK_IRQHandler();
+#endif
   osSystickHandler();
 }
 
@@ -76,6 +80,32 @@ void SysTick_Handler(void)
   */
 void enableClock(sourceClock_t source)
 {
+#if defined(USE_HALV2_DRIVER)
+  hal_status_t status;
+  enableBackupDomain();
+  switch (source) {
+    case LSI_CLOCK:
+      status = HAL_RCC_LSI_Enable();
+      break;
+    case HSI_CLOCK:
+      /* Compute divider should be done ? */
+      status = HAL_RCC_HSIK_Enable(HAL_RCC_HSIK_DIV1);
+      break;
+    case LSE_CLOCK:
+      status = HAL_RCC_LSE_Enable(HAL_RCC_LSE_ON, HAL_RCC_LSE_DRIVE_LOW);
+      break;
+    case HSE_CLOCK:
+      status = HAL_RCC_HSE_Enable(HAL_RCC_HSE_ON);
+      break;
+    default:
+      /* No valid clock to enable */
+      status = HAL_ERROR;
+      break;
+  }
+  if (status != HAL_OK) {
+    Error_Handler();
+  }
+#else
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
 #if defined(RCC_PLL_NONE)
 #if defined(STM32WBAxx)
@@ -177,6 +207,7 @@ void enableClock(sourceClock_t source)
     }
     hsem_unlock(CFG_HW_RCC_SEMID);
   }
+#endif /* USE_HALV2_DRIVER */
 }
 
 void configHSECapacitorTuning(void)
