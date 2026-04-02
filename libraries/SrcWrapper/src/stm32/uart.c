@@ -451,9 +451,9 @@ bool uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t par
   }
 #endif
 #else /* UART_ADVFEATURE_NO_INIT */
-  UNUSED(rx_invert);
-  UNUSED(tx_invert);
-  UNUSED(data_invert);
+  (void)rx_invert;
+  (void)tx_invert;
+  (void)data_invert;
 #endif
 #ifdef UART_ONE_BIT_SAMPLE_DISABLE
   huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;

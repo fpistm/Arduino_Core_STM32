@@ -179,7 +179,7 @@ static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to)
 
 void analogReference(uint8_t mode)
 {
-  UNUSED(mode);
+  (void)mode;
 }
 
 // Perform the read operation on the selected analog pin.
@@ -194,7 +194,7 @@ int analogRead(pin_size_t pinNumber)
     value = mapResolution(value, _internalReadResolution, _readResolution);
   }
 #else
-  UNUSED(pinNumber);
+  (void)pinNumber;
 #endif
   return value;
 }

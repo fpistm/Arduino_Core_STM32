@@ -76,6 +76,12 @@
 
 #if defined(USE_HALV2_DRIVER)
   #include "stm32_hal.h"
+
+  /* Define to avoid any backward compatibility issues */
+  /* but prefer avoid using it, use (void)variable instead */
+  #ifndef UNUSED
+    #define UNUSED STM32_UNUSED
+  #endif /* UNUSED */
 #endif /* USE_HALV2_DRIVER */
 
 #ifndef F_CPU

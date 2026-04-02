@@ -130,7 +130,7 @@ static int8_t USBD_CDC_DeInit(void)
   */
 static int8_t USBD_CDC_Control(uint8_t cmd, uint8_t *pbuf, uint16_t length)
 {
-  UNUSED(length);
+  (void)length;
   switch (cmd) {
     case CDC_SEND_ENCAPSULATED_COMMAND:
 
@@ -235,7 +235,7 @@ static int8_t USBD_CDC_Receive(uint8_t *Buf, uint32_t *Len)
     dtr_toggling = 0;
   }
 #else
-  UNUSED(Buf);
+  (void)Buf;
 #endif
   /* It always contains required amount of free space for writing */
   CDC_ReceiveQueue_CommitBlock(&ReceiveQueue, (uint16_t)(*Len));
@@ -262,9 +262,9 @@ static int8_t USBD_CDC_Receive(uint8_t *Buf, uint32_t *Len)
   */
 static int8_t USBD_CDC_TransmitCplt(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 {
-  UNUSED(Buf);
-  UNUSED(Len);
-  UNUSED(epnum);
+  (void)Buf;
+  (void)Len;
+  (void)epnum;
   transmitStart = 0;
   CDC_TransmitQueue_CommitRead(&TransmitQueue);
   CDC_continue_transmit();

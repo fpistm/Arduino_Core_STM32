@@ -200,24 +200,24 @@ bool Servo::attached()
 Servo::Servo() {}
 uint8_t Servo::attach(pin_size_t pin)
 {
-  UNUSED(pin);
+  (void)pin;
   return 0;
 }
 uint8_t Servo::attach(pin_size_t pin, int min, int max)
 {
-  UNUSED(pin);
-  UNUSED(min);
-  UNUSED(max);
+  (void)pin;
+  (void)min;
+  (void)max;
   return 0;
 }
 void Servo::detach() {}
 void Servo::write(int value)
 {
-  UNUSED(value);
+  (void)value;
 }
 void Servo::writeMicroseconds(int value)
 {
-  UNUSED(value);
+  (void)value;
 }
 int Servo::read()
 {

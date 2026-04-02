@@ -191,7 +191,7 @@ void stm32_interrupt_enable(PinName pn, callback_function_t callback, uint32_t m
   */
 void stm32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
 {
-  UNUSED(port);
+  (void)port;
   uint8_t id = get_pin_id(pin);
 #if defined(STM32WB0x) || defined(STM32WL3x)
   uint8_t pid = 0;
