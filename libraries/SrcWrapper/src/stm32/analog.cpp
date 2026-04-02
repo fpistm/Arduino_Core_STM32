@@ -271,7 +271,7 @@ uint32_t get_adc_channel(PinName pin, uint32_t *bank)
     *bank = ADC_CHANNELS_BANK_A;
   }
 #else
-  UNUSED(bank);
+  (void)bank;
 #endif
   return channel;
 }
@@ -966,7 +966,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
   }
 #else
-  UNUSED(resolution);
+  (void)resolution;
 #endif
 #ifdef ADC_DATAALIGN_RIGHT
   AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;           /* Right-alignment for converted data */

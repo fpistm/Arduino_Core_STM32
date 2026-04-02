@@ -64,9 +64,9 @@ void attachInterrupt(pin_size_t interruptNumber, voidFuncPtr callback, PinStatus
   callback_function_t _c = callback;
   attachInterrupt(interruptNumber, _c, mode);
 #else
-  UNUSED(interruptNumber);
-  UNUSED(callback);
-  UNUSED(mode);
+  (void)interruptNumber;
+  (void)callback;
+  (void)mode;
 #endif
 }
 
@@ -80,6 +80,6 @@ void detachInterrupt(pin_size_t interruptNumber)
   }
   stm32_interrupt_disable(port, STM_GPIO_PIN(p));
 #else
-  UNUSED(interruptNumber);
+  (void)interruptNumber;
 #endif
 }

@@ -225,7 +225,7 @@ void TwoWire::beginTransmission(int address)
 uint8_t TwoWire::endTransmission(bool stopBit)
 {
 #if !defined(I2C_OTHER_FRAME)
-  UNUSED(stopBit);
+  (void)stopBit;
 #endif
   int8_t ret = 4;
   // check transfer options and store it in the I2C handle

@@ -522,7 +522,7 @@ static uint8_t HIDKInEpAdd = HID_KEYBOARD_EPIN_ADDR;
 static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev,
                              uint8_t cfgidx)
 {
-  UNUSED(cfgidx);
+  (void)cfgidx;
 
   USBD_HID_HandleTypeDef *hhid;
 
@@ -576,7 +576,7 @@ static uint8_t USBD_HID_Init(USBD_HandleTypeDef *pdev,
 static uint8_t USBD_HID_DeInit(USBD_HandleTypeDef *pdev,
                                uint8_t cfgidx)
 {
-  UNUSED(cfgidx);
+  (void)cfgidx;
 
 #ifdef USE_USBD_COMPOSITE
   /* Get the Endpoints addresses allocated for this class instance */

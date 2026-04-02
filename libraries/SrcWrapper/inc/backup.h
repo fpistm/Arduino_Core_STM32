@@ -160,8 +160,8 @@ static inline void setBackupRegister(uint32_t index, uint32_t value)
 #elif defined(PWR_BKP0R)
   LL_PWR_BKP_SetRegister(index, value);
 #else
-  UNUSED(index);
-  UNUSED(value);
+  (void)index;
+  (void)value;
 #endif
 }
 
@@ -184,7 +184,7 @@ static inline uint32_t getBackupRegister(uint32_t index)
 #elif defined(PWR_BKP0R)
   return LL_PWR_BKP_GetRegister(index);
 #else
-  UNUSED(index);
+  (void)index;
   return 0;
 #endif
 }
@@ -198,9 +198,9 @@ static inline void writeBackupSRAM(uint32_t offset, uint32_t *data, uint32_t len
     *(__IO uint32_t *)(BKPSRAM_BASE + (offset + i) * 4) = data[i];
   }
 #else
-  UNUSED(offset);
-  UNUSED(data);
-  UNUSED(length);
+  (void)offset;
+  (void)data;
+  (void)length;
 #endif
 }
 
@@ -213,9 +213,9 @@ static inline void readBackupSRAM(uint32_t offset, uint32_t *data, uint32_t leng
     data[i] = *(__IO uint32_t *)(BKPSRAM_BASE + (offset + i) * 4);
   }
 #else
-  UNUSED(offset);
-  UNUSED(data);
-  UNUSED(length);
+  (void)offset;
+  (void)data;
+  (void)length;
 #endif
 }
 

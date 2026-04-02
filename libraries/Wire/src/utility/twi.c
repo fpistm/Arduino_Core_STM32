@@ -676,7 +676,7 @@ static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
   }
 #ifdef I2C_TIMING
 #ifndef I2C_TIMING_COMPUTE
-  UNUSED(obj);
+  (void)obj;
 #endif
   if (i2c_speed != 0U) {
     switch (i2c_speed) {
@@ -715,7 +715,7 @@ static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
    * }
    */
 #else
-  UNUSED(obj);
+  (void)obj;
   ret = i2c_speed;
 #endif /* I2C_TIMING */
   return ret;
@@ -1202,7 +1202,7 @@ void i2c_attachSlaveTxEvent(i2c_t *obj, void (*function)(i2c_t *))
   */
 void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
 {
-  UNUSED(AddrMatchCode);
+  (void)AddrMatchCode;
   i2c_t *obj = get_i2c_obj(hi2c);
   if ((obj->slaveMode == SLAVE_MODE_RECEIVE) && (obj->slaveRxNbData != 0)) {
     obj->i2c_onSlaveReceive(obj);
