@@ -8,7 +8,9 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-#ifdef STM32F4xx
+#ifdef STM32C5xx
+  #include "stm32c5xx_ll_lptim.h"
+#elif STM32F4xx
   #include "stm32f4xx_ll_lptim.h"
 #elif STM32F7xx
   #include "stm32f7xx_ll_lptim.h"

@@ -2,7 +2,9 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-#ifdef STM32G4xx
+#ifdef STM32C5xx
+  #include "stm32c5xx_hal_cordic.c"
+#elif STM32G4xx
   #include "stm32g4xx_hal_cordic.c"
 #elif STM32H5xx
   #include "stm32h5xx_hal_cordic.c"
