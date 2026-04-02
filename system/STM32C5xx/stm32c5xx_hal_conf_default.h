@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file    stm32c5xx_hal_conf.h
-  * @brief   HAL configuration file.
+  * @file    stm32c5xx_hal_conf_default.h
+  * @brief   HAL default configuration file.
   ******************************************************************************
   * @attention
   *
@@ -16,8 +16,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef  STM32C5XX_HAL_CONF_H
-#define  STM32C5XX_HAL_CONF_H
+#ifndef  STM32C5XX_HAL_CONF_DEFAULT_H
+#define  STM32C5XX_HAL_CONF_DEFAULT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,6 +95,12 @@ extern "C" {
   */
 
 /* ########################## Peripheral configuration  ######################### */
+/**
+  * @brief Include the default list of modules to be used in the HAL driver
+  *        and manage module deactivation
+  */
+#include "stm32yyxx_hal_conf.h"
+#if 0
 
 /** @defgroup HAL_ADC_Config HAL ADC Configuration
   * @{
@@ -677,8 +683,9 @@ extern "C" {
   * @}
   */
 
+#endif
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /*  STM32C5XX_HAL_CONF_H */
+#endif /*  STM32C5XX_HAL_CONF_DEFAULT_H */
