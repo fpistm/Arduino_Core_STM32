@@ -22,6 +22,8 @@
 
 #if defined(STM32C0xx)
   #include "stm32c0xx.h"
+#elif defined(STM32C5xx)
+  #include "stm32c5xx.h"
 #elif defined(STM32F0xx)
   #include "stm32f0xx.h"
 #elif defined(STM32F1xx)
