@@ -1,0 +1,59 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C532CBTx
+GenC5.menu.pnum.GENERIC_C532CBTX=Generic C532CBTx
+GenC5.menu.pnum.GENERIC_C532CBTX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C532CBTX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532CBTX.build.board=GENERIC_C532CBTX
+GenC5.menu.pnum.GENERIC_C532CBTX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532CBTX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C532CBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C532CBUx
+GenC5.menu.pnum.GENERIC_C532CBUX=Generic C532CBUx
+GenC5.menu.pnum.GENERIC_C532CBUX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C532CBUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532CBUX.build.board=GENERIC_C532CBUX
+GenC5.menu.pnum.GENERIC_C532CBUX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532CBUX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C532CBUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C532CCTx
+GenC5.menu.pnum.GENERIC_C532CCTX=Generic C532CCTx
+GenC5.menu.pnum.GENERIC_C532CCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C532CCTX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532CCTX.build.board=GENERIC_C532CCTX
+GenC5.menu.pnum.GENERIC_C532CCTX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532CCTX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C532CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C532CCUx
+GenC5.menu.pnum.GENERIC_C532CCUX=Generic C532CCUx
+GenC5.menu.pnum.GENERIC_C532CCUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C532CCUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532CCUX.build.board=GENERIC_C532CCUX
+GenC5.menu.pnum.GENERIC_C532CCUX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532CCUX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C532CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C542CCTx
+GenC5.menu.pnum.GENERIC_C542CCTX=Generic C542CCTx
+GenC5.menu.pnum.GENERIC_C542CCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C542CCTX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C542CCTX.build.board=GENERIC_C542CCTX
+GenC5.menu.pnum.GENERIC_C542CCTX.build.product_line=STM32C542xx
+GenC5.menu.pnum.GENERIC_C542CCTX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C542CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C542.svd
+
+# Generic C542CCUx
+GenC5.menu.pnum.GENERIC_C542CCUX=Generic C542CCUx
+GenC5.menu.pnum.GENERIC_C542CCUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C542CCUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C542CCUX.build.board=GENERIC_C542CCUX
+GenC5.menu.pnum.GENERIC_C542CCUX.build.product_line=STM32C542xx
+GenC5.menu.pnum.GENERIC_C542CCUX.build.variant=STM32C5xx/C532C(B-C)(T-U)_C542CC(T-U)
+GenC5.menu.pnum.GENERIC_C542CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C542.svd
+

@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C593KEUx
+GenC5.menu.pnum.GENERIC_C593KEUX=Generic C593KEUx
+GenC5.menu.pnum.GENERIC_C593KEUX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C593KEUX.upload.maximum_data_size=262144
+GenC5.menu.pnum.GENERIC_C593KEUX.build.board=GENERIC_C593KEUX
+GenC5.menu.pnum.GENERIC_C593KEUX.build.product_line=STM32C593xx
+GenC5.menu.pnum.GENERIC_C593KEUX.build.variant=STM32C5xx/C593K(E-G)U_C5A3KGU
+GenC5.menu.pnum.GENERIC_C593KEUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C593.svd
+
+# Generic C593KGUx
+GenC5.menu.pnum.GENERIC_C593KGUX=Generic C593KGUx
+GenC5.menu.pnum.GENERIC_C593KGUX.upload.maximum_size=1048576
+GenC5.menu.pnum.GENERIC_C593KGUX.upload.maximum_data_size=262144
+GenC5.menu.pnum.GENERIC_C593KGUX.build.board=GENERIC_C593KGUX
+GenC5.menu.pnum.GENERIC_C593KGUX.build.product_line=STM32C593xx
+GenC5.menu.pnum.GENERIC_C593KGUX.build.variant=STM32C5xx/C593K(E-G)U_C5A3KGU
+GenC5.menu.pnum.GENERIC_C593KGUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C593.svd
+
+# Generic C5A3KGUx
+GenC5.menu.pnum.GENERIC_C5A3KGUX=Generic C5A3KGUx
+GenC5.menu.pnum.GENERIC_C5A3KGUX.upload.maximum_size=1048576
+GenC5.menu.pnum.GENERIC_C5A3KGUX.upload.maximum_data_size=262144
+GenC5.menu.pnum.GENERIC_C5A3KGUX.build.board=GENERIC_C5A3KGUX
+GenC5.menu.pnum.GENERIC_C5A3KGUX.build.product_line=STM32C5A3xx
+GenC5.menu.pnum.GENERIC_C5A3KGUX.build.variant=STM32C5xx/C593K(E-G)U_C5A3KGU
+GenC5.menu.pnum.GENERIC_C5A3KGUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C5A3.svd
+

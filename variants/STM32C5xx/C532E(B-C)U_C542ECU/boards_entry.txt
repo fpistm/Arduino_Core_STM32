@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C532EBUx
+GenC5.menu.pnum.GENERIC_C532EBUX=Generic C532EBUx
+GenC5.menu.pnum.GENERIC_C532EBUX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C532EBUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532EBUX.build.board=GENERIC_C532EBUX
+GenC5.menu.pnum.GENERIC_C532EBUX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532EBUX.build.variant=STM32C5xx/C532E(B-C)U_C542ECU
+GenC5.menu.pnum.GENERIC_C532EBUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C532ECUx
+GenC5.menu.pnum.GENERIC_C532ECUX=Generic C532ECUx
+GenC5.menu.pnum.GENERIC_C532ECUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C532ECUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C532ECUX.build.board=GENERIC_C532ECUX
+GenC5.menu.pnum.GENERIC_C532ECUX.build.product_line=STM32C532xx
+GenC5.menu.pnum.GENERIC_C532ECUX.build.variant=STM32C5xx/C532E(B-C)U_C542ECU
+GenC5.menu.pnum.GENERIC_C532ECUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C532.svd
+
+# Generic C542ECUx
+GenC5.menu.pnum.GENERIC_C542ECUX=Generic C542ECUx
+GenC5.menu.pnum.GENERIC_C542ECUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C542ECUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C542ECUX.build.board=GENERIC_C542ECUX
+GenC5.menu.pnum.GENERIC_C542ECUX.build.product_line=STM32C542xx
+GenC5.menu.pnum.GENERIC_C542ECUX.build.variant=STM32C5xx/C532E(B-C)U_C542ECU
+GenC5.menu.pnum.GENERIC_C542ECUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C542.svd
+

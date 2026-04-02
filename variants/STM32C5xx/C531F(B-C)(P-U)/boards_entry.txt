@@ -1,0 +1,41 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C531FBPx
+GenC5.menu.pnum.GENERIC_C531FBPX=Generic C531FBPx
+GenC5.menu.pnum.GENERIC_C531FBPX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C531FBPX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531FBPX.build.board=GENERIC_C531FBPX
+GenC5.menu.pnum.GENERIC_C531FBPX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531FBPX.build.variant=STM32C5xx/C531F(B-C)(P-U)
+GenC5.menu.pnum.GENERIC_C531FBPX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+
+# Generic C531FBUx
+GenC5.menu.pnum.GENERIC_C531FBUX=Generic C531FBUx
+GenC5.menu.pnum.GENERIC_C531FBUX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C531FBUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531FBUX.build.board=GENERIC_C531FBUX
+GenC5.menu.pnum.GENERIC_C531FBUX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531FBUX.build.variant=STM32C5xx/C531F(B-C)(P-U)
+GenC5.menu.pnum.GENERIC_C531FBUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+
+# Generic C531FCPx
+GenC5.menu.pnum.GENERIC_C531FCPX=Generic C531FCPx
+GenC5.menu.pnum.GENERIC_C531FCPX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C531FCPX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531FCPX.build.board=GENERIC_C531FCPX
+GenC5.menu.pnum.GENERIC_C531FCPX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531FCPX.build.variant=STM32C5xx/C531F(B-C)(P-U)
+GenC5.menu.pnum.GENERIC_C531FCPX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+
+# Generic C531FCUx
+GenC5.menu.pnum.GENERIC_C531FCUX=Generic C531FCUx
+GenC5.menu.pnum.GENERIC_C531FCUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C531FCUX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531FCUX.build.board=GENERIC_C531FCUX
+GenC5.menu.pnum.GENERIC_C531FCUX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531FCUX.build.variant=STM32C5xx/C531F(B-C)(P-U)
+GenC5.menu.pnum.GENERIC_C531FCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+
