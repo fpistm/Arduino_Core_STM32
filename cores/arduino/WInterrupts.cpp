@@ -30,7 +30,11 @@ void attachInterrupt(pin_size_t interruptNumber, callback_function_t callback, P
 
   switch (mode) {
     case CHANGE :
+#if defined(GPIO_MODE_IT_RISING_FALLING)
       it_mode = GPIO_MODE_IT_RISING_FALLING;
+#else
+      it_mode = HAL_EXTI_TRIGGER_RISING_FALLING;
+#endif
       break;
     case LOW :
 #ifdef GPIO_MODE_IT_LEVEL_LOW
@@ -38,7 +42,11 @@ void attachInterrupt(pin_size_t interruptNumber, callback_function_t callback, P
       break;
 #endif
     case FALLING :
+#if defined(GPIO_MODE_IT_FALLING)
       it_mode = GPIO_MODE_IT_FALLING;
+#else
+      it_mode = HAL_EXTI_TRIGGER_FALLING;
+#endif
       break;
     case HIGH :
 #ifdef GPIO_MODE_IT_LEVEL_HIGH
@@ -47,7 +55,11 @@ void attachInterrupt(pin_size_t interruptNumber, callback_function_t callback, P
 #endif
     default:
     case RISING :
+#if defined(GPIO_MODE_IT_RISING)
       it_mode = GPIO_MODE_IT_RISING;
+#else
+      it_mode = HAL_EXTI_TRIGGER_RISING;
+#endif
       break;
   }
 

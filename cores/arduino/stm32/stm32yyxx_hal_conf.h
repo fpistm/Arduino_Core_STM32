@@ -6,6 +6,7 @@
   * Mandatory HALv2 modules
   */
   #define USE_HAL_CORTEX_MODULE                   1U
+  #define USE_HAL_EXTI_MODULE                     1U
   #define USE_HAL_FLASH_MODULE                    1U
   #define USE_HAL_GPIO_MODULE                     1U
   #define USE_HAL_RCC_MODULE                      1U

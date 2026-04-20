@@ -59,6 +59,9 @@ static std::function<void(void)> gpio_callback[2][16] = {
 typedef struct {
   IRQn_Type irqnb;
   std::function<void(void)> callback;
+#if defined(STM32C5xx)
+  hal_exti_handle_t hexti;
+#endif
 } gpio_irq_conf_str;
 
 /* Private_Defines */
@@ -84,7 +87,120 @@ static gpio_irq_conf_str gpio_irq_conf[NB_EXTI] = {
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}, //GPIO_PIN_13
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}, //GPIO_PIN_14
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}  //GPIO_PIN_15
-#elif defined (STM32H5xx) || defined (STM32MP1xx) || defined (STM32L5xx) ||\
+#elif defined (STM32C5xx)
+  {
+    .irqnb = EXTI0_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_0, .ll_line = LL_EXTI_LINE_0,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_0
+  {
+    .irqnb = EXTI1_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_1, .ll_line = LL_EXTI_LINE_1,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_1
+  {
+    .irqnb = EXTI2_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_2, .ll_line = LL_EXTI_LINE_2,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_2
+  {
+    .irqnb = EXTI3_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_3, .ll_line = LL_EXTI_LINE_3,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_3
+  {
+    .irqnb = EXTI4_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_4, .ll_line = LL_EXTI_LINE_4,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_4
+  {
+    .irqnb = EXTI5_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_5, .ll_line = LL_EXTI_LINE_5,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_5
+  {
+    .irqnb = EXTI6_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_6, .ll_line = LL_EXTI_LINE_6,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_6
+  {
+    .irqnb = EXTI7_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_7, .ll_line = LL_EXTI_LINE_7,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_7
+  {
+    .irqnb = EXTI8_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_8, .ll_line = LL_EXTI_LINE_8,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_8
+  {
+    .irqnb = EXTI9_IRQn,     .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_9, .ll_line = LL_EXTI_LINE_9,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_9
+  {
+    .irqnb = EXTI10_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_10, .ll_line = LL_EXTI_LINE_10,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_10
+  {
+    .irqnb = EXTI11_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_11, .ll_line = LL_EXTI_LINE_11,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_11
+  {
+    .irqnb = EXTI12_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_12, .ll_line = LL_EXTI_LINE_12,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_12
+  {
+    .irqnb = EXTI13_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_13, .ll_line = LL_EXTI_LINE_13,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_13
+  {
+    .irqnb = EXTI14_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_14, .ll_line = LL_EXTI_LINE_14,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  }, //GPIO_PIN_14
+  {
+    .irqnb = EXTI15_IRQn,    .callback = NULL,
+    .hexti = {
+      .line = HAL_EXTI_LINE_15, .ll_line = LL_EXTI_LINE_15,
+      .global_state = HAL_EXTI_STATE_RESET, .prev_state = HAL_EXTI_STATE_RESET
+    }
+  } //GPIO_PIN_15
+#elif defined (STM32H5xx) || defined (STM32MP1xx) ||  defined (STM32L5xx) ||\
       defined (STM32U3xx) || defined (STM32U5xx) || defined (STM32WBAxx)
   {.irqnb = EXTI0_IRQn,     .callback = NULL}, //GPIO_PIN_0
   {.irqnb = EXTI1_IRQn,     .callback = NULL}, //GPIO_PIN_1
@@ -122,7 +238,6 @@ static gpio_irq_conf_str gpio_irq_conf[NB_EXTI] = {
 #endif
 };
 
-
 static const uint32_t ll_exti_lines[NB_EXTI] = {
   LL_EXTI_LINE_0,  LL_EXTI_LINE_1,  LL_EXTI_LINE_2,  LL_EXTI_LINE_3,
   LL_EXTI_LINE_4,  LL_EXTI_LINE_5,  LL_EXTI_LINE_6,  LL_EXTI_LINE_7,
@@ -130,6 +245,7 @@ static const uint32_t ll_exti_lines[NB_EXTI] = {
   LL_EXTI_LINE_12, LL_EXTI_LINE_13, LL_EXTI_LINE_14, LL_EXTI_LINE_15
 };
 #endif /* STM32WB0x || STM32WL3x */
+
 /* Private Functions */
 /**
   * @brief  This function returns the pin ID function of the HAL PIN definition
@@ -150,9 +266,19 @@ static uint8_t get_pin_id(uint16_t pin)
 
 void stm32_interrupt_enable(PinName pn, callback_function_t callback, uint32_t mode)
 {
-  GPIO_InitTypeDef GPIO_InitStruct;
   uint16_t pin = STM_GPIO_PIN(pn);
   uint8_t id = get_pin_id(pin);
+
+#if defined(USE_HALV2_DRIVER)
+  hal_exti_handle_t *hexti = &gpio_irq_conf[id].hexti;
+  hal_exti_config_t config = {};
+  HAL_EXTI_Init(hexti, hexti->line);
+  config.trigger = (hal_exti_trigger_t)mode;
+  config.gpio_port = (hal_exti_gpio_port_t)STM_PORT(pn);
+  HAL_EXTI_SetConfig(hexti, &config);
+  HAL_EXTI_Enable(hexti, HAL_EXTI_MODE_INTERRUPT);
+#else
+  GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_TypeDef *port = set_GPIO_Port_Clock(STM_PORT(pn));
   if (port) {
     // GPIO pin configuration
@@ -164,6 +290,7 @@ void stm32_interrupt_enable(PinName pn, callback_function_t callback, uint32_t m
     HAL_GPIO_Init(port, &GPIO_InitStruct);
     hsem_unlock(CFG_HW_GPIO_SEMID);
   }
+#endif
   IRQn_Type irqnb;
 #if defined(STM32WB0x) || defined(STM32WL3x)
   if (port == GPIOA) {
@@ -178,9 +305,13 @@ void stm32_interrupt_enable(PinName pn, callback_function_t callback, uint32_t m
   irqnb = gpio_irq_conf[id].irqnb;
 #endif /* STM32WB0x || */
   // Enable and set EXTI Interrupt
+#if defined(USE_HALV2_DRIVER)
+  HAL_CORTEX_NVIC_SetPriority(irqnb, (hal_cortex_nvic_preemp_priority_t)EXTI_IRQ_PRIO, (hal_cortex_nvic_sub_priority_t)EXTI_IRQ_SUBPRIO);
+  HAL_CORTEX_NVIC_EnableIRQ(irqnb);
+#else
   HAL_NVIC_SetPriority(irqnb, EXTI_IRQ_PRIO, EXTI_IRQ_SUBPRIO);
   HAL_NVIC_EnableIRQ(irqnb);
-
+#endif
 }
 
 /**
@@ -212,6 +343,15 @@ void stm32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
   }
   HAL_NVIC_DisableIRQ(irqnb);
 #else
+#if defined(STM32C5xx)
+  HAL_EXTI_DeInit(&gpio_irq_conf[id].hexti);
+#endif
+  LL_EXTI_DisableIT_0_31(ll_exti_lines[id]);
+#if defined(USE_HALV2_DRIVER)
+  HAL_CORTEX_NVIC_DisableIRQ(gpio_irq_conf[id].irqnb);
+#else
+  HAL_NVIC_DisableIRQ(gpio_irq_conf[id].irqnb);
+#endif
   gpio_irq_conf[id].callback = NULL;
   for (int i = 0; i < NB_EXTI; i++) {
     if (gpio_irq_conf[id].irqnb == gpio_irq_conf[i].irqnb
@@ -219,16 +359,13 @@ void stm32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
       return;
     }
   }
-  LL_EXTI_DisableIT_0_31(ll_exti_lines[id]);
-  HAL_NVIC_DisableIRQ(gpio_irq_conf[id].irqnb);
 #endif /* STM32WB0x || STM32WL3x */
 }
 
-
-#if defined(STM32WB0x) || defined(STM32WL3x)
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if defined(STM32WB0x) || defined(STM32WL3x)
 void HAL_GPIO_EXTI_Callback(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 {
   uint8_t id = get_pin_id(GPIO_Pin);
@@ -258,9 +395,18 @@ void GPIOB_IRQHandler(void)
     }
   }
 }
-#ifdef __cplusplus
+#else
+#if defined(STM32C5xx)
+void HAL_EXTI_TriggerCallback(hal_exti_handle_t *hexti, hal_exti_trigger_t trigger)
+{
+  (void)trigger;
+  for (uint8_t i = 0; i < NB_EXTI; i++) {
+    if ((hexti == &gpio_irq_conf[i].hexti) && (gpio_irq_conf[i].callback != NULL)) {
+      gpio_irq_conf[i].callback();
+      break;
+    }
+  }
 }
-#endif
 #else
 /**
   * @brief This function his called by the HAL if the IRQ is valid
@@ -275,7 +421,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     gpio_irq_conf[irq_id].callback();
   }
 }
-
+#endif /* STM32C5xx */
 #if defined(STM32C0xx) || defined(STM32G0xx) || defined(STM32H5xx) || \
     defined(STM32MP1xx) || defined(STM32L5xx) || defined(STM32U0xx) || \
     defined(STM32U3xx)  || defined(STM32U5xx)  || defined(STM32WBAxx)
@@ -302,10 +448,6 @@ void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
 
 #if defined(STM32C0xx) || defined(STM32F0xx) || defined(STM32G0xx) || \
     defined(STM32L0xx) || defined(STM32U0xx)
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
   * @brief This function handles external line 0 to 1 interrupt request.
   * @param  None
@@ -345,13 +487,72 @@ void EXTI4_15_IRQHandler(void)
     HAL_GPIO_EXTI_IRQHandler(pin);
   }
 }
-#ifdef __cplusplus
+#elif defined(STM32C5xx)
+void EXTI0_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[0].hexti);
 }
-#endif
+void EXTI1_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[1].hexti);
+}
+void EXTI2_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[2].hexti);
+}
+void EXTI3_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[3].hexti);
+}
+void EXTI4_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[4].hexti);
+}
+void EXTI5_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[5].hexti);
+}
+void EXTI6_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[6].hexti);
+}
+void EXTI7_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[7].hexti);
+}
+void EXTI8_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[8].hexti);
+}
+void EXTI9_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[9].hexti);
+}
+void EXTI10_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[10].hexti);
+}
+void EXTI11_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[11].hexti);
+}
+void EXTI12_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[12].hexti);
+}
+void EXTI13_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[13].hexti);
+}
+void EXTI14_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[14].hexti);
+}
+void EXTI15_IRQHandler(void)
+{
+  HAL_EXTI_IRQHandler(&gpio_irq_conf[15].hexti);
+}
 #else
-#ifdef __cplusplus
-extern "C" {
-#endif
 /**
   * @brief This function handles external line 0 interrupt request.
   * @param  None
@@ -542,11 +743,10 @@ void EXTI15_IRQHandler(void)
 }
 
 #endif /* !STM32MP1xx && !STM32L5xx */
+#endif /* STM32WB0x || STM32WL3x */
 #ifdef __cplusplus
 }
 #endif
-#endif /* STM32WB0x || STM32WL3x */
-
 #endif /* !HAL_EXTI_MODULE_DISABLED */
 #endif
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+  /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
