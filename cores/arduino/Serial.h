@@ -96,7 +96,7 @@ typedef enum {
 #undef SERIAL_6N1
 #undef SERIAL_6N2
 
-#ifndef UART_WORDLENGTH_7B
+#if !defined(UART_WORDLENGTH_7B) && !defined(HAL_UART_WORD_LENGTH_7_BIT)
   #undef SERIAL_7N1
   #undef SERIAL_7N2
   #undef SERIAL_6E1
@@ -201,7 +201,11 @@ class Uart : public arduino::HardwareSerial {
 
 #if defined(HAL_UART_MODULE_ENABLED) && !defined(HAL_UART_MODULE_ONLY)
     // Could be used to mix Arduino API and STM32Cube HAL API (ex: DMA). Use at your own risk.
+#if defined(USE_HALV2_DRIVER)
+    hal_uart_handle_t *getHandle(void)
+#else
     UART_HandleTypeDef *getHandle(void)
+#endif
     {
       return &(_serial.handle);
     }
