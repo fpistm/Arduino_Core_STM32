@@ -49,11 +49,19 @@ extern "C" {
 #endif
 
 /* Exported functions ------------------------------------------------------- */
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY)
+#if defined(HAL_ADC_MODULE_ENABLED)
 uint32_t get_adc_channel(PinName pin, uint32_t *bank);
 uint32_t get_adc_internal_channel(PinName pin);
+#endif
+#if defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1)
+hal_adc_channel_t get_adc_channel(PinName pin);
+hal_adc_channel_t get_adc_internal_channel(PinName pin);
+#endif
+#if defined(HAL_ADC_MODULE_ENABLED) || (defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1))
 uint16_t adc_read_value(PinName pin, uint32_t resolution);
 #endif
+#endif /* !HAL_ADC_MODULE_ONLY */
 #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
 uint32_t get_dac_channel(PinName pin);
 void dac_write_value(PinName pin, uint32_t value, uint8_t do_init);
