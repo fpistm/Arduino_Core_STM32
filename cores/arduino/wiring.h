@@ -54,7 +54,6 @@ extern void analogWriteResolution(int res);
  * \param freq
  */
 extern void analogWriteFrequency(uint32_t freq);
-extern void analogOutputInit(void) ;
 
 /* wiring_constants */
 #define DEFAULT 1
