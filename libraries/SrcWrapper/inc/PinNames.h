@@ -264,13 +264,14 @@ typedef enum {
 #endif
   // Specific pin name
   PADC_BASE = PNAME_ANALOG_INTERNAL_BASE,
-#if defined(ADC_CHANNEL_TEMPSENSOR) || defined(ADC_CHANNEL_TEMPSENSOR_ADC1)
+#if defined(ADC_CHANNEL_TEMPSENSOR) || defined(ADC_CHANNEL_TEMPSENSOR_ADC1) ||\
+    defined(LL_ADC_CHANNEL_TEMPSENSOR)
   PADC_TEMP,
 #endif
 #if defined(ADC5) && defined(ADC_CHANNEL_TEMPSENSOR_ADC5)
   PADC_TEMP_ADC5,
 #endif
-#ifdef ADC_CHANNEL_VREFINT
+#if defined(ADC_CHANNEL_VREFINT) || defined(LL_ADC_CHANNEL_VREFINT)
   PADC_VREF,
 #endif
 #ifdef ADC_CHANNEL_VBAT

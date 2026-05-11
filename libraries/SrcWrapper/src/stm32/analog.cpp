@@ -28,7 +28,266 @@ static PinName g_current_pin = NC;
 #endif
 
 /* Private_Defines */
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY)
+
+#if defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1)
+#ifndef ADC_SAMPLINGTIME
+#if defined(LL_ADC_SAMPLINGTIME_8CYCLES)
+#define ADC_SAMPLINGTIME        HAL_ADC_SAMPLING_TIME_8CYCLES
+#else
+#error "ADC sampling time could not be defined!"
+#endif
+#endif /* !ADC_SAMPLINGTIME */
+#ifndef ADC_SAMPLINGTIME_INTERNAL
+#if defined(LL_ADC_SAMPLINGTIME_289CYCLES)
+#define ADC_SAMPLINGTIME_INTERNAL HAL_ADC_SAMPLING_TIME_289CYCLES
+#else
+#error "ADC sampling time could not be defined for internal channels!"
+#endif
+#endif /* !ADC_SAMPLINGTIME_INTERNAL */
+
+#ifndef ADC_REGULAR_RANK
+#define ADC_REGULAR_RANK  1
+#endif
+
+/**
+  * @brief ADC Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param instance: ADC instance
+  * @param pin: ADC pin
+  * @retval None
+  */
+void adc_init(hal_adc_t instance, PinName pin)
+{
+  /*##-1- Enable peripherals and GPIO Clocks #################################*/
+  /* ADC Periph clock enable */
+#ifdef ADC1
+  if (instance == HAL_ADC1) {
+    HAL_RCC_ADC12_EnableClock();
+  }
+#endif
+#ifdef ADC2
+  if (instance == HAL_ADC2) {
+    HAL_RCC_ADC12_EnableClock();
+  }
+
+#endif
+#ifdef ADC3
+  if (instance == HAL_ADC3) {
+    HAL_RCC_ADC3_EnableClock();
+  }
+#endif
+
+  /* Configure ADC GPIO pin */
+  if (!(pin & PADC_BASE)) {
+    pinmap_pinout(pin, PinMap_ADC);
+  }
+}
+
+/**
+  * @brief  DeInitializes the ADC.
+  * @param  instance: ADC instance
+  * @retval None
+  */
+void adc_deinit(hal_adc_t instance)
+{
+#ifdef ADC1
+  if (instance == HAL_ADC1) {
+    HAL_RCC_ADC12_DisableClock();
+  }
+#endif
+#ifdef ADC2
+  if (instance == HAL_ADC2) {
+    HAL_RCC_ADC12_DisableClock();
+  }
+#endif
+#ifdef ADC3
+  if (instance == HAL_ADC3) {
+    HAL_RCC_ADC3_DisableClock();
+  }
+#endif
+}
+
+/**
+  * @brief  Return ADC HAL channel linked to a PinName
+  * @param  pin: PinName
+  * @retval Valid HAL channel
+  */
+hal_adc_channel_t get_adc_channel(PinName pin)
+{
+  uint32_t function = pinmap_function(pin, PinMap_ADC);
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+  switch (STM_PIN_CHANNEL(function)) {
+    case 0:
+      channel = HAL_ADC_CHANNEL_0;
+      break;
+    case 1:
+      channel = HAL_ADC_CHANNEL_1;
+      break;
+    case 2:
+      channel = HAL_ADC_CHANNEL_2;
+      break;
+    case 3:
+      channel = HAL_ADC_CHANNEL_3;
+      break;
+    case 4:
+      channel = HAL_ADC_CHANNEL_4;
+      break;
+    case 5:
+      channel = HAL_ADC_CHANNEL_5;
+      break;
+    case 6:
+      channel = HAL_ADC_CHANNEL_6;
+      break;
+    case 7:
+      channel = HAL_ADC_CHANNEL_7;
+      break;
+    case 8:
+      channel = HAL_ADC_CHANNEL_8;
+      break;
+    case 9:
+      channel = HAL_ADC_CHANNEL_9;
+      break;
+    case 10:
+      channel = HAL_ADC_CHANNEL_10;
+      break;
+    case 11:
+      channel = HAL_ADC_CHANNEL_11;
+      break;
+    case 12:
+      channel = HAL_ADC_CHANNEL_12;
+      break;
+    case 13:
+      channel = HAL_ADC_CHANNEL_13;
+      break;
+    default:
+      _Error_Handler("ADC: Unknown adc channel", (int)(STM_PIN_CHANNEL(function)));
+      break;
+  }
+  return channel;
+}
+
+/**
+  * @brief  Return ADC HAL internal channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal. Value can be:
+  *         PADC_TEMP, PADC_VREF
+  *         Note that not all of these values ​​may be available for all series.
+  * @retval Valid HAL internal channel.
+  */
+hal_adc_channel_t get_adc_internal_channel(PinName pin)
+{
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+  switch (pin) {
+#if defined(LL_ADC_CHANNEL_TEMPSENSOR)
+    case PADC_TEMP:
+      channel = HAL_ADC_CHANNEL_TEMPSENSOR;
+      break;
+#endif
+#if defined(LL_ADC_CHANNEL_VREFINT)
+    case PADC_VREF:
+      channel = HAL_ADC_CHANNEL_VREFINT;
+      break;
+#endif
+    default:
+      _Error_Handler("ADC: Unknown adc internal PiName", (int)(pin));
+      break;
+  }
+  return channel;
+}
+
+/**
+  * @brief  This function will set the ADC to the required value
+  * @param  pin : the pin to use
+  * @param  resolution : resolution for converted data: 6/8/10/12/14/16
+  * @retval the value of the adc
+  */
+uint16_t adc_read_value(PinName pin, uint32_t resolution)
+{
+  hal_status_t status = HAL_OK;
+  hal_adc_handle_t AdcHandle = {};
+  hal_adc_config_t AdcConfig = {};
+  hal_adc_reg_config_t AdcRegConfig = {};
+  hal_adc_channel_config_t AdcChannelConfig = {};
+  hal_adc_t instance = HAL_ADC1;
+  __IO uint16_t convertedValue = 0;
+  hal_adc_sampling_time_t samplingTime = ADC_SAMPLINGTIME;
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+
+  if ((pin & PADC_BASE) && (pin < ANA_START)) {
+    /* Default instance is HAL_ADC1 */
+    channel = get_adc_internal_channel(pin);
+    samplingTime = ADC_SAMPLINGTIME_INTERNAL;
+  } else {
+    instance = (hal_adc_t)((uint32_t)pinmap_peripheral(pin, PinMap_ADC));
+    channel = get_adc_channel(pin);
+  }
+  adc_init(instance, pin);
+  status = HAL_ADC_Init(&AdcHandle, instance);
+  if (status == HAL_OK) {
+    /* resolution for converted data */
+    switch (resolution) {
+      case 6:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_6_BIT;
+        break;
+      case 8:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_8_BIT;
+        break;
+      case 10:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_10_BIT;
+        break;
+      case 12:
+      default:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_12_BIT;
+        break;
+    }
+    AdcConfig.sampling_mode       = HAL_ADC_SAMPLING_MODE_NORMAL;
+    status = HAL_ADC_SetConfig(&AdcHandle, &AdcConfig);
+  }
+  if (status == HAL_OK) {
+    /* Configuration of ADC regular group on sequencer containing only one channel */
+    AdcRegConfig.trigger_src        = HAL_ADC_REG_TRIG_SOFTWARE;
+    AdcRegConfig.sequencer_length   = 1;
+    AdcRegConfig.sequencer_discont  = HAL_ADC_REG_SEQ_DISCONT_DISABLE;
+    AdcRegConfig.continuous         = HAL_ADC_REG_CONV_SINGLE;
+    AdcRegConfig.overrun            = HAL_ADC_REG_OVR_DATA_OVERWRITTEN;
+    status = HAL_ADC_REG_SetConfig(&AdcHandle, &AdcRegConfig);
+  }
+  if (status == HAL_OK) {
+    AdcChannelConfig.group           = HAL_ADC_GROUP_REGULAR;
+    AdcChannelConfig.sequencer_rank  = ADC_REGULAR_RANK;
+    AdcChannelConfig.sampling_time   = samplingTime;
+    AdcChannelConfig.input_mode      = HAL_ADC_IN_SINGLE_ENDED;
+    status = HAL_ADC_SetConfigChannel(&AdcHandle, channel, &AdcChannelConfig);
+  }
+  if (status == HAL_OK) {
+    status = HAL_ADC_Start(&AdcHandle);
+  }
+  if (status == HAL_OK) {
+    status = HAL_ADC_Calibrate(&AdcHandle);
+    if (status == HAL_OK) {
+      status = HAL_ADC_REG_StartConv(&AdcHandle);
+      if (status == HAL_OK) {
+        /*  For simplicity reasons, this example is just waiting till the end of the
+            conversion, but application may perform other tasks while conversion
+            operation is ongoing. */
+        status = HAL_ADC_REG_PollForConv(&AdcHandle, 10);
+        if (status == HAL_OK) {
+          convertedValue = HAL_ADC_REG_ReadConversionData(&AdcHandle);
+        }
+      }
+    }
+    (void)HAL_ADC_Stop(&AdcHandle);
+  }
+  (void)HAL_ADC_DeInit(&AdcHandle);
+  adc_deinit(instance);
+  return (status == HAL_OK) ? convertedValue : 0;
+}
+
+#endif /* USE_HAL_ADC_MODULE && (USE_HAL_ADC_MODULE == 1) */
+
+#if defined(HAL_ADC_MODULE_ENABLED)
 /* ADC */
 #if defined(STM32WB0x) || defined(STM32WL3x)
 #ifndef ADC_SAMPLING_RATE
@@ -912,7 +1171,8 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
   return uhADCxConvertedValue;
 }
-#endif /* HAL_ADC_MODULE_ENABLED && !HAL_ADC_MODULE_ONLY */
+#endif /* HAL_ADC_MODULE_ENABLED */
+#endif /* !HAL_ADC_MODULE_ONLY */
 
 #if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
 /* DAC */

@@ -41,13 +41,13 @@ static int _internalWriteResolution =
 static uint32_t _writeFreq = PWM_FREQUENCY;
 
 /* ADC */
-#if defined(ADC_RESOLUTION_16B) || defined(ADC_DS_DATA_WIDTH_16_BIT)
+#if defined(LL_ADC_RESOLUTION_16B) || defined(LL_ADC_DS_DATA_WIDTH_16_BIT)
 #define MAX_ADC_RESOLUTION 16
-#elif defined(ADC_DS_DATA_WIDTH_15_BIT)
+#elif defined(LL_ADC_DS_DATA_WIDTH_15_BIT)
 #define MAX_ADC_RESOLUTION 15
-#elif defined(ADC_RESOLUTION_14B) || defined(ADC_DS_DATA_WIDTH_14_BIT)
+#elif defined(LL_ADC_RESOLUTION_14B) || defined(LL_ADC_DS_DATA_WIDTH_14_BIT)
 #define MAX_ADC_RESOLUTION 14
-#elif defined(ADC_DS_DATA_WIDTH_13_BIT)
+#elif defined(LL_ADC_DS_DATA_WIDTH_13_BIT)
 #define MAX_ADC_RESOLUTION 13
 #else
 #define MAX_ADC_RESOLUTION 12
@@ -58,27 +58,23 @@ static int _internalReadResolution =
 #if ADC_RESOLUTION > MAX_ADC_RESOLUTION
   MAX_ADC_RESOLUTION
 #else
-#if defined(ADC_RESOLUTION_12B) || defined(ADC_DS_DATA_WIDTH_12_BIT)
-#if ADC_RESOLUTION <= 6 && defined(ADC_RESOLUTION_6B)
+#if ADC_RESOLUTION <= 6 && defined(LL_ADC_RESOLUTION_6B)
   6
-#elif ADC_RESOLUTION <= 8 && defined(ADC_RESOLUTION_8B)
+#elif ADC_RESOLUTION <= 8 && defined(LL_ADC_RESOLUTION_8B)
   8
-#elif ADC_RESOLUTION <= 10 && defined(ADC_RESOLUTION_10B)
+#elif ADC_RESOLUTION <= 10 && defined(LL_ADC_RESOLUTION_10B)
   10
-#elif ADC_RESOLUTION <= 12
+#elif ADC_RESOLUTION <= 12 /* Common for all series */
   12
-#elif ADC_RESOLUTION <= 13 && defined(ADC_DS_DATA_WIDTH_13_BIT)
+#elif ADC_RESOLUTION <= 13 && defined(LL_ADC_DS_DATA_WIDTH_13_BIT)
   13
-#elif ADC_RESOLUTION <= 14 && (defined(ADC_RESOLUTION_14B) || defined(ADC_DS_DATA_WIDTH_14_BIT))
+#elif ADC_RESOLUTION <= 14 && (defined(LL_ADC_RESOLUTION_14B) || defined(LL_ADC_DS_DATA_WIDTH_14_BIT))
   14
-#elif ADC_RESOLUTION <= 15 && defined(ADC_DS_DATA_WIDTH_15_BIT)
+#elif ADC_RESOLUTION <= 15 && defined(LL_ADC_DS_DATA_WIDTH_15_BIT)
   15
-#elif defined(ADC_RESOLUTION_16B) || defined(ADC_DS_DATA_WIDTH_16_BIT)
+#elif defined(LL_ADC_RESOLUTION_16B) || defined(LL_ADC_DS_DATA_WIDTH_16_BIT)
   16
 #endif
-#else /* ADC_RESOLUTION_12B */
-  12
-#endif /* ADC_RESOLUTION_12B || ADC_DS_DATA_WIDTH_12_BIT */
 #endif /* ADC_RESOLUTION > MAX_ADC_RESOLUTION */
   ;
 
@@ -106,53 +102,49 @@ void analogReadResolution(int res)
     if (_readResolution > MAX_ADC_RESOLUTION) {
       _internalReadResolution = MAX_ADC_RESOLUTION;
     } else {
-#if defined(ADC_RESOLUTION_12B) || defined(ADC_DS_DATA_WIDTH_12_BIT)
-#ifdef ADC_RESOLUTION_6B
+#ifdef LL_ADC_RESOLUTION_6B
       if (_internalReadResolution <= 6) {
         _internalReadResolution = 6;
       } else
 #endif
-#if defined(ADC_RESOLUTION_8B)
+#if defined(LL_ADC_RESOLUTION_8B)
         if (_internalReadResolution <= 8) {
           _internalReadResolution = 8;
         } else
 #endif
-#if defined(ADC_RESOLUTION_10B)
+#if defined(LL_ADC_RESOLUTION_10B)
           if (_internalReadResolution <= 10) {
             _internalReadResolution = 10;
           } else
 #endif
-#if defined(ADC_DS_DATA_WIDTH_11_BIT)
+#if defined(LL_ADC_DS_DATA_WIDTH_11_BIT)
             else if (_internalReadResolution <= 11) {
               _internalReadResolution = 11;
             }
 #endif
+      /* Common for all series */
       if (_internalReadResolution <= 12) {
         _internalReadResolution = 12;
       }
-#if defined(ADC_DS_DATA_WIDTH_13_BIT)
+#if defined(LL_ADC_DS_DATA_WIDTH_13_BIT)
       else if (_internalReadResolution <= 13) {
         _internalReadResolution = 13;
       }
 #endif
-#if defined(ADC_RESOLUTION_14B) || defined(ADC_DS_DATA_WIDTH_14_BIT)
+#if defined(LL_ADC_RESOLUTION_14B) || defined(LL_ADC_DS_DATA_WIDTH_14_BIT)
       else if (_internalReadResolution <= 14) {
         _internalReadResolution = 14;
       }
 #endif
-#if defined(ADC_DS_DATA_WIDTH_15_BIT)
+#if defined(LL_ADC_DS_DATA_WIDTH_15_BIT)
       else if (_internalReadResolution <= 15) {
         _internalReadResolution = 15;
       }
 #endif
-#if defined( ADC_RESOLUTION_16B) || defined(ADC_DS_DATA_WIDTH_16_BIT)
+#if defined(LL_ADC_RESOLUTION_16B) || defined(LL_ADC_DS_DATA_WIDTH_16_BIT)
       else if (_internalReadResolution <= 16) {
         _internalReadResolution = 16;
       }
-#endif
-#else
-      /* STM32F1xx have no ADC_RESOLUTION_xB */
-      _internalReadResolution = 12;
 #endif
     }
   } else {
@@ -170,7 +162,9 @@ void analogReference(uint8_t mode)
 int analogRead(pin_size_t pinNumber)
 {
   pin_size_t value = 0;
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY) &&\
+    (defined(HAL_ADC_MODULE_ENABLED) || (defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1)))
+
   PinName p = analogInputToPinName(pinNumber);
   if (p != NC) {
     value = adc_read_value(p, _internalReadResolution);
