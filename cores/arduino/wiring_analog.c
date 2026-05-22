@@ -24,7 +24,8 @@ extern "C" {
 #endif
 
 /* DAC/PWM */
-#if (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)) ||\
+#if !defined(HAL_DAC_MODULE_ONLY) &&\
+    (defined(HAL_DAC_MODULE_ENABLED) || (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1))) ||\
     (defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY))
 //This is the list of the IOs configured
 uint32_t g_anOutputPinConfigured[MAX_NB_PORT] = {0};
@@ -200,15 +201,14 @@ void analogWriteFrequency(uint32_t freq)
 // For the other pins, default to digital output.
 void analogWrite(pin_size_t pinNumber, int value)
 {
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
-  uint8_t do_init = 0;
-#endif
   PinName p = digitalPinToPinName(pinNumber);
   if (p != NC) {
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+#if !defined(HAL_DAC_MODULE_ONLY) &&\
+    (defined(HAL_DAC_MODULE_ENABLED) || (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1)))
+    bool do_init = false;
     if (pin_in_pinmap(p, PinMap_DAC)) {
       if (is_pin_configured(p, g_anOutputPinConfigured) == false) {
-        do_init = 1;
+        do_init = true;
         set_pin_configured(p, g_anOutputPinConfigured);
       }
       value = mapResolution(value, _writeResolution, DACC_RESOLUTION);
@@ -225,7 +225,7 @@ void analogWrite(pin_size_t pinNumber, int value)
       } else
 #endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
       {
-        //DIGITAL PIN ONLY
+        // DIGITAL PIN ONLY
         // Defaults to digital write
         pinMode(pinNumber, OUTPUT);
         value = mapResolution(value, _writeResolution, 8);
