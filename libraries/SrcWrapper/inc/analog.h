@@ -62,7 +62,8 @@ hal_adc_channel_t get_adc_internal_channel(PinName pin);
 uint16_t adc_read_value(PinName pin, uint32_t resolution);
 #endif
 #endif /* !HAL_ADC_MODULE_ONLY */
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+#if !defined(HAL_DAC_MODULE_ONLY)
+#if defined(HAL_DAC_MODULE_ENABLED) && (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1))
 uint32_t get_dac_channel(PinName pin);
 void dac_write_value(PinName pin, uint32_t value, uint8_t do_init);
 void dac_stop(PinName pin);
@@ -71,7 +72,7 @@ void dac_stop(PinName pin);
 void pwm_start(PinName pin, uint32_t clock_freq, uint32_t value, TimerCompareFormat_t resolution);
 void pwm_stop(PinName pin);
 #endif
-
+#endif /* !HAL_DAC_MODULE_ONLY */
 #ifdef __cplusplus
 }
 #endif

@@ -1174,8 +1174,12 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif /* HAL_ADC_MODULE_ENABLED */
 #endif /* !HAL_ADC_MODULE_ONLY */
 
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY)
 /* DAC */
+
+
+#if defined(HAL_DAC_MODULE_ENABLED)
+
 /**
   * @brief  Return DAC HAL channel linked to a PinName
   * @param  pin: specific PinName's for ADC internal.
@@ -1461,7 +1465,8 @@ void dac_stop(PinName pin)
     return;
   }
 }
-#endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
+#endif //HAL_DAC_MODULE_ENABLED
+#endif /* !HAL_DAC_MODULE_ONLY */
 
 #if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
 /* PẄM */
