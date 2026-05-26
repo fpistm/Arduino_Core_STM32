@@ -74,7 +74,8 @@ void dac_write_value(PinName pin, uint32_t value, bool do_init);
 void dac_stop(PinName pin);
 #endif
 #endif /* !HAL_DAC_MODULE_ONLY */
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 void pwm_start(PinName pin, uint32_t clock_freq, uint32_t value, TimerCompareFormat_t resolution);
 void pwm_stop(PinName pin);
 #endif

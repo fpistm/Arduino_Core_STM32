@@ -22,8 +22,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 /* Exported constants --------------------------------------------------------*/
 #ifndef TIM_IRQ_PRIO
 #if (__CORTEX_M == 0x00U)
@@ -65,6 +65,9 @@ extern "C" {
       defined(STM32WBxx) || defined(STM32WBAxx) ||defined(STM32WLxx)
 #define TIM1_IRQn TIM1_UP_IRQn
 #define TIM1_IRQHandler TIM1_UP_IRQHandler
+#elif defined(STM32C5xx)
+#define TIM1_IRQn TIM1_UPD_IRQn
+#define TIM1_IRQHandler TIM1_UPD_IRQHandler
 #endif
 #endif
 
@@ -86,9 +89,9 @@ extern "C" {
 #if defined(STM32G0xx) || defined(STM32U0xx)
 #define TIM6_IRQn TIM6_DAC_LPTIM1_IRQn
 #define TIM6_IRQHandler TIM6_DAC_LPTIM1_IRQHandler
-#elif !defined(STM32F1xx) && !defined(STM32H5xx) && !defined(STM32L1xx) &&\
-      !defined(STM32L5xx) && !defined(STM32MP1xx) && !defined(STM32U3xx) &&\
-      !defined(STM32U5xx)
+#elif !defined(STM32C5xx) && !defined(STM32F1xx) && !defined(STM32H5xx) &&\
+      !defined(STM32L1xx) && !defined(STM32L5xx) && !defined(STM32MP1xx) &&\
+       !defined(STM32U3xx) && !defined(STM32U5xx)
 #define TIM6_IRQn TIM6_DAC_IRQn
 #define TIM6_IRQHandler TIM6_DAC_IRQHandler
 #endif
@@ -115,6 +118,9 @@ extern "C" {
       defined(STM32U5xx)
 #define TIM8_IRQn TIM8_UP_IRQn
 #define TIM8_IRQHandler TIM8_UP_IRQHandler
+#elif defined(STM32C5xx)
+#define TIM8_IRQn TIM8_UPD_IRQn
+#define TIM8_IRQHandler TIM8_UPD_IRQHandler
 #endif
 #endif
 
@@ -276,16 +282,24 @@ typedef enum {
 typedef struct  {
   // Those 2 first fields must remain in this order at the beginning of the structure
   void    *__this;
+#if defined(USE_HALV2_DRIVER)
+  hal_tim_handle_t handle;
+#else
   TIM_HandleTypeDef handle;
+#endif
+  TIM_TypeDef *instance;
   uint32_t preemptPriority;
   uint32_t subPriority;
 } timerObj_t;
 
 /* Exported functions ------------------------------------------------------- */
+#if defined(USE_HALV2_DRIVER)
+timerObj_t *get_timer_obj(hal_tim_handle_t *htim);
+#else
 timerObj_t *get_timer_obj(TIM_HandleTypeDef *htim);
-
-void enableTimerClock(TIM_HandleTypeDef *htim);
-void disableTimerClock(TIM_HandleTypeDef *htim);
+#endif
+void enableTimerClock(TIM_TypeDef *instance);
+void disableTimerClock(TIM_TypeDef *instance);
 
 uint32_t getTimerIrq(TIM_TypeDef *tim);
 uint8_t getTimerClkSrc(TIM_TypeDef *tim);
@@ -293,8 +307,11 @@ uint8_t getTimerClkSrc(TIM_TypeDef *tim);
 IRQn_Type getTimerUpIrq(TIM_TypeDef *tim);
 IRQn_Type getTimerCCIrq(TIM_TypeDef *tim);
 
+#if defined(USE_HALV2_DRIVER)
+hal_tim_channel_t getTimerChannel(PinName pin);
+#else
 uint32_t getTimerChannel(PinName pin);
-
+#endif
 #endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
 
 #ifdef __cplusplus

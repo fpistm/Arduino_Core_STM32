@@ -26,7 +26,8 @@ extern "C" {
 /* DAC/PWM */
 #if !defined(HAL_DAC_MODULE_ONLY) &&\
     (defined(HAL_DAC_MODULE_ENABLED) || (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1))) ||\
-    (defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY))
+    (!defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1))))
 //This is the list of the IOs configured
 uint32_t g_anOutputPinConfigured[MAX_NB_PORT] = {0};
 #endif
@@ -215,7 +216,8 @@ void analogWrite(pin_size_t pinNumber, int value)
       dac_write_value(p, value, do_init);
     } else
 #endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
       if (pin_in_pinmap(p, PinMap_TIM)) {
         if (is_pin_configured(p, g_anOutputPinConfigured) == false) {
           set_pin_configured(p, g_anOutputPinConfigured);

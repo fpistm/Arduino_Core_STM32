@@ -32,7 +32,8 @@
 #include "timer.h"
 #include "stm32yyxx_ll_tim.h"
 
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 
 #define  TIMER_CHANNELS 4    // channel5 and channel 6 are not considered here has they don't have gpio output and they don't have interrupt
 
@@ -95,6 +96,25 @@ typedef enum {
 } TimerCompareFormat_t;
 
 typedef enum {
+#if defined(USE_HALV2_DRIVER)
+  // Set with hal_tim_filter_t value
+  FILTER_NONE = HAL_TIM_FDIV1,
+  FILTER_CKINT_N2 = HAL_TIM_FDIV1_N2,
+  FILTER_CKINT_N4 = HAL_TIM_FDIV1_N4,
+  FILTER_CKINT_N8 = HAL_TIM_FDIV1_N8,
+  FILTER_DTS2_N6 = HAL_TIM_FDIV2_N6,
+  FILTER_DTS2_N8 = HAL_TIM_FDIV2_N8,
+  FILTER_DTS4_N6 = HAL_TIM_FDIV4_N6,
+  FILTER_DTS4_N8 = HAL_TIM_FDIV4_N8,
+  FILTER_DTS8_N6 = HAL_TIM_FDIV8_N6,
+  FILTER_DTS8_N8 = HAL_TIM_FDIV8_N8,
+  FILTER_DTS16_N5 = HAL_TIM_FDIV16_N5,
+  FILTER_DTS16_N6 = HAL_TIM_FDIV16_N6,
+  FILTER_DTS16_N8 = HAL_TIM_FDIV16_N8,
+  FILTER_DTS32_N5 = HAL_TIM_FDIV32_N5,
+  FILTER_DTS32_N6 = HAL_TIM_FDIV32_N6,
+  FILTER_DTS32_N8 = HAL_TIM_FDIV32_N8,
+#else
   FILTER_NONE = 0,  // No filter
   FILTER_CKINT_N2,  // Sampling rate is same as clock interrupt, n=2 events
   FILTER_CKINT_N4,  // Sampling rate is same as clock interrupt, n=4 events
@@ -111,7 +131,16 @@ typedef enum {
   FILTER_DTS32_N5,  // Sampling rate is DTS/32, n=5 events
   FILTER_DTS32_N6,  // Sampling rate is DTS/32, n=6 events
   FILTER_DTS32_N8,  // Sampling rate is DTS/32, n=8 events
+#endif
 } ChannelInputFilter_t;
+
+typedef enum {
+  DISABLE_IT,  // default
+  ENABLE_IT,
+  CLEAR_IT,
+  CLEAR_AND_ENABLE_IT,
+  IS_ENABLE_IT,
+} ChannelITConfig_t;
 
 #ifdef __cplusplus
 
@@ -171,19 +200,29 @@ class HardwareTimer {
 
     uint32_t getTimerClkFreq();  // return timer clock frequency in Hz.
 
+#if defined(USE_HALV2_DRIVER)
+    static void captureCompareCallback(hal_tim_handle_t *htim, hal_tim_channel_t hal_channel); // Generic Capture and Compare callback which will call user callback
+    static void updateCallback(hal_tim_handle_t *htim);  // Generic Update (rollover) callback which will call user callback
+#else
     static void captureCompareCallback(TIM_HandleTypeDef *htim); // Generic Capture and Compare callback which will call user callback
     static void updateCallback(TIM_HandleTypeDef *htim);  // Generic Update (rollover) callback which will call user callback
-
+#endif
     void updateRegistersIfNotRunning(TIM_TypeDef *TIMx); // Take into account registers update immediately if timer is not running,
 
     bool isRunning(); // return true if HardwareTimer is running
     bool isRunningChannel(uint32_t channel); // return true if channel is running
 
     // The following function(s) are available for more advanced timer options
+#if defined(USE_HALV2_DRIVER)
+    hal_tim_handle_t *getHandle();  // return the handle address for HAL related configuration
+    hal_tim_channel_t getChannel(uint32_t channel);
+#else
     TIM_HandleTypeDef *getHandle();  // return the handle address for HAL related configuration
     uint32_t getChannel(uint32_t channel);
+#endif
     uint32_t getLLChannel(uint32_t channel);
-    uint32_t getIT(uint32_t channel);
+
+    bool manageIT(uint32_t channel, ChannelITConfig_t config = DISABLE_IT);
     uint32_t getAssociatedChannel(uint32_t channel);
 
   private:

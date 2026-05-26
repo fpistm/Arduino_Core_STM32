@@ -1603,9 +1603,9 @@ void dac_stop(PinName pin)
 #endif //HAL_DAC_MODULE_ENABLED
 #endif /* !HAL_DAC_MODULE_ONLY */
 
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-/* PẄM */
-
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
+/* PWM */
 /**
   * @brief  This function will set the PWM to the required value
   * @param  port : the gpio port to use
@@ -1659,7 +1659,7 @@ void pwm_stop(PinName pin)
     HT = NULL;
   }
 }
-#endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
+#endif /* !HAL_TIM_MODULE_ONLY && (HAL_TIM_MODULE_ENABLED || (USE_HAL_TIM_MODULE && (USE_HAL_TIM_MODULE == 1))) */
 
 #ifdef __cplusplus
 }

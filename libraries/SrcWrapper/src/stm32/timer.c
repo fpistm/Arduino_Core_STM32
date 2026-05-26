@@ -17,19 +17,25 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 /* Private Functions */
 /* Aim of the function is to get _timerObj pointer using htim pointer */
 /* Highly inspired from magical linux kernel's "container_of" */
 /* (which was not directly used since not compatible with IAR toolchain) */
+#if defined(USE_HALV2_DRIVER)
+timerObj_t *get_timer_obj(hal_tim_handle_t *htim)
+#else
 timerObj_t *get_timer_obj(TIM_HandleTypeDef *htim)
+#endif
 {
   timerObj_t *obj;
   obj = (timerObj_t *)((char *)htim - offsetof(timerObj_t, handle));
   return (obj);
 }
 
+#if defined(USE_HALV2_DRIVER)
+#else
 /**
   * @brief  TIMER Initialization - clock init and nvic init
   * @param  htim_base: TIM handle
@@ -38,7 +44,7 @@ timerObj_t *get_timer_obj(TIM_HandleTypeDef *htim)
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
 {
   timerObj_t *obj = get_timer_obj(htim_base);
-  enableTimerClock(htim_base);
+  enableTimerClock(htim_base->Instance);
 
   // configure Update interrupt
   HAL_NVIC_SetPriority(getTimerUpIrq(htim_base->Instance), obj->preemptPriority, obj->subPriority);
@@ -58,7 +64,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
   */
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim_base)
 {
-  disableTimerClock(htim_base);
+  disableTimerClock(htim_base->Instance);
   HAL_NVIC_DisableIRQ(getTimerUpIrq(htim_base->Instance));
   HAL_NVIC_DisableIRQ(getTimerCCIrq(htim_base->Instance));
 }
@@ -71,7 +77,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim_base)
 void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim)
 {
   timerObj_t *obj = get_timer_obj(htim);
-  enableTimerClock(htim);
+  enableTimerClock(htim->Instance);
 
   // configure Update interrupt
   HAL_NVIC_SetPriority(getTimerUpIrq(htim->Instance), obj->preemptPriority, obj->subPriority);
@@ -91,7 +97,7 @@ void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim)
   */
 void HAL_TIM_OC_MspDeInit(TIM_HandleTypeDef *htim)
 {
-  disableTimerClock(htim);
+  disableTimerClock(htim->Instance);
   HAL_NVIC_DisableIRQ(getTimerUpIrq(htim->Instance));
   HAL_NVIC_DisableIRQ(getTimerCCIrq(htim->Instance));
 }
@@ -103,7 +109,7 @@ void HAL_TIM_OC_MspDeInit(TIM_HandleTypeDef *htim)
   */
 void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim)
 {
-  enableTimerClock(htim);
+  enableTimerClock(htim->Instance);
 }
 
 /**
@@ -113,125 +119,174 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim)
   */
 void HAL_TIM_IC_MspDeInit(TIM_HandleTypeDef *htim)
 {
-  disableTimerClock(htim);
+  disableTimerClock(htim->Instance);
 }
-
+#endif /* !defined(USE_HALV2_DRIVER) */
 /* Exported functions */
 /**
   * @brief  Enable the timer clock
-  * @param  htim: TIM handle
+  * @param  instance: TIM instance
   * @retval None
   */
-void enableTimerClock(TIM_HandleTypeDef *htim)
+
+void enableTimerClock(TIM_TypeDef *instance)
 {
   // Enable TIM clock
 #if defined(TIM1_BASE)
-  if (htim->Instance == TIM1) {
+  if (instance == TIM1) {
+#if defined(__HAL_RCC_TIM1_CLK_ENABLE)
     __HAL_RCC_TIM1_CLK_ENABLE();
+#else
+    HAL_RCC_TIM1_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM2_BASE)
-  if (htim->Instance == TIM2) {
+  if (instance == TIM2) {
+#if defined(__HAL_RCC_TIM2_CLK_ENABLE)
     __HAL_RCC_TIM2_CLK_ENABLE();
+#else
+    HAL_RCC_TIM2_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM3_BASE)
-  if (htim->Instance == TIM3) {
+  if (instance == TIM3) {
+#if defined(__HAL_RCC_TIM3_CLK_ENABLE)
     __HAL_RCC_TIM3_CLK_ENABLE();
+#else
+    HAL_RCC_TIM3_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM4_BASE)
-  if (htim->Instance == TIM4) {
+  if (instance == TIM4) {
+#if defined(__HAL_RCC_TIM4_CLK_ENABLE)
     __HAL_RCC_TIM4_CLK_ENABLE();
+#else
+    HAL_RCC_TIM4_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM5_BASE)
-  if (htim->Instance == TIM5) {
+  if (instance == TIM5) {
+#if defined(__HAL_RCC_TIM5_CLK_ENABLE)
     __HAL_RCC_TIM5_CLK_ENABLE();
+#else
+    HAL_RCC_TIM5_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM6_BASE)
-  if (htim->Instance == TIM6) {
+  if (instance == TIM6) {
+#if defined(__HAL_RCC_TIM6_CLK_ENABLE)
     __HAL_RCC_TIM6_CLK_ENABLE();
+#else
+    HAL_RCC_TIM6_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM7_BASE)
-  if (htim->Instance == TIM7) {
+  if (instance == TIM7) {
+#if defined(__HAL_RCC_TIM7_CLK_ENABLE)
     __HAL_RCC_TIM7_CLK_ENABLE();
+#else
+    HAL_RCC_TIM7_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM8_BASE)
-  if (htim->Instance == TIM8) {
+  if (instance == TIM8) {
+#if defined(__HAL_RCC_TIM8_CLK_ENABLE)
     __HAL_RCC_TIM8_CLK_ENABLE();
+#else
+    HAL_RCC_TIM8_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM9_BASE)
-  if (htim->Instance == TIM9) {
+  if (instance == TIM9) {
     __HAL_RCC_TIM9_CLK_ENABLE();
   }
 #endif
 #if defined(TIM10_BASE)
-  if (htim->Instance == TIM10) {
+  if (instance == TIM10) {
     __HAL_RCC_TIM10_CLK_ENABLE();
   }
 #endif
 #if defined(TIM11_BASE)
-  if (htim->Instance == TIM11) {
+  if (instance == TIM11) {
     __HAL_RCC_TIM11_CLK_ENABLE();
   }
 #endif
 #if defined(TIM12_BASE)
-  if (htim->Instance == TIM12) {
+  if (instance == TIM12) {
+#if defined(__HAL_RCC_TIM12_CLK_ENABLE)
     __HAL_RCC_TIM12_CLK_ENABLE();
+#else
+    HAL_RCC_TIM12_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM13_BASE)
-  if (htim->Instance == TIM13) {
+  if (instance == TIM13) {
     __HAL_RCC_TIM13_CLK_ENABLE();
   }
 #endif
 #if defined(TIM14_BASE)
-  if (htim->Instance == TIM14) {
+  if (instance == TIM14) {
     __HAL_RCC_TIM14_CLK_ENABLE();
   }
 #endif
 #if defined(TIM15_BASE)
-  if (htim->Instance == TIM15) {
+  if (instance == TIM15) {
+#if defined(__HAL_RCC_TIM15_CLK_ENABLE)
     __HAL_RCC_TIM15_CLK_ENABLE();
+#else
+    HAL_RCC_TIM15_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM16_BASE)
-  if (htim->Instance == TIM16) {
+  if (instance == TIM16) {
+#if defined(__HAL_RCC_TIM16_CLK_ENABLE)
     __HAL_RCC_TIM16_CLK_ENABLE();
+#else
+    HAL_RCC_TIM16_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM17_BASE)
-  if (htim->Instance == TIM17) {
+  if (instance == TIM17) {
+#if defined(__HAL_RCC_TIM17_CLK_ENABLE)
     __HAL_RCC_TIM17_CLK_ENABLE();
+#else
+    HAL_RCC_TIM17_EnableClock();
+#endif
   }
 #endif
 #if defined(TIM18_BASE)
-  if (htim->Instance == TIM18) {
+  if (instance == TIM18) {
     __HAL_RCC_TIM18_CLK_ENABLE();
   }
 #endif
 #if defined(TIM19_BASE)
-  if (htim->Instance == TIM19) {
+  if (instance == TIM19) {
     __HAL_RCC_TIM19_CLK_ENABLE();
   }
 #endif
 #if defined(TIM20_BASE)
-  if (htim->Instance == TIM20) {
+  if (instance == TIM20) {
     __HAL_RCC_TIM20_CLK_ENABLE();
   }
 #endif
 #if defined(TIM21_BASE)
-  if (htim->Instance == TIM21) {
+  if (instance == TIM21) {
     __HAL_RCC_TIM21_CLK_ENABLE();
   }
 #endif
 #if defined(TIM22_BASE)
-  if (htim->Instance == TIM22) {
+  if (instance == TIM22) {
     __HAL_RCC_TIM22_CLK_ENABLE();
   }
 #endif
@@ -242,116 +297,164 @@ void enableTimerClock(TIM_HandleTypeDef *htim)
   * @param  htim: TIM handle
   * @retval None
   */
-void disableTimerClock(TIM_HandleTypeDef *htim)
+void disableTimerClock(TIM_TypeDef *instance)
 {
-  // Enable TIM clock
+  // Disable TIM clock
 #if defined(TIM1_BASE)
-  if (htim->Instance == TIM1) {
+  if (instance == TIM1) {
+#if defined(__HAL_RCC_TIM1_CLK_DISABLE)
     __HAL_RCC_TIM1_CLK_DISABLE();
+#else
+    HAL_RCC_TIM1_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM2_BASE)
-  if (htim->Instance == TIM2) {
+  if (instance == TIM2) {
+#if defined(__HAL_RCC_TIM2_CLK_DISABLE)
     __HAL_RCC_TIM2_CLK_DISABLE();
+#else
+    HAL_RCC_TIM2_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM3_BASE)
-  if (htim->Instance == TIM3) {
+  if (instance == TIM3) {
+#if defined(__HAL_RCC_TIM3_CLK_DISABLE)
     __HAL_RCC_TIM3_CLK_DISABLE();
+#else
+    HAL_RCC_TIM3_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM4_BASE)
-  if (htim->Instance == TIM4) {
+  if (instance == TIM4) {
+#if defined(__HAL_RCC_TIM4_CLK_DISABLE)
     __HAL_RCC_TIM4_CLK_DISABLE();
+#else
+    HAL_RCC_TIM4_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM5_BASE)
-  if (htim->Instance == TIM5) {
+  if (instance == TIM5) {
+#if defined(__HAL_RCC_TIM5_CLK_DISABLE)
     __HAL_RCC_TIM5_CLK_DISABLE();
+#else
+    HAL_RCC_TIM5_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM6_BASE)
-  if (htim->Instance == TIM6) {
+  if (instance == TIM6) {
+#if defined(__HAL_RCC_TIM6_CLK_DISABLE)
     __HAL_RCC_TIM6_CLK_DISABLE();
+#else
+    HAL_RCC_TIM6_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM7_BASE)
-  if (htim->Instance == TIM7) {
+  if (instance == TIM7) {
+#if defined(__HAL_RCC_TIM7_CLK_DISABLE)
     __HAL_RCC_TIM7_CLK_DISABLE();
+#else
+    HAL_RCC_TIM7_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM8_BASE)
-  if (htim->Instance == TIM8) {
+  if (instance == TIM8) {
+#if defined(__HAL_RCC_TIM8_CLK_DISABLE)
     __HAL_RCC_TIM8_CLK_DISABLE();
+#else
+    HAL_RCC_TIM8_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM9_BASE)
-  if (htim->Instance == TIM9) {
+  if (instance == TIM9) {
     __HAL_RCC_TIM9_CLK_DISABLE();
   }
 #endif
 #if defined(TIM10_BASE)
-  if (htim->Instance == TIM10) {
+  if (instance == TIM10) {
     __HAL_RCC_TIM10_CLK_DISABLE();
   }
 #endif
 #if defined(TIM11_BASE)
-  if (htim->Instance == TIM11) {
+  if (instance == TIM11) {
     __HAL_RCC_TIM11_CLK_DISABLE();
   }
 #endif
 #if defined(TIM12_BASE)
-  if (htim->Instance == TIM12) {
+  if (instance == TIM12) {
+#if defined(__HAL_RCC_TIM12_CLK_DISABLE)
     __HAL_RCC_TIM12_CLK_DISABLE();
+#else
+    HAL_RCC_TIM12_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM13_BASE)
-  if (htim->Instance == TIM13) {
+  if (instance == TIM13) {
     __HAL_RCC_TIM13_CLK_DISABLE();
   }
 #endif
 #if defined(TIM14_BASE)
-  if (htim->Instance == TIM14) {
+  if (instance == TIM14) {
     __HAL_RCC_TIM14_CLK_DISABLE();
   }
 #endif
 #if defined(TIM15_BASE)
-  if (htim->Instance == TIM15) {
+  if (instance == TIM15) {
+#if defined(__HAL_RCC_TIM15_CLK_DISABLE)
     __HAL_RCC_TIM15_CLK_DISABLE();
+#else
+    HAL_RCC_TIM15_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM16_BASE)
-  if (htim->Instance == TIM16) {
+  if (instance == TIM16) {
+#if defined(__HAL_RCC_TIM16_CLK_DISABLE)
     __HAL_RCC_TIM16_CLK_DISABLE();
+#else
+    HAL_RCC_TIM16_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM17_BASE)
-  if (htim->Instance == TIM17) {
+  if (instance == TIM17) {
+#if defined(__HAL_RCC_TIM17_CLK_DISABLE)
     __HAL_RCC_TIM17_CLK_DISABLE();
+#else
+    HAL_RCC_TIM17_DisableClock();
+#endif
   }
 #endif
 #if defined(TIM18_BASE)
-  if (htim->Instance == TIM18) {
+  if (instance == TIM18) {
     __HAL_RCC_TIM18_CLK_DISABLE();
   }
 #endif
 #if defined(TIM19_BASE)
-  if (htim->Instance == TIM19) {
+  if (instance == TIM19) {
     __HAL_RCC_TIM19_CLK_DISABLE();
   }
 #endif
 #if defined(TIM20_BASE)
-  if (htim->Instance == TIM20) {
+  if (instance == TIM20) {
     __HAL_RCC_TIM20_CLK_DISABLE();
   }
 #endif
 #if defined(TIM21_BASE)
-  if (htim->Instance == TIM21) {
+  if (instance == TIM21) {
     __HAL_RCC_TIM21_CLK_DISABLE();
   }
 #endif
 #if defined(TIM22_BASE)
-  if (htim->Instance == TIM22) {
+  if (instance == TIM22) {
     __HAL_RCC_TIM22_CLK_DISABLE();
   }
 #endif
@@ -722,6 +825,31 @@ uint8_t getTimerClkSrc(TIM_TypeDef *tim)
   * @param  pin: PinName
   * @retval Valid HAL channel
   */
+#if defined(USE_HALV2_DRIVER)
+hal_tim_channel_t getTimerChannel(PinName pin)
+{
+  uint32_t function = pinmap_function(pin, PinMap_TIM);
+  hal_tim_channel_t channel = -1;
+  switch (STM_PIN_CHANNEL(function)) {
+    case 1:
+      channel = HAL_TIM_CHANNEL_1;
+      break;
+    case 2:
+      channel = HAL_TIM_CHANNEL_2;
+      break;
+    case 3:
+      channel = HAL_TIM_CHANNEL_3;
+      break;
+    case 4:
+      channel = HAL_TIM_CHANNEL_4;
+      break;
+    default:
+      _Error_Handler("TIM: Unknown timer channel", (int)(STM_PIN_CHANNEL(function)));
+      break;
+  }
+  return channel;
+}
+#else
 uint32_t getTimerChannel(PinName pin)
 {
   uint32_t function = pinmap_function(pin, PinMap_TIM);
@@ -745,6 +873,7 @@ uint32_t getTimerChannel(PinName pin)
   }
   return channel;
 }
+#endif
 
 #endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
 
