@@ -199,7 +199,11 @@ bool IWatchdogClass::isReset(bool clear)
   */
 void IWatchdogClass::clearReset(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  LL_RCC_ForceClearResetFlags();
+#else
   LL_RCC_ClearResetFlags();
+#endif
 }
 
 // Preinstantiate Object
