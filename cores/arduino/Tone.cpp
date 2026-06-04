@@ -22,7 +22,8 @@
 #include "Arduino.h"
 #include "HardwareTimer.h"
 
-#if defined(HAL_TIM_MODULE_ENABLED) && defined(TIMER_TONE) && !defined(HAL_TIM_MODULE_ONLY)
+#if defined(TIMER_TONE) && !defined(HAL_TIM_MODULE_ONLY) && \
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 
 #define MAX_FREQ  65535
 
@@ -138,7 +139,7 @@ void noTone(uint8_t _pin, bool destruct)
   }
 }
 #else
-#warning "TIMER_TONE or HAL_TIM_MODULE_ENABLED not defined"
+#warning "Tone library disabled"
 void tone(uint8_t _pin, unsigned int frequency, unsigned long duration)
 {
   (void)_pin;
