@@ -24,7 +24,11 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 
 struct spi_s {
+#if defined(USE_HALV2_DRIVER)
+  hal_spi_handle_t handle;
+#else
   SPI_HandleTypeDef handle;
+#endif
   SPI_TypeDef *spi;
   PinName pin_miso;
   PinName pin_mosi;
@@ -88,7 +92,7 @@ typedef enum {
 } spi_status_e;
 
 /* Exported functions ------------------------------------------------------- */
-void spi_init(spi_t *obj, uint32_t speed, spi_mode_e dataMode, uint8_t msb, spi_busmode_e busMode);
+void spi_init(spi_t *obj, uint32_t speed, spi_mode_e dataMode, bool msbFirst, spi_busmode_e busMode);
 void spi_deinit(spi_t *obj);
 spi_status_e spi_transfer(spi_t *obj, const uint8_t *tx_buffer, uint8_t *rx_buffer, uint16_t len);
 uint32_t spi_getClkFreq(spi_t *obj);

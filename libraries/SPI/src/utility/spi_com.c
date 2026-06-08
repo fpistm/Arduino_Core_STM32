@@ -41,6 +41,9 @@ uint32_t spi_getClkFreqInst(SPI_TypeDef *spi_inst)
 #else
 #if defined(SPI1_BASE)
     if (spi_inst == SPI1) {
+#if defined(USE_HALV2_DRIVER)
+      spi_freq = HAL_RCC_SPI1_GetKernelClkFreq();
+#else
 #if defined(RCC_PERIPHCLK_SPI1) || defined(RCC_PERIPHCLK_SPI123)
 #ifdef RCC_PERIPHCLK_SPI1
       spi_freq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI1);
@@ -53,10 +56,14 @@ uint32_t spi_getClkFreqInst(SPI_TypeDef *spi_inst)
         /* SPI1, SPI4, SPI5 and SPI6. Source CLK is PCKL2 */
         spi_freq = HAL_RCC_GetPCLK2Freq();
       }
+#endif
     }
 #endif // SPI1_BASE
 #if defined(SPI2_BASE)
     if (spi_inst == SPI2) {
+#if defined(USE_HALV2_DRIVER)
+      spi_freq = HAL_RCC_SPI2_GetKernelClkFreq();
+#else
 #if defined(RCC_PERIPHCLK_SPI2) || defined(RCC_PERIPHCLK_SPI123) ||\
     defined(RCC_PERIPHCLK_SPI23)
 #ifdef RCC_PERIPHCLK_SPI2
@@ -72,10 +79,14 @@ uint32_t spi_getClkFreqInst(SPI_TypeDef *spi_inst)
         /* SPI_2 and SPI_3. Source CLK is PCKL1 */
         spi_freq = HAL_RCC_GetPCLK1Freq();
       }
+#endif
     }
 #endif // SPI2_BASE
 #if defined(SPI3_BASE)
     if (spi_inst == SPI3) {
+#if defined(USE_HALV2_DRIVER)
+      spi_freq = HAL_RCC_SPI3_GetKernelClkFreq();
+#else
 #if defined(RCC_PERIPHCLK_SPI3) || defined(RCC_PERIPHCLK_SPI123) ||\
     defined(RCC_PERIPHCLK_SPI23)
 #ifdef RCC_PERIPHCLK_SPI3
@@ -91,6 +102,7 @@ uint32_t spi_getClkFreqInst(SPI_TypeDef *spi_inst)
         /* SPI_2 and SPI_3. Source CLK is PCKL1 */
         spi_freq = HAL_RCC_GetPCLK1Freq();
       }
+#endif
     }
 #endif // SPI3_BASE
 #if defined(SPI4_BASE)
@@ -185,14 +197,10 @@ uint32_t spi_getClkFreq(spi_t *obj)
   * @param  obj : pointer to spi_t structure
   * @retval Disable delay in microsecondes
   */
-static uint32_t compute_disable_delay(spi_t *obj)
+static uint32_t compute_disable_delay(uint32_t spi_freq, uint32_t prescaler)
 {
-  uint32_t spi_freq = spi_getClkFreqInst(obj->spi);
   uint32_t disable_delay;
-  uint32_t prescaler;
-  SPI_HandleTypeDef *handle = &(obj->handle);
-
-  prescaler = 1 << ((handle->Init.BaudRatePrescaler >> SPI_CFG1_MBR_Pos) + 1);
+  prescaler = 1 << ((prescaler >> SPI_CFG1_MBR_Pos) + 1);
   disable_delay = (((prescaler * 1000000) / spi_freq) / 2) + 1;
   return disable_delay;
 }
@@ -203,204 +211,254 @@ static uint32_t compute_disable_delay(spi_t *obj)
   * @param  obj : pointer to spi_t structure
   * @param  speed : spi output speed
   * @param  dataMode : one of the spi modes
-  * @param  msb : set to 1 in msb first
+  * @param  msbFirst : set to true in msb first
   * @param  busMode : spi busMode: controller or peripheral
   * @retval None
   */
-void spi_init(spi_t *obj, uint32_t speed, spi_mode_e dataMode, uint8_t msb, spi_busmode_e busMode)
+void spi_init(spi_t *obj, uint32_t speed, spi_mode_e dataMode, bool msbFirst, spi_busmode_e busMode)
 {
-  if (obj == NULL) {
-    return;
-  }
-
-  SPI_HandleTypeDef *handle = &(obj->handle);
-  uint32_t spi_freq = 0;
-  uint32_t pull = 0;
+  if (obj != NULL) {
+    uint32_t spi_freq = 0;
+    uint32_t pull = 0;
 
 #if defined(SUBGHZSPI_BASE)
-  if (obj->spi != SUBGHZSPI) {
+    if (obj->spi != SUBGHZSPI) {
 #endif
-    // Determine the SPI to use
-    SPI_TypeDef *spi_mosi = pinmap_peripheral(obj->pin_mosi, PinMap_SPI_MOSI);
-    SPI_TypeDef *spi_miso = pinmap_peripheral(obj->pin_miso, PinMap_SPI_MISO);
-    SPI_TypeDef *spi_sclk = pinmap_peripheral(obj->pin_sclk, PinMap_SPI_SCLK);
-    SPI_TypeDef *spi_ssel = pinmap_peripheral(obj->pin_ssel, PinMap_SPI_SSEL);
+      // Determine the SPI to use
+      SPI_TypeDef *spi_mosi = pinmap_peripheral(obj->pin_mosi, PinMap_SPI_MOSI);
+      SPI_TypeDef *spi_miso = pinmap_peripheral(obj->pin_miso, PinMap_SPI_MISO);
+      SPI_TypeDef *spi_sclk = pinmap_peripheral(obj->pin_sclk, PinMap_SPI_SCLK);
+      SPI_TypeDef *spi_ssel = pinmap_peripheral(obj->pin_ssel, PinMap_SPI_SSEL);
 
-    /* Pins MOSI/MISO/SCLK must not be NP. ssel can be NP. */
-    if (spi_mosi == NP || spi_miso == NP || spi_sclk == NP) {
-      core_debug("ERROR: at least one SPI pin has no peripheral\n");
-      return;
+      /* Pins MOSI/MISO/SCLK must not be NP. ssel can be NP. */
+      if (spi_mosi == NP || spi_miso == NP || spi_sclk == NP) {
+        core_debug("ERROR: at least one SPI pin has no peripheral\n");
+        return;
+      }
+
+      SPI_TypeDef *spi_data = pinmap_merge_peripheral(spi_mosi, spi_miso);
+      SPI_TypeDef *spi_cntl = pinmap_merge_peripheral(spi_sclk, spi_ssel);
+
+      obj->spi = pinmap_merge_peripheral(spi_data, spi_cntl);
+
+      // Are all pins connected to the same SPI instance?
+      if (spi_data == NP || spi_cntl == NP || obj->spi == NP) {
+        core_debug("ERROR: SPI pins mismatch\n");
+        return;
+      }
+#if defined(SUBGHZSPI_BASE)
+    } else {
+      if (obj->pin_mosi != NC || obj->pin_miso != NC || obj->pin_sclk != NC || obj->pin_ssel != NC) {
+        core_debug("ERROR: SUBGHZ_SPI cannot define custom pins\n");
+        return;
+      }
     }
-
-    SPI_TypeDef *spi_data = pinmap_merge_peripheral(spi_mosi, spi_miso);
-    SPI_TypeDef *spi_cntl = pinmap_merge_peripheral(spi_sclk, spi_ssel);
-
-    obj->spi = pinmap_merge_peripheral(spi_data, spi_cntl);
-
-    // Are all pins connected to the same SPI instance?
-    if (spi_data == NP || spi_cntl == NP || obj->spi == NP) {
-      core_debug("ERROR: SPI pins mismatch\n");
-      return;
+    if (obj->spi != SUBGHZSPI) {
+#endif
+      /* Configure SPI GPIO pins */
+      pinmap_pinout(obj->pin_mosi, PinMap_SPI_MOSI);
+      pinmap_pinout(obj->pin_miso, PinMap_SPI_MISO);
+      pinmap_pinout(obj->pin_sclk, PinMap_SPI_SCLK);
+      /*
+      * According the STM32 Datasheet for SPI peripheral we need to PULLDOWN
+      * or PULLUP the SCK pin according the polarity used.
+      */
+      pull = ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE1_C)) ? LL_GPIO_PULL_DOWN : LL_GPIO_PULL_UP;
+      pin_PullConfig(get_GPIO_Port(STM_PORT(obj->pin_sclk)), STM_LL_GPIO_PIN(obj->pin_sclk), pull);
+      pinmap_pinout(obj->pin_ssel, PinMap_SPI_SSEL);
+#if defined(SUBGHZSPI_BASE)
     }
-#if defined(SUBGHZSPI_BASE)
-  } else {
-    if (obj->pin_mosi != NC || obj->pin_miso != NC || obj->pin_sclk != NC || obj->pin_ssel != NC) {
-      core_debug("ERROR: SUBGHZ_SPI cannot define custom pins\n");
-      return;
-    }
-  }
-#endif
-
-  // Configure the SPI pins
-  if (obj->pin_ssel != NC) {
-    handle->Init.NSS = SPI_NSS_HARD_OUTPUT;
-  } else {
-    handle->Init.NSS = SPI_NSS_SOFT;
-  }
-
-  /* Fill default value */
-  handle->Instance = obj->spi;
-  handle->Init.Mode = (busMode == SPI_CONTROLLER_C) ? SPI_MODE_MASTER : SPI_MODE_SLAVE;
-
-  spi_freq = spi_getClkFreqInst(obj->spi);
-  /* For SUBGHZSPI,  'SPI_BAUDRATEPRESCALER_*' == 'SUBGHZSPI_BAUDRATEPRESCALER_*' */
-  if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV2_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV4_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV8_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV16_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV32_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV64_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
-  } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV128_MHZ)) {
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
-  } else {
-    /*
-     * As it is not possible to go below (spi_freq / SPI_SPEED_CLOCK_DIV256_MHZ).
-     * Set prescaler at max value so get the lowest frequency possible.
-     */
-    handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
-  }
-
-#if defined(SPI_IFCR_EOTC)
-  // Compute disable delay as baudrate has been modified
-  obj->disable_delay = compute_disable_delay(obj);
-#endif
-
-  handle->Init.Direction         = SPI_DIRECTION_2LINES;
-
-  if ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE2_C)) {
-    handle->Init.CLKPhase          = SPI_PHASE_1EDGE;
-  } else {
-    handle->Init.CLKPhase          = SPI_PHASE_2EDGE;
-  }
-
-  if ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE1_C)) {
-    handle->Init.CLKPolarity       = SPI_POLARITY_LOW;
-  } else {
-    handle->Init.CLKPolarity       = SPI_POLARITY_HIGH;
-  }
-
-  handle->Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
-  handle->Init.CRCPolynomial     = 7;
-  handle->Init.DataSize          = SPI_DATASIZE_8BIT;
-
-  if (msb == 0) {
-    handle->Init.FirstBit          = SPI_FIRSTBIT_LSB;
-  } else {
-    handle->Init.FirstBit          = SPI_FIRSTBIT_MSB;
-  }
-
-  handle->Init.TIMode            = SPI_TIMODE_DISABLE;
-#if defined(SPI_NSS_PULSE_DISABLE)
-  handle->Init.NSSPMode          = SPI_NSS_PULSE_DISABLE;
-#endif
-#ifdef SPI_MASTER_KEEP_IO_STATE_ENABLE
-  handle->Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_ENABLE;  /* Recommended setting to avoid glitches */
-#endif
-
-#if defined(SUBGHZSPI_BASE)
-  if (handle->Instance != SUBGHZSPI) {
-#endif
-    /* Configure SPI GPIO pins */
-    pinmap_pinout(obj->pin_mosi, PinMap_SPI_MOSI);
-    pinmap_pinout(obj->pin_miso, PinMap_SPI_MISO);
-    pinmap_pinout(obj->pin_sclk, PinMap_SPI_SCLK);
-    /*
-    * According the STM32 Datasheet for SPI peripheral we need to PULLDOWN
-    * or PULLUP the SCK pin according the polarity used.
-    */
-    pull = (handle->Init.CLKPolarity == SPI_POLARITY_LOW) ? LL_GPIO_PULL_DOWN : LL_GPIO_PULL_UP;
-    pin_PullConfig(get_GPIO_Port(STM_PORT(obj->pin_sclk)), STM_LL_GPIO_PIN(obj->pin_sclk), pull);
-    pinmap_pinout(obj->pin_ssel, PinMap_SPI_SSEL);
-#if defined(SUBGHZSPI_BASE)
-  }
 #endif
 #if defined SPI1_BASE
-  // Enable SPI clock
-  if (handle->Instance == SPI1) {
-    __HAL_RCC_SPI1_CLK_ENABLE();
-    __HAL_RCC_SPI1_FORCE_RESET();
-    __HAL_RCC_SPI1_RELEASE_RESET();
-  }
+    // Enable SPI clock
+    if (obj->spi == SPI1) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI1_EnableClock();
+      HAL_RCC_SPI1_Reset();
+#else
+      __HAL_RCC_SPI1_CLK_ENABLE();
+      __HAL_RCC_SPI1_FORCE_RESET();
+      __HAL_RCC_SPI1_RELEASE_RESET();
+#endif
+    }
 #endif
 
 #if defined SPI2_BASE
-  if (handle->Instance == SPI2) {
-    __HAL_RCC_SPI2_CLK_ENABLE();
-    __HAL_RCC_SPI2_FORCE_RESET();
-    __HAL_RCC_SPI2_RELEASE_RESET();
-  }
+    if (obj->spi == SPI2) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI2_EnableClock();
+      HAL_RCC_SPI2_Reset();
+#else
+      __HAL_RCC_SPI2_CLK_ENABLE();
+      __HAL_RCC_SPI2_FORCE_RESET();
+      __HAL_RCC_SPI2_RELEASE_RESET();
+#endif
+    }
 #endif
 
 #if defined SPI3_BASE
-  if (handle->Instance == SPI3) {
-    __HAL_RCC_SPI3_CLK_ENABLE();
-    __HAL_RCC_SPI3_FORCE_RESET();
-    __HAL_RCC_SPI3_RELEASE_RESET();
-  }
+    if (obj->spi == SPI3) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI3_EnableClock();
+      HAL_RCC_SPI3_Reset();
+#else
+      __HAL_RCC_SPI3_CLK_ENABLE();
+      __HAL_RCC_SPI3_FORCE_RESET();
+      __HAL_RCC_SPI3_RELEASE_RESET();
+#endif
+    }
 #endif
 
 #if defined SPI4_BASE
-  if (handle->Instance == SPI4) {
-    __HAL_RCC_SPI4_CLK_ENABLE();
-    __HAL_RCC_SPI4_FORCE_RESET();
-    __HAL_RCC_SPI4_RELEASE_RESET();
-  }
+    if (obj->spi == SPI4) {
+      __HAL_RCC_SPI4_CLK_ENABLE();
+      __HAL_RCC_SPI4_FORCE_RESET();
+      __HAL_RCC_SPI4_RELEASE_RESET();
+    }
 #endif
 
 #if defined SPI5_BASE
-  if (handle->Instance == SPI5) {
-    __HAL_RCC_SPI5_CLK_ENABLE();
-    __HAL_RCC_SPI5_FORCE_RESET();
-    __HAL_RCC_SPI5_RELEASE_RESET();
-  }
+    if (obj->spi == SPI5) {
+      __HAL_RCC_SPI5_CLK_ENABLE();
+      __HAL_RCC_SPI5_FORCE_RESET();
+      __HAL_RCC_SPI5_RELEASE_RESET();
+    }
 #endif
 
 #if defined SPI6_BASE
-  if (handle->Instance == SPI6) {
-    __HAL_RCC_SPI6_CLK_ENABLE();
-    __HAL_RCC_SPI6_FORCE_RESET();
-    __HAL_RCC_SPI6_RELEASE_RESET();
-  }
+    if (obj->spi == SPI6) {
+      __HAL_RCC_SPI6_CLK_ENABLE();
+      __HAL_RCC_SPI6_FORCE_RESET();
+      __HAL_RCC_SPI6_RELEASE_RESET();
+    }
 #endif
 
 #if defined SUBGHZSPI_BASE
-  if (handle->Instance == SUBGHZSPI) {
-    __HAL_RCC_SUBGHZSPI_CLK_ENABLE();
-    __HAL_RCC_SUBGHZSPI_FORCE_RESET();
-    __HAL_RCC_SUBGHZSPI_RELEASE_RESET();
-  }
+    if (obj->spi == SUBGHZSPI) {
+      __HAL_RCC_SUBGHZSPI_CLK_ENABLE();
+      __HAL_RCC_SUBGHZSPI_FORCE_RESET();
+      __HAL_RCC_SUBGHZSPI_RELEASE_RESET();
+    }
+#endif
+#if defined(USE_HALV2_DRIVER)
+    hal_spi_handle_t *hspi = &(obj->handle);
+    hal_spi_config_t spi_config;
+    // hal_status_t status = HAL_OK;
+    HAL_SPI_Init(hspi, (hal_spi_t)obj->spi);
+    spi_config.mode = (busMode == SPI_CONTROLLER_C) ? HAL_SPI_MODE_MASTER : HAL_SPI_MODE_SLAVE;
+    spi_config.direction = HAL_SPI_DIRECTION_FULL_DUPLEX;
+    spi_config.data_width = HAL_SPI_DATA_WIDTH_8_BIT;
+    spi_config.clock_polarity = ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE1_C)) ? HAL_SPI_CLOCK_POLARITY_LOW : HAL_SPI_CLOCK_POLARITY_HIGH;
+    spi_config.clock_phase = ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE2_C)) ? HAL_SPI_CLOCK_PHASE_1_EDGE : HAL_SPI_CLOCK_PHASE_2_EDGE;
+    spi_config.first_bit = (msbFirst) ? HAL_SPI_MSB_FIRST : HAL_SPI_LSB_FIRST;
+    spi_config.nss_pin_management = (obj->pin_ssel != NC) ? HAL_SPI_NSS_PIN_MGMT_OUTPUT : HAL_SPI_NSS_PIN_MGMT_INTERNAL;
+
+    spi_freq = spi_getClkFreqInst(obj->spi);
+    if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV2_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_2;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV4_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_4;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV8_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_8;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV16_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_16;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV32_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_32;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV64_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_64;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV128_MHZ)) {
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_128;
+    } else {
+      /*
+       * As it is not possible to go below (spi_freq / SPI_SPEED_CLOCK_DIV256_MHZ).
+       * Set prescaler at max value so get the lowest frequency possible.
+       */
+      spi_config.baud_rate_prescaler = HAL_SPI_BAUD_RATE_PRESCALER_256;
+    }
+#if defined(SPI_IFCR_EOTC)
+    // Compute disable delay as baudrate has been modified
+    obj->disable_delay = compute_disable_delay(spi_freq, spi_config.baud_rate_prescaler);
+#endif
+    HAL_SPI_SetConfig(hspi, &spi_config);
+#else
+    SPI_HandleTypeDef *handle = &(obj->handle);
+
+    // Configure the SPI pins
+    if (obj->pin_ssel != NC) {
+      handle->Init.NSS = SPI_NSS_HARD_OUTPUT;
+    } else {
+      handle->Init.NSS = SPI_NSS_SOFT;
+    }
+
+    /* Fill default value */
+    handle->Instance = obj->spi;
+    handle->Init.Mode = (busMode == SPI_CONTROLLER_C) ? SPI_MODE_MASTER : SPI_MODE_SLAVE;
+
+    spi_freq = spi_getClkFreqInst(obj->spi);
+    /* For SUBGHZSPI,  'SPI_BAUDRATEPRESCALER_*' == 'SUBGHZSPI_BAUDRATEPRESCALER_*' */
+    if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV2_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV4_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV8_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV16_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV32_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV64_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+    } else if (speed >= (spi_freq / SPI_SPEED_CLOCK_DIV128_MHZ)) {
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+    } else {
+      /*
+       * As it is not possible to go below (spi_freq / SPI_SPEED_CLOCK_DIV256_MHZ).
+       * Set prescaler at max value so get the lowest frequency possible.
+       */
+      handle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    }
+
+#if defined(SPI_IFCR_EOTC)
+    // Compute disable delay as baudrate has been modified
+    obj->disable_delay = compute_disable_delay(spi_freq, handle->Init.BaudRatePrescaler);
 #endif
 
-  HAL_SPI_Init(handle);
+    handle->Init.Direction         = SPI_DIRECTION_2LINES;
 
-  /* In order to set correctly the SPI polarity we need to enable the peripheral */
-  __HAL_SPI_ENABLE(handle);
+    if ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE2_C)) {
+      handle->Init.CLKPhase          = SPI_PHASE_1EDGE;
+    } else {
+      handle->Init.CLKPhase          = SPI_PHASE_2EDGE;
+    }
+
+    if ((dataMode == SPI_MODE0_C) || (dataMode == SPI_MODE1_C)) {
+      handle->Init.CLKPolarity       = SPI_POLARITY_LOW;
+    } else {
+      handle->Init.CLKPolarity       = SPI_POLARITY_HIGH;
+    }
+
+    handle->Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
+    handle->Init.CRCPolynomial     = 7;
+    handle->Init.DataSize          = SPI_DATASIZE_8BIT;
+
+    if (msbFirst) {
+      handle->Init.FirstBit          = SPI_FIRSTBIT_MSB;
+    } else {
+      handle->Init.FirstBit          = SPI_FIRSTBIT_LSB;
+    }
+
+    handle->Init.TIMode            = SPI_TIMODE_DISABLE;
+#if defined(SPI_NSS_PULSE_DISABLE)
+    handle->Init.NSSPMode          = SPI_NSS_PULSE_DISABLE;
+#endif
+#ifdef SPI_MASTER_KEEP_IO_STATE_ENABLE
+    handle->Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_ENABLE;  /* Recommended setting to avoid glitches */
+#endif
+    HAL_SPI_Init(handle);
+#endif /* USE_HALV2_DRIVER */
+    /* In order to set correctly the SPI polarity we need to enable the peripheral */
+    LL_SPI_Enable(obj->spi);
+  }
 }
 
 /**
@@ -411,69 +469,85 @@ void spi_init(spi_t *obj, uint32_t speed, spi_mode_e dataMode, uint8_t msb, spi_
   */
 void spi_deinit(spi_t *obj)
 {
-  if (obj == NULL) {
-    return;
-  }
+  if (obj != NULL) {
+#if defined(USE_HALV2_DRIVER)
+    hal_spi_handle_t *handle = &(obj->handle);
 
-  SPI_HandleTypeDef *handle = &(obj->handle);
-
-  HAL_SPI_DeInit(handle);
-
+#else
+    SPI_HandleTypeDef *handle = &(obj->handle);
+#endif /* USE_HALV2_DRIVER */
+    HAL_SPI_DeInit(handle);
 #if defined SPI1_BASE
-  // Reset SPI and disable clock
-  if (handle->Instance == SPI1) {
-    __HAL_RCC_SPI1_FORCE_RESET();
-    __HAL_RCC_SPI1_RELEASE_RESET();
-    __HAL_RCC_SPI1_CLK_DISABLE();
-  }
+    // Reset SPI and disable clock
+    if (obj->spi == SPI1) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI1_Reset();
+      HAL_RCC_SPI1_DisableClock();
+#else
+      __HAL_RCC_SPI1_FORCE_RESET();
+      __HAL_RCC_SPI1_RELEASE_RESET();
+      __HAL_RCC_SPI1_CLK_DISABLE();
+#endif
+    }
 #endif
 #if defined SPI2_BASE
-  if (handle->Instance == SPI2) {
-    __HAL_RCC_SPI2_FORCE_RESET();
-    __HAL_RCC_SPI2_RELEASE_RESET();
-    __HAL_RCC_SPI2_CLK_DISABLE();
-  }
+    if (obj->spi == SPI2) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI2_Reset();
+      HAL_RCC_SPI2_DisableClock();
+#else
+      __HAL_RCC_SPI2_FORCE_RESET();
+      __HAL_RCC_SPI2_RELEASE_RESET();
+      __HAL_RCC_SPI2_CLK_DISABLE();
+#endif
+    }
 #endif
 
 #if defined SPI3_BASE
-  if (handle->Instance == SPI3) {
-    __HAL_RCC_SPI3_FORCE_RESET();
-    __HAL_RCC_SPI3_RELEASE_RESET();
-    __HAL_RCC_SPI3_CLK_DISABLE();
-  }
+    if (obj->spi == SPI3) {
+#if defined(USE_HALV2_DRIVER)
+      HAL_RCC_SPI3_Reset();
+      HAL_RCC_SPI3_DisableClock();
+#else
+      __HAL_RCC_SPI3_FORCE_RESET();
+      __HAL_RCC_SPI3_RELEASE_RESET();
+      __HAL_RCC_SPI3_CLK_DISABLE();
+#endif
+    }
 #endif
 
 #if defined SPI4_BASE
-  if (handle->Instance == SPI4) {
-    __HAL_RCC_SPI4_FORCE_RESET();
-    __HAL_RCC_SPI4_RELEASE_RESET();
-    __HAL_RCC_SPI4_CLK_DISABLE();
-  }
+    if (obj->spi == SPI4) {
+      __HAL_RCC_SPI4_FORCE_RESET();
+      __HAL_RCC_SPI4_RELEASE_RESET();
+      __HAL_RCC_SPI4_CLK_DISABLE();
+    }
 #endif
 
 #if defined SPI5_BASE
-  if (handle->Instance == SPI5) {
-    __HAL_RCC_SPI5_FORCE_RESET();
-    __HAL_RCC_SPI5_RELEASE_RESET();
-    __HAL_RCC_SPI5_CLK_DISABLE();
-  }
+    if (obj->spi == SPI5) {
+      __HAL_RCC_SPI5_FORCE_RESET();
+      __HAL_RCC_SPI5_RELEASE_RESET();
+      __HAL_RCC_SPI5_CLK_DISABLE();
+    }
 #endif
 
 #if defined SPI6_BASE
-  if (handle->Instance == SPI6) {
-    __HAL_RCC_SPI6_FORCE_RESET();
-    __HAL_RCC_SPI6_RELEASE_RESET();
-    __HAL_RCC_SPI6_CLK_DISABLE();
-  }
+    if (obj->spi == SPI6) {
+      __HAL_RCC_SPI6_FORCE_RESET();
+      __HAL_RCC_SPI6_RELEASE_RESET();
+      __HAL_RCC_SPI6_CLK_DISABLE();
+    }
 #endif
 
 #if defined SUBGHZSPI_BASE
-  if (handle->Instance == SUBGHZSPI) {
-    __HAL_RCC_SUBGHZSPI_FORCE_RESET();
-    __HAL_RCC_SUBGHZSPI_RELEASE_RESET();
-    __HAL_RCC_SUBGHZSPI_CLK_DISABLE();
-  }
+    if (obj->spi == SUBGHZSPI) {
+      __HAL_RCC_SUBGHZSPI_FORCE_RESET();
+      __HAL_RCC_SUBGHZSPI_RELEASE_RESET();
+      __HAL_RCC_SUBGHZSPI_CLK_DISABLE();
+    }
 #endif
+  }
 }
 
 /**
@@ -490,7 +564,7 @@ spi_status_e spi_transfer(spi_t *obj, const uint8_t *tx_buffer, uint8_t *rx_buff
 {
   spi_status_e ret = SPI_OK;
   uint32_t tickstart, size = len;
-  SPI_TypeDef *_SPI = obj->handle.Instance;
+  SPI_TypeDef *_SPI = obj->spi;
   uint8_t *tx_buf = (uint8_t *)tx_buffer;
 
   if (len == 0) {

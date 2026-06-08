@@ -107,7 +107,11 @@ class SPIClass : public HardwareSPI {
     void detachInterrupt(void) override;
 
     // Could be used to mix Arduino API and STM32Cube HAL API (ex: DMA). Use at your own risk.
+#if defined(USE_HALV2_DRIVER)
+    hal_spi_handle_t *getHandle(void)
+#else
     SPI_HandleTypeDef *getHandle(void)
+#endif
     {
       return &(_spi.handle);
     }

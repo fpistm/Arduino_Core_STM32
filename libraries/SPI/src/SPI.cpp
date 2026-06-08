@@ -69,7 +69,9 @@ SPIClass::SPIClass(pin_size_t mosi, pin_size_t miso, pin_size_t sclk, pin_size_t
   */
 void SPIClass::begin(SPIBusMode busMode)
 {
+#if !defined(USE_HALV2_DRIVER)
   _spi.handle.State = HAL_SPI_STATE_RESET;
+#endif
 
   SPISettings defaultSettings(
     SPI_SPEED_CLOCK_DEFAULT, // 4 MHz
