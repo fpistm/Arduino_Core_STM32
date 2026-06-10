@@ -121,7 +121,11 @@ struct i2c_s {
      *  to have get_i2c_obj() function work as expected
      */
   I2C_TypeDef  *i2c;
+#if defined(USE_HALV2_DRIVER)
+  hal_i2c_handle_t handle;
+#else
   I2C_HandleTypeDef handle;
+#endif /* USE_HALV2_DRIVER */
   void *__this;
   PinName sda;
   PinName scl;
@@ -135,9 +139,9 @@ struct i2c_s {
   volatile uint8_t i2cTxRxBuffer[I2C_TXRX_BUFFER_SIZE];
   volatile uint8_t i2cTxRxBufferSize;
   volatile uint8_t slaveMode;
-  uint8_t isMaster;
-  uint8_t generalCall;
-  uint8_t NoStretchMode;
+  bool isMaster;
+  bool generalCall;
+  bool NoStretchMode;
 };
 
 ///@brief I2C state

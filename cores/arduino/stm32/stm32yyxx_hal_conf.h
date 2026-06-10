@@ -41,6 +41,7 @@
     #define USE_HAL_I2C_MODULE                    0U
   #else
     #define USE_HAL_I2C_MODULE                    1U
+    #define USE_HAL_I2C_GET_LAST_ERRORS           1U
   #endif
 
   #if defined(HAL_I2S_MODULE_DISABLED)

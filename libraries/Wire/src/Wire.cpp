@@ -84,19 +84,19 @@ void TwoWire::begin(uint8_t address, bool generalCall, bool NoStretchMode)
 
   ownAddress = address << 1;
 
-  _i2c.isMaster = (address == MASTER_ADDRESS) ? 1 : 0;
+  _i2c.isMaster = (address == MASTER_ADDRESS);
 
-  _i2c.generalCall = (generalCall == true) ? 1 : 0;
+  _i2c.generalCall = generalCall;
 
-  _i2c.NoStretchMode = (NoStretchMode == true) ? 1 : 0;
+  _i2c.NoStretchMode = NoStretchMode;
 
-  if (_i2c.isMaster == 1) {
+  if (_i2c.isMaster) {
     recoverBus(); // in case I2C bus (device) is stuck after a reset for example
   }
 
   i2c_init(&_i2c, 100000, ownAddress);
 
-  if (_i2c.isMaster == 0) {
+  if (!_i2c.isMaster) {
     // i2c_attachSlaveTxEvent(&_i2c, reinterpret_cast<void(*)(i2c_t*)>(&TwoWire::onRequestService));
     // i2c_attachSlaveRxEvent(&_i2c, reinterpret_cast<void(*)(i2c_t*, uint8_t*, int)>(&TwoWire::onReceiveService));
 
@@ -128,7 +128,7 @@ void TwoWire::end(void)
 void TwoWire::setClock(uint32_t freq)
 {
   i2c_setTiming(&_i2c, freq);
-  if (_i2c.isMaster == 0) {
+  if (!_i2c.isMaster) {
     i2c_attachSlaveTxEvent(&_i2c, onRequestService);
     i2c_attachSlaveRxEvent(&_i2c, onReceiveService);
   }
@@ -151,7 +151,7 @@ size_t TwoWire::requestFrom(uint8_t address, size_t len, uint32_t iaddress, uint
 #endif
   size_t read = 0;
 
-  if (_i2c.isMaster == 1) {
+  if (_i2c.isMaster) {
     allocateRxBuffer(len);
 
     if (isize > 0) {
@@ -181,7 +181,13 @@ size_t TwoWire::requestFrom(uint8_t address, size_t len, uint32_t iaddress, uint
       _i2c.handle.XferOptions = I2C_OTHER_AND_LAST_FRAME;
     }
 #endif
-
+#if defined(USE_HALV2_DRIVER)
+    if (stopBit == false) {
+      _i2c.handle.xfer_opt = HAL_I2C_XFER_OTHER_FRAME ;
+    } else {
+      _i2c.handle.xfer_opt = HAL_I2C_XFER_OTHER_AND_LAST_FRAME;
+    }
+#endif
     if (I2C_OK == i2c_master_read(&_i2c, address << 1, rxBuffer, (uint16_t)len)) {
       read = len;
     }
@@ -236,8 +242,15 @@ uint8_t TwoWire::endTransmission(bool stopBit)
     _i2c.handle.XferOptions = I2C_OTHER_AND_LAST_FRAME;
   }
 #endif
+#if defined(USE_HALV2_DRIVER)
+  if (stopBit == false) {
+    _i2c.handle.xfer_opt = HAL_I2C_XFER_OTHER_FRAME ;
+  } else {
+    _i2c.handle.xfer_opt = HAL_I2C_XFER_OTHER_AND_LAST_FRAME;
+  }
+#endif
 
-  if (_i2c.isMaster == 1) {
+  if (_i2c.isMaster) {
     // transmit buffer (blocking)
     switch (i2c_master_write(&_i2c, txAddress, txBuffer, txDataSize)) {
       case I2C_OK :

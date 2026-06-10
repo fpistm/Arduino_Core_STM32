@@ -39,6 +39,7 @@
 #include "utility/twi.h"
 #include "PinAF_STM32F1.h"
 #include "stm32yyxx_ll_gpio.h"
+#include "stm32yyxx_ll_i2c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -183,7 +184,11 @@ typedef enum {
 } i2c_index_t;
 
 /* Private Variables */
+#if defined(USE_HALV2_DRIVER)
+static hal_i2c_handle_t *i2c_handles[I2C_NUM];
+#else
 static I2C_HandleTypeDef *i2c_handles[I2C_NUM];
+#endif /* USE_HALV2_DRIVER */
 
 #ifdef I2C_TIMING_COMPUTE
 /**
@@ -203,6 +208,9 @@ static uint32_t i2c_getClkFreq(I2C_TypeDef *i2c)
 #endif
 #if defined(I2C1_BASE)
   if (i2c == I2C1) {
+#if defined(USE_HALV2_DRIVER)
+    clkSrcFreq = HAL_RCC_I2C1_GetKernelClkFreq();
+#else
 #if defined(RCC_PERIPHCLK_I2C1) || defined(RCC_PERIPHCLK_I2C12)
 #ifdef RCC_PERIPHCLK_I2C1
     clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C1);
@@ -257,10 +265,14 @@ static uint32_t i2c_getClkFreq(I2C_TypeDef *i2c)
       Error_Handler();
 #endif
     }
+#endif
   }
 #endif // I2C1_BASE
 #if defined(I2C2_BASE)
   if (i2c == I2C2) {
+#if defined(USE_HALV2_DRIVER)
+    clkSrcFreq = HAL_RCC_I2C2_GetKernelClkFreq();
+#else
 #if defined(RCC_PERIPHCLK_I2C2) || defined(RCC_PERIPHCLK_I2C12)
 #ifdef RCC_PERIPHCLK_I2C2
     clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C2);
@@ -311,6 +323,7 @@ static uint32_t i2c_getClkFreq(I2C_TypeDef *i2c)
       clkSrcFreq = HAL_RCC_GetPCLK1Freq();
 #endif
     }
+#endif
   }
 #endif // I2C2_BASE
 #if defined(I2C3_BASE)
@@ -731,10 +744,6 @@ static uint32_t i2c_getTiming(i2c_t *obj, uint32_t frequency)
 void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
 {
   if (obj != NULL) {
-
-
-    I2C_HandleTypeDef *handle = &(obj->handle);
-
     // Determine the I2C to use
     I2C_TypeDef *i2c_sda = pinmap_peripheral(obj->sda, PinMap_I2C_SDA);
     I2C_TypeDef *i2c_scl = pinmap_peripheral(obj->scl, PinMap_I2C_SCL);
@@ -754,32 +763,44 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
 #if defined I2C1_BASE
         // Enable I2C1 clock if not done
         if (obj->i2c == I2C1) {
+          obj->irq = I2C1_EV_IRQn;
+#if defined(USE_HALV2_DRIVER)
+          HAL_RCC_I2C1_EnableClock();
+          HAL_RCC_I2C1_Reset();
+          obj->irqER = I2C1_ERR_IRQn;
+#else
           __HAL_RCC_I2C1_CLK_ENABLE();
           __HAL_RCC_I2C1_FORCE_RESET();
           __HAL_RCC_I2C1_RELEASE_RESET();
-
-          obj->irq = I2C1_EV_IRQn;
 #if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
     !defined(STM32L0xx) && !defined(STM32U0xx) && !defined(STM32WB0x) && \
     !defined(STM32WL3x)
           obj->irqER = I2C1_ER_IRQn;
 #endif /* !STM32C0xx && !STM32F0xx && !STM32G0xx && !STM32L0xx && !STM32U0xx */
-          i2c_handles[I2C1_INDEX] = handle;
+#endif /* USE_HALV2_DRIVER */
+          i2c_handles[I2C1_INDEX] = &(obj->handle);
         }
 #endif // I2C1_BASE
 #if defined I2C2_BASE
         // Enable I2C2 clock if not done
         if (obj->i2c == I2C2) {
+          obj->irq = I2C2_EV_IRQn;
+#if defined(USE_HALV2_DRIVER)
+          HAL_RCC_I2C2_EnableClock();
+          HAL_RCC_I2C2_Reset();
+          obj->irqER = I2C2_ERR_IRQn;
+#else
           __HAL_RCC_I2C2_CLK_ENABLE();
           __HAL_RCC_I2C2_FORCE_RESET();
           __HAL_RCC_I2C2_RELEASE_RESET();
-          obj->irq = I2C2_EV_IRQn;
+
 #if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
     !defined(STM32L0xx) && !defined(STM32U0xx) && !defined(STM32WB0x) && \
     !defined(STM32WL3x)
           obj->irqER = I2C2_ER_IRQn;
 #endif /* !STM32F0xx && !STM32G0xx && !STM32L0xx && !STM32U0xx */
-          i2c_handles[I2C2_INDEX] = handle;
+#endif /* USE_HALV2_DRIVER */
+          i2c_handles[I2C2_INDEX] = &(obj->handle);
         }
 #endif // I2C2_BASE
 #if defined I2C3_BASE
@@ -792,7 +813,7 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
 #if !defined(STM32G0xx) && !defined(STM32L0xx) && !defined(STM32U0xx)
           obj->irqER = I2C3_ER_IRQn;
 #endif /* !STM32G0xx && !STM32L0xx && !STM32U0xx*/
-          i2c_handles[I2C3_INDEX] = handle;
+          i2c_handles[I2C3_INDEX] = &(obj->handle);
         }
 #endif // I2C3_BASE
 #if defined I2C4_BASE
@@ -805,7 +826,7 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
 #if !defined(STM32U0xx)
           obj->irqER = I2C4_ER_IRQn;
 #endif /* !STM32U0xx */
-          i2c_handles[I2C4_INDEX] = handle;
+          i2c_handles[I2C4_INDEX] = &(obj->handle);
         }
 #endif // I2C4_BASE
 #if defined I2C5_BASE
@@ -816,7 +837,7 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
           __HAL_RCC_I2C5_RELEASE_RESET();
           obj->irq = I2C5_EV_IRQn;
           obj->irqER = I2C5_ER_IRQn;
-          i2c_handles[I2C5_INDEX] = handle;
+          i2c_handles[I2C5_INDEX] = &(obj->handle);
         }
 #endif // I2C5_BASE
 #if defined I2C6_BASE
@@ -827,13 +848,40 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
           __HAL_RCC_I2C6_RELEASE_RESET();
           obj->irq = I2C6_EV_IRQn;
           obj->irqER = I2C6_ER_IRQn;
-          i2c_handles[I2C6_INDEX] = handle;
+          i2c_handles[I2C6_INDEX] = &(obj->handle);
         }
 #endif // I2C6_BASE
 
         /* Configure I2C GPIO pins */
         pinmap_pinout(obj->scl, PinMap_I2C_SCL);
         pinmap_pinout(obj->sda, PinMap_I2C_SDA);
+
+#if defined(USE_HALV2_DRIVER)
+        hal_i2c_handle_t *handle = &(obj->handle);
+        hal_i2c_config_t i2c_config;
+        HAL_I2C_Init(handle, (hal_i2c_t)obj->i2c);
+        i2c_config.timing = i2c_getTiming(obj, timing);
+        i2c_config.own_address1 = ownAddress;
+        i2c_config.addressing_mode = HAL_I2C_ADDRESSING_7BIT;
+        HAL_I2C_SetConfig(handle, &i2c_config);
+
+        if (obj->generalCall) {
+          HAL_I2C_SLAVE_EnableAckGeneralCall(handle);
+        } else {
+          HAL_I2C_SLAVE_DisableAckGeneralCall(handle);
+        }
+        if (obj->NoStretchMode) {
+          HAL_I2C_SLAVE_EnableClockStretching(handle);
+        } else {
+          HAL_I2C_SLAVE_DisableClockStretching(handle);
+        }
+
+        HAL_CORTEX_NVIC_SetPriority(obj->irq, I2C_IRQ_PRIO, I2C_IRQ_SUBPRIO);
+        HAL_CORTEX_NVIC_EnableIRQ(obj->irq);
+        HAL_CORTEX_NVIC_SetPriority(obj->irqER, I2C_IRQ_PRIO, I2C_IRQ_SUBPRIO);
+        HAL_CORTEX_NVIC_EnableIRQ(obj->irqER);
+#else
+        I2C_HandleTypeDef *handle = &(obj->handle);
 
         handle->Instance             = obj->i2c;
 #ifdef I2C_TIMING
@@ -852,8 +900,8 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
         handle->Init.OwnAddress2     = 0;
         handle->Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
         handle->Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-        handle->Init.GeneralCallMode = (obj->generalCall == 0) ? I2C_GENERALCALL_DISABLE : I2C_GENERALCALL_ENABLE;
-        handle->Init.NoStretchMode   = (obj->NoStretchMode == 0) ? I2C_NOSTRETCH_DISABLE : I2C_NOSTRETCH_ENABLE;
+        handle->Init.GeneralCallMode = (obj->generalCall) ? I2C_GENERALCALL_ENABLE : I2C_GENERALCALL_DISABLE;
+        handle->Init.NoStretchMode   = (obj->NoStretchMode) ? I2C_NOSTRETCH_ENABLE : I2C_NOSTRETCH_DISABLE;
 
         handle->State = HAL_I2C_STATE_RESET;
 
@@ -870,7 +918,7 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
           /* Initialization Error */
           Error_Handler();
         }
-
+#endif
         /* Initialize default values */
         obj->slaveRxNbData = 0;
         obj->slaveMode = SLAVE_MODE_LISTEN;
@@ -886,11 +934,16 @@ void i2c_init(i2c_t *obj, uint32_t timing, uint32_t ownAddress)
   */
 void i2c_deinit(i2c_t *obj)
 {
+#if defined(USE_HALV2_DRIVER)
+  HAL_CORTEX_NVIC_DisableIRQ(obj->irq);
+  HAL_CORTEX_NVIC_DisableIRQ(obj->irqER);
+#else
   HAL_NVIC_DisableIRQ(obj->irq);
 #if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
     !defined(STM32L0xx) && !defined(STM32U0xx)
   HAL_NVIC_DisableIRQ(obj->irqER);
 #endif /* !STM32C0xx && !STM32F0xx && !STM32G0xx && !STM32L0xx && !STM32U0xx */
+#endif /* USE_HALV2_DRIVER */
   HAL_I2C_DeInit(&(obj->handle));
   /* Reset I2C GPIO pins as INPUT_ANALOG */
   pin_function(obj->scl, STM_PIN_DATA(STM_MODE_ANALOG, LL_GPIO_PULL_NO, 0));
@@ -898,16 +951,26 @@ void i2c_deinit(i2c_t *obj)
   // Reset I2Cx and disable clock
 #if defined I2C1_BASE
   if (obj->i2c == I2C1) {
+#if defined(USE_HALV2_DRIVER)
+    HAL_RCC_I2C1_Reset();
+    HAL_RCC_I2C1_DisableClock();
+#else
     __HAL_RCC_I2C1_FORCE_RESET();
     __HAL_RCC_I2C1_RELEASE_RESET();
     __HAL_RCC_I2C1_CLK_DISABLE();
+#endif
   }
 #endif // I2C1_BASE
 #if defined I2C2_BASE
   if (obj->i2c == I2C2) {
+#if defined(USE_HALV2_DRIVER)
+    HAL_RCC_I2C2_Reset();
+    HAL_RCC_I2C2_DisableClock();
+#else
     __HAL_RCC_I2C2_FORCE_RESET();
     __HAL_RCC_I2C2_RELEASE_RESET();
     __HAL_RCC_I2C2_CLK_DISABLE();
+#endif
   }
 #endif // I2C2_BASE
 #if defined I2C3_BASE
@@ -949,10 +1012,13 @@ void i2c_deinit(i2c_t *obj)
 void i2c_setTiming(i2c_t *obj, uint32_t frequency)
 {
   uint32_t f = i2c_getTiming(obj, frequency);
-  __HAL_I2C_DISABLE(&(obj->handle));
+  LL_I2C_Disable(obj->i2c);
 
 #ifdef I2C_TIMING
+  LL_I2C_SetTiming(obj->i2c, f);
+#if !defined(USE_HALV2_DRIVER)
   obj->handle.Init.Timing = f;
+#endif /* !USE_HALV2_DRIVER */
 #else
   obj->handle.Init.ClockSpeed = f;
   /* Standard mode (sm) is up to 100kHz, then it's Fast mode (fm)     */
@@ -962,9 +1028,9 @@ void i2c_setTiming(i2c_t *obj, uint32_t frequency)
   } else {
     obj->handle.Init.DutyCycle       = I2C_DUTYCYCLE_2;
   }
-#endif
   HAL_I2C_Init(&(obj->handle));
-  __HAL_I2C_ENABLE(&(obj->handle));
+#endif
+  LL_I2C_Enable(obj->i2c);
 }
 
 /**
@@ -983,12 +1049,53 @@ i2c_status_e i2c_master_write(i2c_t *obj, uint8_t dev_address,
   uint32_t tickstart = HAL_GetTick();
   uint32_t delta = 0;
   uint32_t err = 0;
-  HAL_StatusTypeDef status = HAL_OK;
+
 
   /* When size is 0, this is usually an I2C scan / ping to check if device is there and ready */
   if (size == 0) {
     ret = i2c_IsDeviceReady(obj, dev_address, 1);
   } else {
+#if defined(USE_HALV2_DRIVER)
+    hal_status_t status = HAL_OK;
+
+    hal_i2c_xfer_opt_t XferOptions = obj->handle.xfer_opt;
+    do {
+      status = HAL_I2C_MASTER_SEQ_Transmit_IT(&(obj->handle), dev_address, data, size, XferOptions);
+      // Ensure i2c ready
+      if (status == HAL_BUSY) {
+        delta = (HAL_GetTick() - tickstart);
+        if (delta > I2C_TIMEOUT_TICK) {
+          ret = I2C_BUSY;
+          break;
+        }
+      } else {
+        ret = (status == HAL_OK) ? I2C_OK : I2C_ERROR;
+      }
+    } while (status == HAL_BUSY);
+
+    if (ret == I2C_OK) {
+      tickstart = HAL_GetTick();
+      // wait for transfer completion
+      while ((HAL_I2C_GetState(&(obj->handle)) != HAL_I2C_STATE_IDLE) && (delta < I2C_TIMEOUT_TICK)) {
+        delta = (HAL_GetTick() - tickstart);
+        if (HAL_I2C_GetLastErrorCodes(&(obj->handle)) != HAL_I2C_ERROR_NONE) {
+          break;
+        }
+      }
+
+      err = HAL_I2C_GetLastErrorCodes(&(obj->handle));
+      if ((delta >= I2C_TIMEOUT_TICK) || (status == HAL_TIMEOUT)) {
+        ret = I2C_TIMEOUT;
+      } else {
+        if ((err & HAL_I2C_ERROR_AF) == HAL_I2C_ERROR_AF) {
+          ret = I2C_NACK_DATA;
+        } else if (err != HAL_I2C_ERROR_NONE) {
+          ret = I2C_ERROR;
+        }
+      }
+    }
+#else
+    HAL_StatusTypeDef status = HAL_OK;
 #if defined(I2C_OTHER_FRAME)
     uint32_t XferOptions = obj->handle.XferOptions; // save XferOptions value, because handle can be modified by HAL, which cause issue in case of NACK from slave
 #endif
@@ -1032,6 +1139,7 @@ i2c_status_e i2c_master_write(i2c_t *obj, uint8_t dev_address,
         }
       }
     }
+#endif /* USE_HALV2_DRIVER */
   }
   return ret;
 }
@@ -1076,6 +1184,46 @@ i2c_status_e i2c_master_read(i2c_t *obj, uint8_t dev_address, uint8_t *data, uin
   uint32_t tickstart = HAL_GetTick();
   uint32_t delta = 0;
   uint32_t err = 0;
+#if defined(USE_HALV2_DRIVER)
+  hal_status_t status = HAL_OK;
+  hal_i2c_xfer_opt_t XferOptions = obj->handle.xfer_opt;
+  do {
+    status = HAL_I2C_MASTER_SEQ_Receive_IT(&(obj->handle), dev_address, data, size, XferOptions);
+    // Ensure i2c ready
+    if (status == HAL_BUSY) {
+      delta = (HAL_GetTick() - tickstart);
+      if (delta > I2C_TIMEOUT_TICK) {
+        ret = I2C_BUSY;
+        break;
+      }
+    } else {
+      ret = (status == HAL_OK) ? I2C_OK : I2C_ERROR;
+    }
+  } while (status == HAL_BUSY);
+
+  if (ret == I2C_OK) {
+    tickstart = HAL_GetTick();
+    // wait for transfer completion
+    while ((HAL_I2C_GetState(&(obj->handle)) != HAL_I2C_STATE_IDLE) && (delta < I2C_TIMEOUT_TICK)) {
+      delta = (HAL_GetTick() - tickstart);
+      if (HAL_I2C_GetLastErrorCodes(&(obj->handle)) != HAL_I2C_ERROR_NONE) {
+        break;
+      }
+    }
+
+    err = HAL_I2C_GetLastErrorCodes(&(obj->handle));
+    if ((delta >= I2C_TIMEOUT_TICK)  || (status == HAL_TIMEOUT)) {
+      ret = I2C_TIMEOUT;
+    } else {
+      if ((err & HAL_I2C_ERROR_AF) == HAL_I2C_ERROR_AF) {
+        ret = I2C_NACK_DATA;
+      } else if (err != HAL_I2C_ERROR_NONE) {
+        ret = I2C_ERROR;
+      }
+    }
+  }
+
+#else
   HAL_StatusTypeDef status = HAL_OK;
 
 #if defined(I2C_OTHER_FRAME)
@@ -1121,6 +1269,7 @@ i2c_status_e i2c_master_read(i2c_t *obj, uint8_t dev_address, uint8_t *data, uin
       }
     }
   }
+#endif /* USE_HALV2_DRIVER */
   return ret;
 }
 
@@ -1134,7 +1283,23 @@ i2c_status_e i2c_master_read(i2c_t *obj, uint8_t dev_address, uint8_t *data, uin
 i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials)
 {
   i2c_status_e ret = I2C_OK;
-
+#if defined(USE_HALV2_DRIVER)
+  (void)trials; // Not used in HAL V2, kept as parameter for compatibility with HAL V1
+  switch (HAL_I2C_MASTER_PollForSlaveReady(&(obj->handle), devAddr, I2C_TIMEOUT_TICK)) {
+    case HAL_OK:
+      ret = I2C_OK;
+      break;
+    case HAL_TIMEOUT:
+      ret = (obj->handle.global_state != HAL_I2C_STATE_IDLE) ? I2C_TIMEOUT : I2C_NACK_ADDR;
+      break;
+    case HAL_BUSY:
+      ret = (obj->handle.global_state != HAL_I2C_STATE_IDLE) ? I2C_BUSY : I2C_NACK_ADDR;
+      break;
+    default:
+      ret = (obj->handle.global_state != HAL_I2C_STATE_IDLE) ? I2C_ERROR : I2C_NACK_ADDR;
+      break;
+  }
+#else
   switch (HAL_I2C_IsDeviceReady(&(obj->handle), devAddr, trials, I2C_TIMEOUT_TICK)) {
     case HAL_OK:
       ret = I2C_OK;
@@ -1149,13 +1314,18 @@ i2c_status_e i2c_IsDeviceReady(i2c_t *obj, uint8_t devAddr, uint32_t trials)
       ret = (obj->handle.State != HAL_I2C_STATE_READY) ? I2C_ERROR : I2C_NACK_ADDR;
       break;
   }
+#endif
   return ret;
 }
 
 /* Aim of the function is to get i2c_s pointer using hi2c pointer */
 /* Highly inspired from magical linux kernel's "container_of" */
 /* (which was not directly used since not compatible with IAR toolchain) */
+#if defined(USE_HALV2_DRIVER)
+i2c_t *get_i2c_obj(hal_i2c_handle_t *hi2c)
+#else
 i2c_t *get_i2c_obj(I2C_HandleTypeDef *hi2c)
+#endif
 {
   struct i2c_s *obj_s;
   i2c_t *obj;
@@ -1175,7 +1345,11 @@ void i2c_attachSlaveRxEvent(i2c_t *obj, void (*function)(i2c_t *))
 {
   if ((obj != NULL) && (function != NULL)) {
     obj->i2c_onSlaveReceive = function;
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_EnableListen_IT(&(obj->handle));
+#else
     HAL_I2C_EnableListen_IT(&(obj->handle));
+#endif
   }
 }
 
@@ -1188,19 +1362,28 @@ void i2c_attachSlaveTxEvent(i2c_t *obj, void (*function)(i2c_t *))
 {
   if ((obj != NULL) && (function != NULL)) {
     obj->i2c_onSlaveTransmit = function;
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_EnableListen_IT(&(obj->handle));
+#else
     HAL_I2C_EnableListen_IT(&(obj->handle));
+#endif
   }
 }
 
 /**
   * @brief  Slave Address Match callback.
-  * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
+  * @param  hi2c Pointer to a I2C_HandleTypeDef or hal_i2c_handle_t structure that contains
   *                the configuration information for the specified I2C.
   * @param  TransferDirection: Master request Transfer Direction (Write/Read), value of @ref I2C_XferOptions_definition
   * @param  AddrMatchCode: Address Match Code
   * @retval None
   */
+#if defined(USE_HALV2_DRIVER)
+void HAL_I2C_SLAVE_AddrCallback(hal_i2c_handle_t *hi2c, hal_i2c_slave_xfer_direction_t TransferDirection,
+                                uint32_t AddrMatchCode)
+#else
 void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
+#endif
 {
   (void)AddrMatchCode;
   i2c_t *obj = get_i2c_obj(hi2c);
@@ -1209,33 +1392,51 @@ void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, ui
     obj->slaveMode = SLAVE_MODE_LISTEN;
     obj->slaveRxNbData = 0;
   }
-
-  if (TransferDirection == I2C_DIRECTION_RECEIVE) {
+#if defined(USE_HALV2_DRIVER)
+  if (TransferDirection == HAL_I2C_SLAVE_DIRECTION_RECEIVE)
+#else
+  if (TransferDirection == I2C_DIRECTION_RECEIVE)
+#endif
+  {
     obj->slaveMode = SLAVE_MODE_TRANSMIT;
 
     if (obj->i2c_onSlaveTransmit != NULL) {
       obj->i2cTxRxBufferSize = 0;
       obj->i2c_onSlaveTransmit(obj);
     }
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_SEQ_Transmit_IT(hi2c, (uint8_t *) obj->i2cTxRxBuffer,
+                                  obj->i2cTxRxBufferSize, HAL_I2C_XFER_LAST_FRAME);
+#else
     HAL_I2C_Slave_Seq_Transmit_IT(hi2c, (uint8_t *) obj->i2cTxRxBuffer,
                                   obj->i2cTxRxBufferSize, I2C_LAST_FRAME);
+#endif
   } else {
     obj->slaveRxNbData = 0;
     obj->slaveMode = SLAVE_MODE_RECEIVE;
     /*  We don't know in advance how many bytes will be sent by master so
      *  we'll fetch one by one until master ends the sequence */
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_SEQ_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
+                                 1, HAL_I2C_XFER_NEXT_FRAME);
+#else
     HAL_I2C_Slave_Seq_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
                                  1, I2C_NEXT_FRAME);
+#endif
   }
 }
 
 /**
   * @brief  Listen Complete callback.
-  * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
+  * @param  hi2c Pointer to a I2C_HandleTypeDef or hal_i2c_handle_t structure that contains
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(USE_HALV2_DRIVER)
+void HAL_I2C_SLAVE_ListenCpltCallback(hal_i2c_handle_t *hi2c)
+#else
 void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
+#endif
 {
   i2c_t *obj = get_i2c_obj(hi2c);
 
@@ -1246,7 +1447,11 @@ void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
   }
   obj->slaveMode = SLAVE_MODE_LISTEN;
   obj->slaveRxNbData = 0;
+#if defined(USE_HALV2_DRIVER)
+  HAL_I2C_SLAVE_EnableListen_IT(hi2c);
+#else
   HAL_I2C_EnableListen_IT(hi2c);
+#endif
 }
 
 /**
@@ -1255,7 +1460,11 @@ void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(USE_HALV2_DRIVER)
+void HAL_I2C_SLAVE_RxCpltCallback(hal_i2c_handle_t *hi2c)
+#else
 void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+#endif
 {
   i2c_t *obj = get_i2c_obj(hi2c);
   /* One more byte was received, store it then prepare next */
@@ -1266,8 +1475,13 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
   }
   /* Restart interrupt mode for next Byte */
   if (obj->slaveMode == SLAVE_MODE_RECEIVE) {
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_SEQ_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
+                                 1, HAL_I2C_XFER_NEXT_FRAME);
+#else
     HAL_I2C_Slave_Seq_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
                                  1, I2C_NEXT_FRAME);
+#endif
   }
 }
 
@@ -1277,7 +1491,11 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(USE_HALV2_DRIVER)
+void HAL_I2C_SLAVE_TxCpltCallback(hal_i2c_handle_t *hi2c)
+#else
 void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
+#endif
 {
   i2c_t *obj = get_i2c_obj(hi2c);
   /* Reset transmit buffer size */
@@ -1294,12 +1512,20 @@ void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(USE_HALV2_DRIVER)
+void HAL_I2C_ErrorCallback(hal_i2c_handle_t *hi2c)
+#else
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
+#endif
 {
   i2c_t *obj = get_i2c_obj(hi2c);
 
-  if (obj->isMaster == 0) {
+  if (obj->isMaster) {
+#if defined(USE_HALV2_DRIVER)
+    HAL_I2C_SLAVE_EnableListen_IT(hi2c);
+#else
     HAL_I2C_EnableListen_IT(hi2c);
+#endif
   }
 }
 
@@ -1311,7 +1537,11 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 */
 void I2C1_EV_IRQHandler(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  hal_i2c_handle_t *handle = i2c_handles[I2C1_INDEX];
+#else
   I2C_HandleTypeDef *handle = i2c_handles[I2C1_INDEX];
+#endif
   HAL_I2C_EV_IRQHandler(handle);
 #if defined(STM32C0xx) || defined(STM32F0xx) || defined(STM32G0xx) || \
     defined(STM32L0xx) || defined(STM32U0xx)
@@ -1319,10 +1549,21 @@ void I2C1_EV_IRQHandler(void)
 #endif /* STM32C0xx || STM32F0xx || STM32G0xx || STM32L0xx || STM32U0xx*/
 }
 
-#if !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
+#if defined(STM32C5xx)
+/**
+* @brief  This function handles I2C1 error interrupt.
+* @param  None
+* @retval None
+*/
+void I2C1_ERR_IRQHandler(void)
+{
+  hal_i2c_handle_t *handle = i2c_handles[I2C1_INDEX];
+  HAL_I2C_ERR_IRQHandler(handle);
+}
+#elif !defined(STM32C0xx) && !defined(STM32F0xx) && !defined(STM32G0xx) && \
     !defined(STM32L0xx) && !defined(STM32U0xx)
 /**
-* @brief  This function handles I2C1 interrupt.
+* @brief  This function handles I2C1 error interrupt.
 * @param  None
 * @retval None
 */
@@ -1363,7 +1604,11 @@ void I2C2_EV_IRQHandler(void)
   }
 #endif /* I2C4_BASE */
 #else
+#if defined(USE_HALV2_DRIVER)
+  hal_i2c_handle_t *handle = i2c_handles[I2C2_INDEX];
+#else
   I2C_HandleTypeDef *handle = i2c_handles[I2C2_INDEX];
+#endif
   HAL_I2C_EV_IRQHandler(handle);
 #if defined(STM32F0xx) || defined(STM32G0xx) || defined(STM32L0xx) || \
     defined(STM32U0xx)
@@ -1372,10 +1617,21 @@ void I2C2_EV_IRQHandler(void)
 #endif
 }
 
-#if !defined(STM32F0xx) && !defined(STM32G0xx) && !defined(STM32L0xx) && \
+#if defined(STM32C5xx)
+/**
+* @brief  This function handles I2C2 error interrupt.
+* @param  None
+* @retval None
+*/
+void I2C2_ERR_IRQHandler(void)
+{
+  hal_i2c_handle_t *handle = i2c_handles[I2C2_INDEX];
+  HAL_I2C_ERR_IRQHandler(handle);
+}
+#elif !defined(STM32F0xx) && !defined(STM32G0xx) && !defined(STM32L0xx) && \
     !defined(STM32U0xx)
 /**
-* @brief  This function handles I2C2 interrupt.
+* @brief  This function handles I2C2 error interrupt.
 * @param  None
 * @retval None
 */
