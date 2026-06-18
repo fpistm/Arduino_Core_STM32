@@ -3,8 +3,9 @@
  * It allows to test build of built-in libraries
  * and can not be executed.
  */
-
+#if defined(HAL_FLASH_MODULE_ENABLED)
 #include <EEPROM.h>
+#endif
 #ifndef STM32MP1xx
 #include <IWatchdog.h>
 #endif
@@ -91,10 +92,11 @@ void setup() {
   }
   swSerial.end();
 
+#if defined(HAL_FLASH_MODULE_ENABLED)
   // EEPROM
   byte value = EEPROM.read(0x01);
   EEPROM.write(EEPROM.length() - 1, value);
-
+#endif
 #ifndef STM32MP1xx
   // IWDG
   if (!IWatchdog.isReset(true)) {

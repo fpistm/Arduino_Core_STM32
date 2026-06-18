@@ -22,7 +22,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32_def.h"
-
+#if !defined(USE_HALV2_DRIVER)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -123,7 +123,7 @@ void eeprom_buffered_write_byte(uint32_t pos, uint8_t value);
 #ifdef __cplusplus
 }
 #endif
-
+#endif /* !USE_HALV2_DRIVER */
 #endif /* __STM32_EEPROM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

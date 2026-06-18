@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+#if !defined(USE_HALV2_DRIVER)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -378,5 +379,5 @@ void eeprom_buffer_flush(void)
 #ifdef __cplusplus
 }
 #endif
-
+#endif /* !USE_HALV2_DRIVER */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -25,7 +25,9 @@
 extern "C" {
 #include "utility/stm32_eeprom.h"
 }
-
+#if defined(USE_HALV2_DRIVER)
+  #warning "EEPROM library is not yet compatible with HALv2 driver."
+#endif
 /***
     EERef class.
 
@@ -42,7 +44,11 @@ struct EERef {
   //Access/read members.
   uint8_t operator*() const
   {
+#if defined(USE_HALV2_DRIVER)
+    return 0; //EEPROM library is not yet compatible with HALv2 driver.
+#else
     return eeprom_read_byte(/*(uint8_t*)*/ index);
+#endif
   }
   operator uint8_t() const
   {
@@ -56,7 +62,11 @@ struct EERef {
   }
   EERef &operator=(uint8_t in)
   {
+#if defined(USE_HALV2_DRIVER)
+    return *this; //EEPROM library is not yet compatible with HALv2 driver.
+#else
     return eeprom_write_byte(/*(uint8_t*)*/ index, in), *this;
+#endif
   }
   EERef &operator +=(uint8_t in)
   {
@@ -222,7 +232,11 @@ struct EEPROMClass {
   }
   uint16_t length()
   {
+#if defined(USE_HALV2_DRIVER)
+    return 0;
+#else
     return E2END + 1;
+#endif
   }
 
   //Functionality to 'get' and 'put' objects to and from EEPROM.
