@@ -29,6 +29,9 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32_def.h"
 
+#if defined(USE_HALV2_DRIVER)
+#error "USB library is not yet compatible with HALv2 driver."
+#else
 #if !defined(USB_BASE) && !defined(USB_OTG_DEVICE_BASE)
 #error "This board does not support USB! Select 'None' in the 'Tools->USB interface' menu"
 #endif
@@ -39,7 +42,7 @@ extern "C" {
 #error "This board support only USB High Speed! Select 'High Speed' or 'High Speed in Full Speed mode' in the 'Tools->USB interface' menu"
 #endif
 
-
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
