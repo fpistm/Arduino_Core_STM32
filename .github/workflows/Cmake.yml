@@ -32,6 +32,7 @@ jobs:
       matrix:
         boardname:
           - NUCLEO_C092RC
+          - NUCLEO_C562RE
           - NUCLEO_F091RC
           - NUCLEO_F103RB
           - NUCLEO_F207ZG
