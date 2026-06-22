@@ -23,8 +23,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32_def.h"
-#include "stm32yyxx_ll_rtc.h"
 #include "stm32yyxx_ll_pwr.h"
+#include "stm32yyxx_ll_rtc.h"
+#include "stm32yyxx_ll_tamp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +61,11 @@ extern "C" {
 /* Exported functions ------------------------------------------------------- */
 static inline void resetBackupDomain(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  HAL_PWR_DisableRTCDomainWriteProtection();
+  HAL_RCC_ResetRTCDomain();
+  LL_RCC_EnableRTC();
+#else
 #if defined(PWR_ENABLE_BACKUP_ACCESS_EXIST)
   /*  Enable access to the RTC registers */
   HAL_PWR_EnableBkUpAccess();
@@ -79,10 +85,30 @@ static inline void resetBackupDomain(void)
   while (LL_RCC_IsEnabledRTC());
   LL_RCC_EnableRTC();
 #endif
+#endif
 }
 
 static inline void enableBackupDomain(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  HAL_PWR_DisableRTCDomainWriteProtection();
+  HAL_RCC_RTCAPB_EnableClock();
+  if (!LL_RCC_IsEnabledRTC()) {
+    if (LL_RCC_LSE_IsEnabled()) {
+      LL_RCC_LSCO_SetSource(LL_RCC_LSCO_CLKSOURCE_LSE);
+    } else {
+      /* Configure the Low Speed Clock to LSI */
+      LL_RCC_LSCO_SetSource(LL_RCC_LSCO_CLKSOURCE_LSI);
+      if (!LL_RCC_LSI_IsEnabled()) {
+        /* Enable LSI */
+        LL_RCC_LSI_Enable();
+        /* Wait until LSI is ready */
+        while (!LL_RCC_LSI_IsReady());
+      }
+    }
+    LL_RCC_EnableRTC();
+  }
+#else
 #if defined(PWR_ENABLE_BACKUP_ACCESS_EXIST)
   /* Allow access to Backup domain */
   HAL_PWR_EnableBkUpAccess();
@@ -116,10 +142,16 @@ static inline void enableBackupDomain(void)
     LL_RCC_EnableRTC();
   }
 #endif
+#endif /* USE_HALV2_DRIVER */
 }
 
 static inline void disableBackupDomain(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  HAL_PWR_EnableRTCDomainWriteProtection();
+  HAL_RCC_RTCAPB_DisableClock();
+  LL_RCC_DisableRTC();
+#else
 #if defined(PWR_ENABLE_BACKUP_ACCESS_EXIST)
   /* Forbid access to Backup domain */
   HAL_PWR_DisableBkUpAccess();
@@ -139,11 +171,14 @@ static inline void disableBackupDomain(void)
 #if defined(LL_APB0_GRP1_PERIPH_RTC)
   LL_RCC_DisableRTC();
 #endif
+#endif /* USE_HALV2_DRIVER */
 }
 
 static inline void setBackupRegister(uint32_t index, uint32_t value)
 {
-#if defined(BKP_BASE)
+#if defined(USE_HALV2_DRIVER)
+  LL_TAMP_BKP_SetRegister(index, value);
+#elif defined(BKP_BASE)
   LL_RTC_BKP_SetRegister(BKP, index, value);
 #elif defined(RTC_BKP0R) || defined(RTC_BKP0R_BKP)
   LL_RTC_BAK_SetRegister(RTC, index, value);
@@ -167,7 +202,9 @@ static inline void setBackupRegister(uint32_t index, uint32_t value)
 
 static inline uint32_t getBackupRegister(uint32_t index)
 {
-#if defined(BKP_BASE)
+#if defined(USE_HALV2_DRIVER)
+  return LL_TAMP_BKP_GetRegister(index);
+#elif defined(BKP_BASE)
   return LL_RTC_BKP_GetRegister(BKP, index);
 #elif defined(RTC_BKP0R) || defined(RTC_BKP0R_BKP)
   return LL_RTC_BAK_GetRegister(RTC, index);

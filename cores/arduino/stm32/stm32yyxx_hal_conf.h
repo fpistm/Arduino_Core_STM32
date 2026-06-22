@@ -10,6 +10,7 @@
   #define USE_HAL_FLASH_MODULE                    1U
   #define USE_HAL_GPIO_MODULE                     1U
   #define USE_HAL_RCC_MODULE                      1U
+  #define USE_HAL_PWR_MODULE                      1U
 
   /* Legacy compatibility macros */
   /*
