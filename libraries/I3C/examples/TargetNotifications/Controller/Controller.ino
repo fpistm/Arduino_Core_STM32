@@ -1,6 +1,5 @@
 #include "I3C.h"
 
-#define I3C_BUS I3C1Bus
 static I3CDiscoveredDevice devices[8];
 
 void printHex2(uint8_t v) {
@@ -15,13 +14,13 @@ void setup() {
 
   Serial.println("=== Controller Trigger Target Events ===");
 
-  if (!I3C_BUS.begin(I3C_SDA, I3C_SCL, 1000000U)) {
+  if (!I3C.begin(I3C_SDA, I3C_SCL, 1000000U)) {
     Serial.println("begin() failed");
     while (1) {}
   }
 
   size_t found = 0;
-  int rc = I3C_BUS.discover(devices, 8, &found);
+  int rc = I3C.discover(devices, 8, &found);
 
   if (rc != 0 || found == 0) {
     Serial.println("No target found");
@@ -36,13 +35,13 @@ void setup() {
 
   delay(2000);
 
-  rc = I3C_BUS.setEvents(da, false, 0x01, 1000);  // DISEC INTR
+  rc = I3C.setEvents(da, false, 0x01, 1000);  // DISEC INTR
   Serial.print("DISEC(INTR) rc = ");
   Serial.println(rc);
 
   delay(5000);
 
-  rc = I3C_BUS.setEvents(da, true, 0x01, 1000);  // ENEC INTR
+  rc = I3C.setEvents(da, true, 0x01, 1000);  // ENEC INTR
   Serial.print("ENEC(INTR) rc = ");
   Serial.println(rc);
 }
