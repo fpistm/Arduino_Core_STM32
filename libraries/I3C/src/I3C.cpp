@@ -6,6 +6,14 @@
 // ============================================================================
 // Global bus instances
 // ============================================================================
+#if defined(I3C1)
+  static I3CBus *g_i3c1Owner = nullptr;
+#endif
+
+#if defined(I3C2)
+  static I3CBus *g_i3c2Owner = nullptr;
+#endif
+
 I3CBus I3C;
 
 // ============================================================================
@@ -78,14 +86,14 @@ extern "C" void HAL_I3C_NotifyCallback(I3C_HandleTypeDef *hi3c, uint32_t eventId
 {
   if ((hi3c != nullptr) && (hi3c->Instance != nullptr)) {
 #if defined(I3C1)
-    if (hi3c->Instance == I3C1) {
-      I3C1Bus.handleHalNotify(eventId);
+    if ((hi3c->Instance == I3C1) && (g_i3c1Owner != nullptr)) {
+      g_i3c1Owner->handleHalNotify(eventId);
     }
 #endif
 
 #if defined(I3C2)
-    if (hi3c->Instance == I3C2) {
-      I3C2Bus.handleHalNotify(eventId);
+    if ((hi3c->Instance == I3C2) && (g_i3c2Owner != nullptr)) {
+      g_i3c2Owner->handleHalNotify(eventId);
     }
 #endif
   }
@@ -1933,30 +1941,67 @@ bool I3CBus::buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const
 // ============================================================================
 // IRQ handlers
 // ============================================================================
+void I3CBus::registerInstanceOwner()
+{
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    g_i3c1Owner = this;
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    g_i3c2Owner = this;
+  }
+#endif
+}
+
+void I3CBus::unregisterInstanceOwner()
+{
+#if defined(I3C1)
+  if ((g_i3c1Owner == this) && (_instance == I3C1)) {
+    g_i3c1Owner = nullptr;
+  }
+#endif
+
+#if defined(I3C2)
+  if ((g_i3c2Owner == this) && (_instance == I3C2)) {
+    g_i3c2Owner = nullptr;
+  }
+#endif
+}
 
 extern "C" void I3C1_EV_IRQHandler(void)
 {
 #if defined(I3C1)
-  HAL_I3C_EV_IRQHandler(I3C1Bus.halHandle());
+  if (g_i3c1Owner != nullptr) {
+    HAL_I3C_EV_IRQHandler(g_i3c1Owner->halHandle());
+  }
 #endif
 }
 
 extern "C" void I3C1_ER_IRQHandler(void)
 {
 #if defined(I3C1)
-  HAL_I3C_ER_IRQHandler(I3C1Bus.halHandle());
+  if (g_i3c1Owner != nullptr) {
+    HAL_I3C_ER_IRQHandler(g_i3c1Owner->halHandle());
+  }
 #endif
 }
 
 #if defined(I3C2)
 extern "C" void I3C2_EV_IRQHandler(void)
 {
-  HAL_I3C_EV_IRQHandler(I3C2Bus.halHandle());
+  if (g_i3c2Owner != nullptr) {
+    HAL_I3C_EV_IRQHandler(g_i3c2Owner->halHandle());
+  }
 }
 
 extern "C" void I3C2_ER_IRQHandler(void)
 {
-  HAL_I3C_ER_IRQHandler(I3C2Bus.halHandle());
+  if (g_i3c2Owner != nullptr) {
+    HAL_I3C_ER_IRQHandler(g_i3c2Owner->halHandle());
+  }
 }
 #endif
 

@@ -533,6 +533,12 @@ class I3CBus {
     bool buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const;
 
     // ------------------------------------------------------------------------
+    // Irq helpers
+    // ------------------------------------------------------------------------
+    void registerInstanceOwner();
+    void unregisterInstanceOwner();
+
+    // ------------------------------------------------------------------------
     // Internal state
     // ------------------------------------------------------------------------
     I3CControllerConfig _ctrlCfg{};
