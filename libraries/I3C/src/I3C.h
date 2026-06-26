@@ -535,6 +535,8 @@ class I3CBus {
     // ------------------------------------------------------------------------
     // Irq helpers
     // ------------------------------------------------------------------------
+    void enableIRQs();
+    void disableIRQs();
     void registerInstanceOwner();
     void unregisterInstanceOwner();
 
@@ -558,6 +560,8 @@ class I3CBus {
 
     I3CBusType _busType = I3CBusType::Pure;
     uint32_t _mixedBusOdFreq = 1000000U;
+
+    bool _irqEnabled = false;
 
     PinName _sdaPin = digitalPinToPinName(I3C_SDA);
     PinName _sclPin = digitalPinToPinName(I3C_SCL);
