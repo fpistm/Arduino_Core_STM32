@@ -295,6 +295,13 @@ bool I3CBus::begin(uint32_t freq,
         local_ok = false;
       }
     }
+#if defined(I3C_END_OF_FRAME_CPLT_ENABLE)
+    if (local_ok) {
+      if (HAL_I3C_SetConfigEndOfFrame(&_hi3c, I3C_END_OF_FRAME_CPLT_ENABLE) != HAL_OK) {
+        local_ok = false;
+      }
+    }
+#endif
 
     if (local_ok) {
       I3C_FifoConfTypeDef fifoCfg {};
