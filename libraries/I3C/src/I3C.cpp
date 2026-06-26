@@ -140,42 +140,16 @@ bool I3CBus::initGPIO()
 bool I3CBus::initClocks()
 {
   bool result = false;
-  HAL_StatusTypeDef hal_status = HAL_OK;
-
-  if (_instance == I3C1) {
 #if defined(I3C1)
-    RCC_PeriphCLKInitTypeDef PeriphClkInit {};
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I3C1;
-#if defined(RCC_I3C1CLKSOURCE_PCLK1)
-    PeriphClkInit.I3c1ClockSelection = RCC_I3C1CLKSOURCE_PCLK1;
-#else
-#error "I3C1: no known PCLK source"
-#endif
-
-    hal_status = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-    if (hal_status == HAL_OK) {
-      __HAL_RCC_I3C1_CLK_ENABLE();
-      result = true;
-    }
-#endif
+  if (_instance == I3C1) {
+    __HAL_RCC_I3C1_CLK_ENABLE();
+    result = true;
   }
-#if defined(I3C2)
-  else if (_instance == I3C2) {
-    RCC_PeriphCLKInitTypeDef PeriphClkInit {};
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I3C2;
-#if defined(RCC_I3C2CLKSOURCE_PCLK2)
-    PeriphClkInit.I3c2ClockSelection = RCC_I3C2CLKSOURCE_PCLK2;
-#elif defined(RCC_I3C2CLKSOURCE_PCLK3)
-    PeriphClkInit.I3c2ClockSelection = RCC_I3C2CLKSOURCE_PCLK3;
-#else
-#error "I3C2: no known PCLK source"
 #endif
-
-    hal_status = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-    if (hal_status == HAL_OK) {
-      __HAL_RCC_I3C2_CLK_ENABLE();
-      result = true;
-    }
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    __HAL_RCC_I3C2_CLK_ENABLE();
+    result = true;
   }
 #endif
 
