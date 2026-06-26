@@ -254,6 +254,43 @@ bool I3CBus::begin(uint32_t freq,
       _hi3c.Instance = _instance;
       _hi3c.Mode     = HAL_I3C_MODE_CONTROLLER;
 
+      I3C_CtrlTimingTypeDef     inTiming {};
+      LL_I3C_CtrlBusConfTypeDef outCtrl {};
+      uint32_t                  srcFreq = 0U;
+
+      if (_instance == I3C1) {
+        srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
+      }
+#if defined(I3C2)
+      else if (_instance == I3C2) {
+        srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
+      }
+#endif
+
+      if (srcFreq == 0U) {
+        local_ok = false;
+      } else {
+        inTiming.clockSrcFreq = srcFreq;
+        inTiming.i3cPPFreq    = (freq == 0U) ? 1000000U : freq;
+        inTiming.dutyCycle    = 50U;
+
+        if (_busType == I3CBusType::Pure) {
+          inTiming.busType   = I3C_PURE_I3C_BUS;
+          inTiming.i2cODFreq = 0U;
+        } else {
+          inTiming.busType   = I3C_MIXED_BUS;
+          inTiming.i2cODFreq = _mixedBusOdFreq;
+        }
+
+        if (I3C_CtrlTimingComputation(&inTiming, &outCtrl) != SUCCESS) {
+          local_ok = false;
+        } else {
+          _hi3c.Init.CtrlBusCharacteristic = outCtrl;
+        }
+      }
+    }
+
+    if (local_ok) {
       if (HAL_I3C_Init(&_hi3c) != HAL_OK) {
         local_ok = false;
       }
@@ -329,60 +366,21 @@ uint32_t I3CBus::getMixedBusOpenDrainFrequency() const
   return _mixedBusOdFreq;
 }
 
-int I3CBus::setClock(uint32_t i3cFreq)
+bool I3CBus::setClock(uint32_t i3cFreq)
 {
-  int result = 0;
+  bool result = false;
 
 #if !defined(HAL_I3C_MODULE_ENABLED)
-
   (void)i3cFreq;
-  result = 0;
-
 #else
-
-  if (!_initialized) {
-    result = -1;
-  } else if (i3cFreq == 0U) {
-    result = 0;
-  } else {
-    I3C_CtrlTimingTypeDef     inTiming {};
+  if (_initialized && (i3cFreq != 0U)) {
     LL_I3C_CtrlBusConfTypeDef outCtrl {};
-    uint32_t                  srcFreq = 0U;
 
-    if (_instance == I3C1) {
-      srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
-    }
-#if defined(I3C2)
-    else if (_instance == I3C2) {
-      srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
-    }
-#endif
-
-    if (srcFreq == 0U) {
-      result = -1;
-    } else {
-      inTiming.clockSrcFreq = srcFreq;
-      inTiming.i3cPPFreq    = i3cFreq;
-      inTiming.dutyCycle    = 50U;
-
-      if (_busType == I3CBusType::Pure) {
-        inTiming.busType   = I3C_PURE_I3C_BUS;
-        inTiming.i2cODFreq = 0U;
-      } else {
-        inTiming.busType   = I3C_MIXED_BUS;
-        inTiming.i2cODFreq = _mixedBusOdFreq;
-      }
-
-      if (I3C_CtrlTimingComputation(&inTiming, &outCtrl) != SUCCESS) {
-        result = -1;
-      } else if (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) != HAL_OK) {
-        result = -1;
-      } else {
-        result = 0;
-      }
+    if (buildControllerTiming(i3cFreq, outCtrl) &&
+       (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) == HAL_OK)) {
+      result = true;
     }
   }
-
 #endif
 
   return result;
@@ -1856,6 +1854,73 @@ void I3CBus::handleHalNotify(uint32_t eventId)
     _lastTargetEventId  = eventId;
     _targetEventPending = true;
   }
+}
+
+// ============================================================================
+// Clock helpers
+// ============================================================================
+uint32_t I3CBus::getPeripheralClockFreq() const
+{
+  uint32_t srcFreq = 0U;
+
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
+  }
+#endif
+
+  return srcFreq;
+}
+
+bool I3CBus::buildControllerTiming(uint32_t freq, LL_I3C_CtrlBusConfTypeDef &outCtrl) const
+{
+  bool result = false;
+  uint32_t srcFreq = getPeripheralClockFreq();
+
+  if (srcFreq != 0U) {
+    I3C_CtrlTimingTypeDef inTiming {};
+
+    inTiming.clockSrcFreq = srcFreq;
+    inTiming.i3cPPFreq    = (freq == 0U) ? 1000000U : freq;
+    inTiming.dutyCycle    = 50U;
+
+    if (_busType == I3CBusType::Pure) {
+      inTiming.busType   = I3C_PURE_I3C_BUS;
+      inTiming.i2cODFreq = 0U;
+    } else {
+      inTiming.busType   = I3C_MIXED_BUS;
+      inTiming.i2cODFreq = _mixedBusOdFreq;
+    }
+
+    if (I3C_CtrlTimingComputation(&inTiming, &outCtrl) == SUCCESS) {
+      result = true;
+    }
+  }
+
+  return result;
+}
+
+bool I3CBus::buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const
+{
+  bool result = false;
+  uint32_t srcFreq = getPeripheralClockFreq();
+
+  if (srcFreq != 0U) {
+    I3C_TgtTimingTypeDef inTiming {};
+    inTiming.clockSrcFreq = srcFreq;
+
+    if (I3C_TgtTimingComputation(&inTiming, &outTgt) == SUCCESS) {
+      result = true;
+    }
+  }
+
+  return result;
 }
 
 // ============================================================================

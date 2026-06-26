@@ -146,7 +146,7 @@ class I3CBus {
                uint32_t mixedOdHz,
                const I3CControllerConfig &ctrlCfg);
 
-    int setClock(uint32_t hz);
+    bool setClock(uint32_t hz);
 
     void setBusType(I3CBusType type);
     I3CBusType getBusType() const;
@@ -524,6 +524,13 @@ class I3CBus {
     // ------------------------------------------------------------------------
     static uint32_t bigToLittle32(uint32_t x);
     static uint64_t extractPid48FromEntdaaPayload(uint64_t payload);
+
+    // ------------------------------------------------------------------------
+    // Clock helpers
+    // ------------------------------------------------------------------------
+    uint32_t getPeripheralClockFreq() const;
+    bool buildControllerTiming(uint32_t freq, LL_I3C_CtrlBusConfTypeDef &outCtrl) const;
+    bool buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const;
 
     // ------------------------------------------------------------------------
     // Internal state
