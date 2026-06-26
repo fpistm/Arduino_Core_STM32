@@ -119,7 +119,7 @@ struct I3CControllerConfig {
 
 class I3CBus {
   public:
-    explicit I3CBus(I3C_TypeDef *inst = I3C1) : _instance(inst) {}
+    explicit I3CBus() : _instance(nullptr) {}
 
     // ------------------------------------------------------------------------
     // Controller initialization and bus configuration
@@ -397,9 +397,9 @@ class I3CBus {
     int disableTargetEvents(uint32_t interruptMask);
 
     bool setEvents(uint8_t dynAddr,
-                  bool enable,
-                  uint8_t events,
-                  uint32_t timeout = 1000U);
+                   bool enable,
+                   uint8_t events,
+                   uint32_t timeout = 1000U);
 
     bool hasTargetEvent() const;
     bool readTargetEvent(uint32_t &eventId);
@@ -440,6 +440,11 @@ class I3CBus {
     }
 
   private:
+    // ------------------------------------------------------------------------
+    // Instance
+    // ------------------------------------------------------------------------
+    bool prepareInstanceFromPins();
+
     enum class I3CAddrState : uint8_t {
       Free,
       Reserved,
@@ -496,23 +501,23 @@ class I3CBus {
     // Low-level CCC helpers
     // ------------------------------------------------------------------------
     bool cccBroadcastWrite(uint8_t cccId,
-                          const uint8_t *data,
-                          uint16_t length,
-                          bool withDefByte,
-                          uint32_t timeout = 1000U);
+                           const uint8_t *data,
+                           uint16_t length,
+                           bool withDefByte,
+                           uint32_t timeout = 1000U);
 
     bool cccDirectWrite(uint8_t targetAddr,
-                       uint8_t cccId,
-                       const uint8_t *data,
-                       uint16_t length,
-                       bool withDefByte,
-                       uint32_t timeout = 1000U);
+                        uint8_t cccId,
+                        const uint8_t *data,
+                        uint16_t length,
+                        bool withDefByte,
+                        uint32_t timeout = 1000U);
 
     bool cccDirectRead(uint8_t targetAddr,
-                      uint8_t cccId,
-                      uint8_t *rxData,
-                      uint16_t rxLength,
-                      uint32_t timeout = 1000);
+                       uint8_t cccId,
+                       uint8_t *rxData,
+                       uint16_t rxLength,
+                       uint32_t timeout = 1000);
 
     // ------------------------------------------------------------------------
     // Internal utility helpers
@@ -549,12 +554,6 @@ class I3CBus {
 // Global instances
 // ============================================================================
 
-#if defined(I3C1)
-  extern I3CBus I3C1Bus;
-#endif
-
-#if defined(I3C2)
-  extern I3CBus I3C2Bus;
-#endif
+extern I3CBus I3C;
 
 #endif

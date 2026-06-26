@@ -6,14 +6,7 @@
 // ============================================================================
 // Global bus instances
 // ============================================================================
-
-#if defined(I3C1)
-  I3CBus I3C1Bus(I3C1);
-#endif
-
-#if defined(I3C2)
-  I3CBus I3C2Bus(I3C2);
-#endif
+I3CBus I3C;
 
 // ============================================================================
 // File-local constants and helpers
@@ -98,6 +91,27 @@ extern "C" void HAL_I3C_NotifyCallback(I3C_HandleTypeDef *hi3c, uint32_t eventId
   }
 }
 
+// ------------------------------------------------------------------------
+// instance
+// ------------------------------------------------------------------------
+bool I3CBus::prepareInstanceFromPins()
+{
+  bool result = false;
+
+  if ((_sdaPin != NC) && (_sclPin != NC)) {
+    void *merged    = pinmap_merge_peripheral(
+                        pinmap_peripheral(_sdaPin, PinMap_I3C_SDA),
+                        pinmap_peripheral(_sclPin, PinMap_I3C_SCL));
+
+    if (merged != (void *)NP) {
+      _instance = reinterpret_cast<I3C_TypeDef *>(merged);
+      result = true;
+    }
+  }
+
+  return result;
+}
+
 // ============================================================================
 // Low-level initialization
 // ============================================================================
@@ -106,16 +120,10 @@ bool I3CBus::initGPIO()
 {
   bool result = false;
 
-  if ((_sdaPin != NC) && (_sclPin != NC)) {
-    void *periphSDA = pinmap_peripheral(_sdaPin, PinMap_I3C_SDA);
-    void *periphSCL = pinmap_peripheral(_sclPin, PinMap_I3C_SCL);
-    void *merged    = pinmap_merge_peripheral(periphSDA, periphSCL);
-
-    if ((merged != (void *)NP) && (merged == _instance)) {
-      pinmap_pinout(_sdaPin, PinMap_I3C_SDA);
-      pinmap_pinout(_sclPin, PinMap_I3C_SCL);
-      result = true;
-    }
+  if ((_sdaPin != NC) && (_sclPin != NC) && (_instance != nullptr)) {
+    pinmap_pinout(_sdaPin, PinMap_I3C_SDA);
+    pinmap_pinout(_sclPin, PinMap_I3C_SCL);
+    result = true;
   }
 
   return result;
@@ -229,7 +237,11 @@ bool I3CBus::begin(uint32_t freq,
     _mixedBusOdFreq = mixedOdHz;
     _ctrlCfg = ctrlCfg;
 
-    if (!initClocks()) {
+    if (!prepareInstanceFromPins()) {
+      local_ok = false;
+    }
+
+    if (local_ok && !initClocks()) {
       local_ok = false;
     }
 
@@ -677,10 +689,10 @@ bool I3CBus::isI3CDeviceReady(uint8_t dynAddr, uint32_t trials, uint32_t timeout
 // ============================================================================
 
 bool I3CBus::cccBroadcastWrite(uint8_t cccId,
-                              const uint8_t *data,
-                              uint16_t length,
-                              bool withDefByte,
-                              uint32_t timeout)
+                               const uint8_t *data,
+                               uint16_t length,
+                               bool withDefByte,
+                               uint32_t timeout)
 {
   bool result = false;
 
@@ -726,11 +738,11 @@ bool I3CBus::cccBroadcastWrite(uint8_t cccId,
 }
 
 bool I3CBus::cccDirectWrite(uint8_t targetAddr,
-                           uint8_t cccId,
-                           const uint8_t *data,
-                           uint16_t length,
-                           bool withDefByte,
-                           uint32_t timeout)
+                            uint8_t cccId,
+                            const uint8_t *data,
+                            uint16_t length,
+                            bool withDefByte,
+                            uint32_t timeout)
 {
   bool result = false;
 
@@ -776,10 +788,10 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
 }
 
 bool I3CBus::cccDirectRead(uint8_t targetAddr,
-                          uint8_t cccId,
-                          uint8_t *rxData,
-                          uint16_t rxLength,
-                          uint32_t timeout)
+                           uint8_t cccId,
+                           uint8_t *rxData,
+                           uint16_t rxLength,
+                           uint32_t timeout)
 {
   bool result = false;
 
@@ -938,9 +950,9 @@ bool I3CBus::rstactPeripheralOnly()
 }
 
 bool I3CBus::setEvents(uint8_t dynAddr,
-                      bool enable,
-                      uint8_t events,
-                      uint32_t timeout)
+                       bool enable,
+                       uint8_t events,
+                       uint32_t timeout)
 {
   bool result = false;
 
@@ -1442,7 +1454,11 @@ bool I3CBus::beginTarget(const I3CTargetConfig &cfg)
   } else {
     bool local_ok = true;
 
-    if (!initClocks()) {
+    if (!prepareInstanceFromPins()) {
+      local_ok = false;
+    }
+
+    if (local_ok && !initClocks()) {
       local_ok = false;
     }
 
