@@ -278,7 +278,7 @@ bool I3CBus::begin(uint32_t freq,
 
               if (HAL_I3C_Ctrl_Config(&_hi3c, &ctrlCfgHal) != HAL_OK) {
                 result = false;
-              } else{
+              } else {
                 registerInstanceOwner();
                 _initialized = true;
                 _role = I3CRole::Controller;
@@ -333,7 +333,7 @@ bool I3CBus::setClock(uint32_t i3cFreq)
     LL_I3C_CtrlBusConfTypeDef outCtrl {};
 
     if (buildControllerTiming(i3cFreq, outCtrl) &&
-       (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) == HAL_OK)) {
+        (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) == HAL_OK)) {
       result = true;
     }
   }
@@ -375,7 +375,7 @@ int I3CBus::write(uint8_t dynAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = dynAddr;
@@ -423,7 +423,7 @@ int I3CBus::read(uint8_t dynAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = dynAddr;
@@ -470,7 +470,7 @@ int I3CBus::writeRegBuffer(uint8_t dynAddr,
   } else {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     uint8_t            data[32] = {0};
     HAL_StatusTypeDef  st;
 
@@ -522,7 +522,7 @@ int I3CBus::readRegBuffer(uint8_t dynAddr,
   } else {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     uint8_t            regBuf[1] = { reg };
     uint8_t            data[32]  = {0};
     HAL_StatusTypeDef  st;
@@ -651,38 +651,40 @@ bool I3CBus::cccBroadcastWrite(uint8_t cccId,
   bool result = false;
 
   if (_initialized) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[1] = {};
+    uint8_t         txBuffer[I3C_CCC_TX_SCRATCH_MAX] = {};
     I3C_XferTypeDef context {};
-    uint8_t         txBuffer[0x0F];
 
     I3C_CCCTypeDef ccc[] = {
       { 0x00U, cccId, { const_cast<uint8_t *>(data), length }, HAL_I3C_DIRECTION_WRITE },
     };
 
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
-    context.TxBuf.pBuffer   = txBuffer;
-    context.TxBuf.Size      = 4U;
+    if (!(length > sizeof(txBuffer))) {
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 1U;
+      context.TxBuf.pBuffer   = txBuffer;
+      context.TxBuf.Size      = length;
 
-    uint32_t option = withDefByte ? I3C_BROADCAST_WITH_DEFBYTE_RESTART
-                      : I3C_BROADCAST_WITHOUT_DEFBYTE_RESTART;
+      uint32_t option = withDefByte ? I3C_BROADCAST_WITH_DEFBYTE_RESTART
+                        : I3C_BROADCAST_WITHOUT_DEFBYTE_RESTART;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             option);
+      result = (HAL_I3C_AddDescToFrame(
+                  &_hi3c,
+                  ccc,
+                  nullptr,
+                  &context,
+                  COUNTOF(ccc),
+                  option) == HAL_OK);
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
       if (st == HAL_OK) {
-        result = true;
-      } else {
-        uint32_t err = HAL_I3C_GetError(&_hi3c);
-        if ((err & HAL_I3C_ERROR_CE2) != 0U) {
+        st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
+        if (st == HAL_OK) {
           result = true;
+        } else {
+          uint32_t err = HAL_I3C_GetError(&_hi3c);
+          if ((err & HAL_I3C_ERROR_CE2) != 0U) {
+            result = true;
+          }
         }
       }
     }
@@ -701,9 +703,9 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
   bool result = false;
 
   if (_initialized) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[2] = {};
+    uint8_t         txBuffer[I3C_CCC_TX_SCRATCH_MAX] = {};
     I3C_XferTypeDef context {};
-    uint8_t         txBuffer[0x0F];
 
     I3C_CCCTypeDef ccc[] = {
       {
@@ -714,26 +716,29 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
       },
     };
 
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
-    context.TxBuf.pBuffer   = txBuffer;
-    context.TxBuf.Size      = 4U;
+    if (!(length > sizeof(txBuffer))) {
 
-    uint32_t option = withDefByte ? I3C_DIRECT_WITH_DEFBYTE_RESTART
-                      : I3C_DIRECT_WITHOUT_DEFBYTE_RESTART;
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 2U;
+      context.TxBuf.pBuffer   = txBuffer;
+      context.TxBuf.Size      = length;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             option);
+      uint32_t option = withDefByte ? I3C_DIRECT_WITH_DEFBYTE_RESTART
+                        : I3C_DIRECT_WITHOUT_DEFBYTE_RESTART;
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
+      result = (HAL_I3C_AddDescToFrame(
+                  &_hi3c,
+                  ccc,
+                  nullptr,
+                  &context,
+                  COUNTOF(ccc),
+                  option) == HAL_OK);
+
       if (st == HAL_OK) {
-        result = true;
+        st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
+        if (st == HAL_OK) {
+          result = true;
+        }
       }
     }
   }
@@ -750,7 +755,7 @@ bool I3CBus::cccDirectRead(uint8_t targetAddr,
   bool result = false;
 
   if (_initialized && (rxData != nullptr) && (rxLength != 0U)) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[2] = {};
     I3C_XferTypeDef context {};
 
     I3C_CCCTypeDef ccc[] = {
@@ -763,17 +768,17 @@ bool I3CBus::cccDirectRead(uint8_t targetAddr,
     };
 
     context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
+    context.CtrlBuf.Size    = 2U;
     context.RxBuf.pBuffer   = rxData;
     context.RxBuf.Size      = rxLength;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             I3C_DIRECT_WITHOUT_DEFBYTE_RESTART);
+    result = (HAL_I3C_AddDescToFrame(
+                &_hi3c,
+                ccc,
+                nullptr,
+                &context,
+                COUNTOF(ccc),
+                I3C_DIRECT_WITHOUT_DEFBYTE_RESTART) == HAL_OK);
 
     if (st == HAL_OK) {
       st = HAL_I3C_Ctrl_ReceiveCCC(&_hi3c, &context, timeout);

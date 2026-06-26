@@ -563,6 +563,9 @@ class I3CBus {
 
     bool _irqEnabled = false;
 
+    static constexpr uint32_t I3C_CTRL_WORDS_MAX = 2U;
+    static constexpr uint32_t I3C_CCC_TX_SCRATCH_MAX = 16U;
+
     PinName _sdaPin = digitalPinToPinName(I3C_SDA);
     PinName _sclPin = digitalPinToPinName(I3C_SCL);
 };
