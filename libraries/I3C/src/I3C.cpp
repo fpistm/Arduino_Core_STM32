@@ -617,24 +617,18 @@ int I3CBus::readReg(uint8_t dynAddr,
 bool I3CBus::isI2CDeviceReady(uint8_t addr, uint32_t trials, uint32_t timeout)
 {
   bool result = false;
-
   if (_initialized) {
-    HAL_StatusTypeDef st = HAL_I3C_Ctrl_IsDeviceI2C_Ready(&_hi3c, addr, trials, timeout);
-    result = (st == HAL_OK);
+    result = (HAL_I3C_Ctrl_IsDeviceI2C_Ready(&_hi3c, addr, trials, timeout) == HAL_OK);
   }
-
   return result;
 }
 
 bool I3CBus::isI3CDeviceReady(uint8_t dynAddr, uint32_t trials, uint32_t timeout)
 {
   bool result = false;
-
   if (_initialized) {
-    HAL_StatusTypeDef st = HAL_I3C_Ctrl_IsDeviceI3C_Ready(&_hi3c, dynAddr, trials, timeout);
-    result = (st == HAL_OK);
+    result = (HAL_I3C_Ctrl_IsDeviceI3C_Ready(&_hi3c, dynAddr, trials, timeout) == HAL_OK);
   }
-
   return result;
 }
 
@@ -676,11 +670,9 @@ bool I3CBus::cccBroadcastWrite(uint8_t cccId,
                   COUNTOF(ccc),
                   option) == HAL_OK);
 
-      if (st == HAL_OK) {
-        st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
-        if (st == HAL_OK) {
-          result = true;
-        } else {
+      if (result) {
+        result = (HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout) == HAL_OK);
+        if (!result) {
           uint32_t err = HAL_I3C_GetError(&_hi3c);
           if ((err & HAL_I3C_ERROR_CE2) != 0U) {
             result = true;
@@ -734,11 +726,8 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
                   COUNTOF(ccc),
                   option) == HAL_OK);
 
-      if (st == HAL_OK) {
-        st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
-        if (st == HAL_OK) {
-          result = true;
-        }
+      if (result) {
+        result = (HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout) == HAL_OK);
       }
     }
   }
@@ -780,11 +769,8 @@ bool I3CBus::cccDirectRead(uint8_t targetAddr,
                 COUNTOF(ccc),
                 I3C_DIRECT_WITHOUT_DEFBYTE_RESTART) == HAL_OK);
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_ReceiveCCC(&_hi3c, &context, timeout);
-      if (st == HAL_OK) {
-        result = true;
-      }
+    if (result) {
+      result = (HAL_I3C_Ctrl_ReceiveCCC(&_hi3c, &context, timeout) == HAL_OK);
     }
   }
 
@@ -947,20 +933,8 @@ void I3CBus::initAddressMap()
 
 bool I3CBus::isValidUsableDynamicAddr(uint8_t addr) const
 {
-  bool result = true;
-
-  if ((addr == 0U) || (addr >= 0x7EU)) {
-    result = false;
-  }
-
-  if (result && ((addr & 0x01U) != 0U)) {
-    result = false;
-  }
-
-  return result;
+  return (((addr != 0U) && (addr < 0x7EU)) && (addr & 0x01U) == 0U);
 }
-
-
 
 bool I3CBus::isAddrFree(uint8_t addr) const
 {
@@ -973,8 +947,6 @@ void I3CBus::markAddrUsed(uint8_t addr)
     _addrMap[addr] = I3CAddrState::I3CDevice;
   }
 }
-
-
 
 void I3CBus::markAddrFree(uint8_t addr)
 {
@@ -1042,6 +1014,7 @@ int I3CBus::assignDynamicAddresses(I3CDiscoveredDevice *devices,
             result = -3;
             stop   = true;
           } else {
+            markAddrUsed(da);
             devices[count].dynAddr   = da;
             count++;
           }
