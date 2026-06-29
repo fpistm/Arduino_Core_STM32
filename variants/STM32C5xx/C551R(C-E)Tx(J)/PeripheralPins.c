@@ -11,7 +11,7 @@
  *******************************************************************************
  */
 /*
- * Automatically generated from STM32C551R(C-E)Tx_pinout.json
+ * Automatically generated from STM32C551R(C-E)Tx(J-_)_pinout.json
  */
 #if !defined(CUSTOM_PERIPHERAL_PINS)
 #include "Arduino.h"

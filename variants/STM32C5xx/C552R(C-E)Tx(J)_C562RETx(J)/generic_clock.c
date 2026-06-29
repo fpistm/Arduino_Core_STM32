@@ -10,12 +10,10 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_GENERIC_C552RCTX) || defined(ARDUINO_GENERIC_C552RETX) ||\
-    defined(ARDUINO_GENERIC_C562RETX)
+#if defined(ARDUINO_GENERIC_C552RCTX) || defined(ARDUINO_GENERIC_C552RCTXJ) ||\
+    defined(ARDUINO_GENERIC_C552RETX) || defined(ARDUINO_GENERIC_C552RETXJ) ||\
+    defined(ARDUINO_GENERIC_C562RETX) || defined(ARDUINO_GENERIC_C562RETXJ)
 #include "pins_arduino.h"
-// #include "stm32yyxx_ll_flash.h"
-// #include "stm32yyxx_ll_utils.h"
-// #include "stm32yyxx_ll_rcc.h"
 
 /**
   * @brief  System Clock Configuration
@@ -62,48 +60,6 @@ WEAK void SystemClock_Config(void)
   if (HAL_UpdateCoreClock() != HAL_OK) {
     Error_Handler();
   }
-  // LL_RCC_HSIS_Enable();
-  // while(LL_RCC_HSIS_IsReady() != 1U)
-  // {
-  // }
-
-  // LL_RCC_ConfigPSI(LL_RCC_PSIFREQ_144MHZ, LL_RCC_PSIREF_8MHZ, LL_RCC_PSISOURCE_HSIDIV18);
-
-  // LL_RCC_PSIS_Enable();
-  // while(LL_RCC_PSIS_IsReady() != 1U)
-  // {
-  // }
-
-  // /** Initializes the CPU, AHB and APB busses clocks */
-  // LL_RCC_ConfigBusClock(LL_RCC_HCLK_PRESCALER_1 | LL_RCC_APB1_PRESCALER_1 |
-  //                       LL_RCC_APB2_PRESCALER_1 | LL_RCC_APB3_PRESCALER_1);
-
-  // /** Frequency will be increased */
-  // LL_FLASH_SetLatency(FLASH, LL_FLASH_LATENCY_4WS);
-
-  // LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PSIS);
-  // /* Wait till System clock is ready */
-  // while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PSIS)
-  // {
-  // }
-
-  // LL_FLASH_SetProgrammingDelay(FLASH, LL_FLASH_PROGRAM_DELAY_2);
-
-  // LL_SetSystemCoreClock(144000000U);
-  // LL_Init1msTick(SystemCoreClock);
-
-  // /* Peripheral clocks */
-  // LL_RCC_HSIK_SetDivider(LL_RCC_HSIK_DIV_8);
-  // LL_RCC_HSIK_Enable();
-  // while(LL_RCC_HSIK_IsReady() != 1U)
-  // {
-  // }
-
-  // if (HAL_RCC_LPUART1_SetKernelClkSource(HAL_RCC_LPUART1_CLK_SRC_HSIK) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
 }
 
 #endif /* ARDUINO_GENERIC_* */

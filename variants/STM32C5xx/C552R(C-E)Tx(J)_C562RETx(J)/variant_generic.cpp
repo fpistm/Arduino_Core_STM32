@@ -10,7 +10,9 @@
  *
  *******************************************************************************
  */
-#if defined(ARDUINO_GENERIC_C551RCTX) || defined(ARDUINO_GENERIC_C551RETX)
+#if defined(ARDUINO_GENERIC_C552RCTX) || defined(ARDUINO_GENERIC_C552RCTXJ) ||\
+    defined(ARDUINO_GENERIC_C552RETX) || defined(ARDUINO_GENERIC_C552RETXJ) ||\
+    defined(ARDUINO_GENERIC_C562RETX) || defined(ARDUINO_GENERIC_C562RETXJ)
 #include "pins_arduino.h"
 
 // Digital PinName array

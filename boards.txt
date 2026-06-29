@@ -541,7 +541,7 @@ Nucleo_64.menu.pnum.NUCLEO_C562RE.build.hal=-DUSE_HALV2_DRIVER
 Nucleo_64.menu.pnum.NUCLEO_C562RE.build.board=NUCLEO_C562RE
 Nucleo_64.menu.pnum.NUCLEO_C562RE.build.series=STM32C5xx
 Nucleo_64.menu.pnum.NUCLEO_C562RE.build.product_line=STM32C562xx
-Nucleo_64.menu.pnum.NUCLEO_C562RE.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+Nucleo_64.menu.pnum.NUCLEO_C562RE.build.variant=STM32C5xx/C552R(C-E)Tx(J)_C562RETx(J)
 # Nucleo_64.menu.pnum.NUCLEO_C562RE.openocd.target=stm32c5x
 Nucleo_64.menu.pnum.NUCLEO_C562RE.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C562.svd
 
@@ -2176,7 +2176,7 @@ GenC5.menu.pnum.GENERIC_C552RCTX.upload.maximum_size=262144
 GenC5.menu.pnum.GENERIC_C552RCTX.upload.maximum_data_size=131072
 GenC5.menu.pnum.GENERIC_C552RCTX.build.board=GENERIC_C552RCTX
 GenC5.menu.pnum.GENERIC_C552RCTX.build.product_line=STM32C552xx
-GenC5.menu.pnum.GENERIC_C552RCTX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C552RCTX.build.variant=STM32C5xx/C552R(C-E)Tx(J)_C562RETx(J)
 GenC5.menu.pnum.GENERIC_C552RCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
 
 # Generic C552RETx
@@ -2185,7 +2185,7 @@ GenC5.menu.pnum.GENERIC_C552RETX.upload.maximum_size=524288
 GenC5.menu.pnum.GENERIC_C552RETX.upload.maximum_data_size=131072
 GenC5.menu.pnum.GENERIC_C552RETX.build.board=GENERIC_C552RETX
 GenC5.menu.pnum.GENERIC_C552RETX.build.product_line=STM32C552xx
-GenC5.menu.pnum.GENERIC_C552RETX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C552RETX.build.variant=STM32C5xx/C552R(C-E)Tx(J)_C562RETx(J)
 GenC5.menu.pnum.GENERIC_C552RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
 
 # Generic C562RETx
@@ -2194,7 +2194,7 @@ GenC5.menu.pnum.GENERIC_C562RETX.upload.maximum_size=524288
 GenC5.menu.pnum.GENERIC_C562RETX.upload.maximum_data_size=131072
 GenC5.menu.pnum.GENERIC_C562RETX.build.board=GENERIC_C562RETX
 GenC5.menu.pnum.GENERIC_C562RETX.build.product_line=STM32C562xx
-GenC5.menu.pnum.GENERIC_C562RETX.build.variant=STM32C5xx/C552R(C-E)T_C562RET
+GenC5.menu.pnum.GENERIC_C562RETX.build.variant=STM32C5xx/C552R(C-E)Tx(J)_C562RETx(J)
 GenC5.menu.pnum.GENERIC_C562RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C562.svd
 
 # Upload menu
