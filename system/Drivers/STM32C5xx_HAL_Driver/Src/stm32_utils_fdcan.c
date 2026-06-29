@@ -180,7 +180,10 @@
   * @retval STM32_UTILS_FDCAN_OK            Configuration matching the bus parameters was found.
   * @retval STM32_UTILS_FDCAN_ERROR         No configuration matching the bus parameters was found. Data output
   *                                         must be discarded.
-  * @retval STM32_UTILS_FDCAN_INVALID_PARAM Pointer parameter is NULL.
+   * @retval STM32_UTILS_FDCAN_INVALID_PARAM One or more pointer parameters are NULL, the FDCAN
+   *                                         kernel clock or desired bitrate is zero, the sample point
+   *                                         is greater than 1000 per mille, or the bit timing type is
+   *                                         invalid.
   */
 stm32_utils_fdcan_status_t STM32_UTILS_FDCAN_ComputeBitTiming(const stm32_utils_fdcan_input_bus_param_t *p_bus_param,
                                                               stm32_utils_fdcan_bit_timing_type_t bit_timing_type,
@@ -188,11 +191,11 @@ stm32_utils_fdcan_status_t STM32_UTILS_FDCAN_ComputeBitTiming(const stm32_utils_
                                                               stm32_utils_fdcan_output_config_t *p_output_config)
 {
   stm32_utils_fdcan_status_t status;
+  uint8_t  flag_result_found = 0U;
+  uint16_t real_sample_point_per_mille = 0U;
   uint32_t current_prescaler;
   uint32_t prescaler_max;
-  uint16_t real_sample_point_per_mille = 0U;
   uint32_t real_bitrate_kbps = 0U;
-  uint8_t  flag_result_found = 0U;
   uint32_t tseg1 = 0U;
   uint32_t tseg2 = 0U;
   uint32_t tseg1_min;
@@ -204,6 +207,15 @@ stm32_utils_fdcan_status_t STM32_UTILS_FDCAN_ComputeBitTiming(const stm32_utils_
   uint64_t tmp_num;
 
   if ((p_output_bit_timing == NULL) || (p_bus_param == NULL) || (p_output_config == NULL))
+  {
+    return STM32_UTILS_FDCAN_INVALID_PARAM;
+  }
+
+  if ((p_bus_param->fdcan_ker_clk_khz == 0U)
+      || (p_bus_param->desired_bitrate_kbps == 0U)
+      || (p_bus_param->sample_point_per_mille > VALUE_1000)
+      || ((bit_timing_type != STM32_UTILS_FDCAN_BIT_TIMING_TYPE_NOMINAL)
+          && (bit_timing_type != STM32_UTILS_FDCAN_BIT_TIMING_TYPE_DATA)))
   {
     return STM32_UTILS_FDCAN_INVALID_PARAM;
   }
@@ -324,13 +336,19 @@ stm32_utils_fdcan_status_t STM32_UTILS_FDCAN_ComputeBitTiming(const stm32_utils_
   * @param  p_output_config Pointer to a @ref stm32_utils_fdcan_output_config_t structure containing
   *         the computed bus parameters.
   * @retval STM32_UTILS_FDCAN_OK            Operation completed successfully.
-  * @retval STM32_UTILS_FDCAN_INVALID_PARAM Pointer parameter is NULL.
+   * @retval STM32_UTILS_FDCAN_INVALID_PARAM One or more pointer parameters are NULL or the bit timing
+   *                                         prescaler is zero.
   */
 stm32_utils_fdcan_status_t STM32_UTILS_FDCAN_ComputeBitrate(const stm32_utils_fdcan_bit_timing_t *p_bit_timing,
                                                             uint32_t fdcan_clk_khz,
                                                             stm32_utils_fdcan_output_config_t *p_output_config)
 {
   if ((p_bit_timing == NULL) || (p_output_config == NULL))
+  {
+    return STM32_UTILS_FDCAN_INVALID_PARAM;
+  }
+
+  if (p_bit_timing->prescaler == 0U)
   {
     return STM32_UTILS_FDCAN_INVALID_PARAM;
   }

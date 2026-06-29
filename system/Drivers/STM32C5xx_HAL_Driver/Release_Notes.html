@@ -33,10 +33,10 @@
 <div class="col-sm-12 col-lg-8">
 <h1 id="update-history">Update History</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section-2.0.0" checked aria-hidden="true"> <label for="collapse-section-2.0.0" aria-hidden="true"><strong>2.0.0 / 13-March-2026</strong></label>
+<input type="checkbox" id="collapse-section-2.1.0" checked aria-hidden="true"> <label for="collapse-section-2.1.0" aria-hidden="true"><strong>2.1.0 / 12-June-2026</strong></label>
 <div>
 <h2 id="main-changes">Main changes</h2>
-<h3 id="first-official-release-of-stm32c5xx-hal-drivers">First Official release of <strong>STM32C5xx HAL Drivers</strong></h3>
+<h3 id="second-official-release-of-stm32c5xx-hal-drivers">Second Official release of <strong>STM32C5xx HAL Drivers</strong></h3>
 <p><br />
 </p>
 <h2 id="contents">Contents</h2>
@@ -57,6 +57,44 @@
 </ul>
 <p><br />
 </p>
+<ul>
+<li><strong>HAL/LL Drivers</strong> updates
+<ul>
+<li>HAL/LL <strong>CORDIC</strong>
+<ul>
+<li>Add HAL_CORDIC_GetInstance() and HAL_CORDIC_GetLLInstance() functions</li>
+</ul></li>
+<li>HAL/LL <strong>ICACHE</strong>
+<ul>
+<li>Add HAL_ICACHE_GetInstance() and HAL_ICACHE_GetLLInstance() functions</li>
+</ul></li>
+<li>HAL <strong>GPIO</strong>
+<ul>
+<li>Add HAL_GPIO_GetLLInstance() function</li>
+<li>Update HAL_GPIO_AFn_XXX alternate function definitions to align with the reference manual. Keep the old definitions as compatibility aliases.</li>
+</ul></li>
+<li>HAL <strong>HCD</strong>
+<ul>
+<li>Add HAL_HCD_RegisterChannelAbortTransferCallback() and HAL_HCD_ChannelAbortTransferCallback() functions</li>
+<li>Remove High-Speed and ULPI-related public definitions that do not apply to STM32C5 supported devices</li>
+</ul></li>
+<li>HAL <strong>LPTIM</strong>
+<ul>
+<li>Remove HAL_LPTIM_CompareMatchHalfCpltCallback() prototype because LPTIM peripheral does not support it</li>
+</ul></li>
+<li>HAL <strong>PCD</strong>
+<ul>
+<li>Add HAL_PCD_RegisterEndpointAbortTransferCallback() and HAL_PCD_EndpointAbortTransferCallback() functions</li>
+<li>Remove High-Speed and ULPI-related public definitions that do not apply to STM32C5 supported devices</li>
+</ul></li>
+<li>LL <strong>TIM</strong>
+<ul>
+<li>Apply naming changes to remove duplication in functions name of LL_TIM_POSITION_BRK_SOURCE(), LL_TIM_GET_CHANNEL_INDEX(), LL_TIM_CALC_DTS(). Keep the old definitions as compatibility aliases.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><br />
+</p>
 <h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK</li>
@@ -71,11 +109,89 @@
 <li>STM32C551xx, STM32C552xx, STM32C562xx devices</li>
 <li>STM32C531xx, STM32C532xx, STM32C542xx devices</li>
 <li>STM32C591xx, STM32C593xx, STM32C5A3xx devices</li>
-<li>NUCLEO-C562RE, NUCLEO-C542RC, NUCLEO-C5A3ZG boards</li>
+<li>NUCLEO-C562RE (RevB02), NUCLEO-C542RC (RevB02), NUCLEO-C5A3ZG (RevB02) boards</li>
 </ul>
 <p><br />
 </p>
 <h2 id="known-limitations">Known limitations</h2>
+<ul>
+<li>HAL ETH
+<ul>
+<li>PTP, hardware timestamping, MAC VLAN tagging and advanced MAC filtering features are not supported in this driver version and will be considered for a future release.</li>
+</ul></li>
+<li>HAL I2C
+<ul>
+<li>As defined by MIPI, I2C stretch mode is not supported in I3C communication.</li>
+</ul></li>
+<li>HAL I2S
+<ul>
+<li>Using the -Oz optimization in ARMCC6.24.0 may reorder peripheral memory accesses causing initialization and execution issues in HAL I2S driver.</li>
+</ul></li>
+<li>HAL I3C
+<ul>
+<li>Acknowledgement issue is observed after 2 consecutive aborts (interrupt race condition).</li>
+</ul></li>
+</ul>
+<p><br />
+</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<ul>
+<li>None</li>
+</ul>
+<p><br />
+</p>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>STM32C5xx DFP 2.1.0</li>
+</ul>
+<p><br />
+</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section-2.0.0" aria-hidden="true"> <label for="collapse-section-2.0.0" aria-hidden="true"><strong>2.0.0 / 13-March-2026</strong></label>
+<div>
+<h2 id="main-changes-1">Main changes</h2>
+<h3 id="first-official-release-of-stm32c5xx-hal-drivers">First Official release of <strong>STM32C5xx HAL Drivers</strong></h3>
+<p><br />
+</p>
+<h2 id="contents-1">Contents</h2>
+<ul>
+<li><strong>HAL/LL Drivers</strong> are available for all peripherals:
+<ul>
+<li><strong>System</strong> : CORTEX, CRS, DBGMCU, DMA (Q), ICACHE, IWDG, PWR, RCC, RTC, SBS, WWDG</li>
+<li><strong>I/O</strong> : EXTI, GPIO</li>
+<li><strong>Analog</strong> : ADC, COMP, DAC, OPAMP</li>
+<li><strong>Timers</strong> : TIM, LPTIM</li>
+<li><strong>Connectivity</strong> : FDCAN, I2C, I3C, SMARTCARD, SMBUS, I2S, SPI, UART, LPUART, USART, USB (HCD/PCD), ETH</li>
+<li><strong>Security</strong> : AES, CCB, HASH, PKA, RNG, TAMP</li>
+<li><strong>Computing</strong> : CORDIC, CRC</li>
+<li><strong>Memory</strong> : FLASH, RAMCFG, XSPI (DLYB)</li>
+<li><strong>Common</strong> : OS, Timebases, Templates</li>
+</ul></li>
+<li><strong>Utils</strong> are available for FDCAN, I2C, I3C peripherals.</li>
+</ul>
+<p><br />
+</p>
+<h2 id="development-toolchains-and-compilers-1">Development toolchains and compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK</li>
+<li>MDK-ARM Keil uVision V5.42</li>
+<li>STM32CubeIDE for Visual Studio Code (GCC13 compiler)</li>
+<li>STM32CubeMX2 V1.0.0</li>
+</ul>
+<p><br />
+</p>
+<h2 id="supported-devices-and-boards-1">Supported devices and boards</h2>
+<ul>
+<li>STM32C551xx, STM32C552xx, STM32C562xx devices</li>
+<li>STM32C531xx, STM32C532xx, STM32C542xx devices</li>
+<li>STM32C591xx, STM32C593xx, STM32C5A3xx devices</li>
+<li>NUCLEO-C562RE, NUCLEO-C542RC, NUCLEO-C5A3ZG boards</li>
+</ul>
+<p><br />
+</p>
+<h2 id="known-limitations-1">Known limitations</h2>
 <ul>
 <li>HAL ETH
 <ul>
@@ -101,13 +217,13 @@
 </ul>
 <p><br />
 </p>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
 <ul>
 <li>None</li>
 </ul>
 <p><br />
 </p>
-<h2 id="dependencies">Dependencies</h2>
+<h2 id="dependencies-1">Dependencies</h2>
 <ul>
 <li>STM32C5xx DFP 2.0.0</li>
 </ul>
@@ -117,11 +233,18 @@
 </div>
 <p><br />
 </p>
+<p><br />
+</p>
 </div>
 </div>
 <footer class="sticky">
-<p>For complete documentation on STM32 Microcontrollers </mark> , visit: <span style="font-color: blue;"><a href="http://www.st.com/stm32">www.st.com/stm32</a></span></p>
-This release note uses up to date web standards and, for this reason, should not be opened with Internet Explorer but preferably with popular browsers such as Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.
+<div class="columns">
+<div class="column" style="width:95%;">
+<p>For complete documentation on STM32 Microcontrollers, visit: <a href="https://www.st.com/en/microcontrollers-microprocessors/stm32-32-bit-arm-cortex-mcus.html">www.st.com/stm32</a></p>
+</div><div class="column" style="width:5%;">
+<p><abbr title="Based on template cx566953 version 2.1"></abbr></p>
+</div>
+</div>
 </footer>
 </body>
 </html>
