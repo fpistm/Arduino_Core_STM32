@@ -1615,18 +1615,15 @@ int I3CBus::enableIbi(uint8_t deviceIndex,
   int result = -1;
 
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER)) {
-    int rc = configureControllerDevice(deviceIndex,
+    result = configureControllerDevice(deviceIndex,
                                        dynAddr,
                                        true,
                                        withPayload,
                                        false,
                                        stopTransfer);
 
-    if (rc != 0) {
-      result = rc;
-    } else {
-      rc = setEvents(dynAddr, true, I3C_CCC_EVT_INTR, timeout);
-      result = rc;
+    if (result == 0) {
+      result = setEvents(dynAddr, true, I3C_CCC_EVT_INTR, timeout) ? 0 : -1;
     }
   }
 
