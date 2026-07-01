@@ -13,7 +13,7 @@
 /*
  * Automatically generated from STM32U3B5ZGTxQ.xml, STM32U3B5ZITxQ.xml
  * STM32U3C5ZITxQ.xml
- * CubeMX DB release 6.0.170
+ * CubeMX DB release 6.0.180
  */
 #if !defined(CUSTOM_PERIPHERAL_PINS)
 #include "Arduino.h"

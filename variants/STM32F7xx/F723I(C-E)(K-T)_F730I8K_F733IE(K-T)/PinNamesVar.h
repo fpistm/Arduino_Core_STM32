@@ -68,14 +68,36 @@ PC_11_ALT1 = PC_11 | ALT1,
 
 /* USB */
 #ifdef USBCON
-  USB_OTG_FS_DM   = PA_11,
-  USB_OTG_FS_DP   = PA_12,
-  USB_OTG_FS_ID   = PA_10,
-  USB_OTG_FS_SOF  = PA_8,
-  USB_OTG_FS_VBUS = PA_9,
-  USB_OTG_HS_DM   = PB_14,
-  USB_OTG_HS_DP   = PB_15,
-  USB_OTG_HS_ID   = PB_12,
-  USB_OTG_HS_SOF  = PA_4,
-  USB_OTG_HS_VBUS = PB_13,
+  USB_OTG_FS_DM       = PA_11,
+  USB_OTG_FS_DP       = PA_12,
+  USB_OTG_FS_ID       = PA_10,
+  USB_OTG_FS_SOF      = PA_8,
+  USB_OTG_FS_VBUS     = PA_9,
+  USB_OTG_HS_DM       = PB_14,
+  USB_OTG_HS_DP       = PB_15,
+  USB_OTG_HS_ID       = PB_12,
+  USB_OTG_HS_SOF      = PA_4,
+  USB_OTG_HS_ULPI_CK  = PA_5,
+  USB_OTG_HS_ULPI_D0  = PA_3,
+  USB_OTG_HS_ULPI_D1  = PB_0,
+  USB_OTG_HS_ULPI_D2  = PB_1,
+  USB_OTG_HS_ULPI_D3  = PB_10,
+  USB_OTG_HS_ULPI_D4  = PB_11,
+  USB_OTG_HS_ULPI_D5  = PB_12,
+  USB_OTG_HS_ULPI_D6  = PB_13,
+  USB_OTG_HS_ULPI_D7  = PB_5,
+  #ifdef USB_OTG_HS_ULPI_DIR_PC_2
+    USB_OTG_HS_ULPI_DIR = PC_2,
+  #endif
+  #ifdef USB_OTG_HS_ULPI_DIR_PI_11
+    USB_OTG_HS_ULPI_DIR = PI_11,
+  #endif
+  #ifdef USB_OTG_HS_ULPI_NXT_PC_3
+    USB_OTG_HS_ULPI_NXT = PC_3,
+  #endif
+  #ifdef USB_OTG_HS_ULPI_NXT_PH_4
+    USB_OTG_HS_ULPI_NXT = PH_4,
+  #endif
+  USB_OTG_HS_ULPI_STP = PC_0,
+  USB_OTG_HS_VBUS     = PB_13,
 #endif

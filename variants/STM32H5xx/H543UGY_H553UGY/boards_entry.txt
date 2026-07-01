@@ -1,0 +1,23 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic H543UGYx
+GenH5.menu.pnum.GENERIC_H543UGYX=Generic H543UGYx
+GenH5.menu.pnum.GENERIC_H543UGYX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H543UGYX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543UGYX.build.board=GENERIC_H543UGYX
+GenH5.menu.pnum.GENERIC_H543UGYX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543UGYX.build.variant=STM32H5xx/H543UGY_H553UGY
+GenH5.menu.pnum.GENERIC_H543UGYX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H553UGYx
+GenH5.menu.pnum.GENERIC_H553UGYX=Generic H553UGYx
+GenH5.menu.pnum.GENERIC_H553UGYX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H553UGYX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H553UGYX.build.board=GENERIC_H553UGYX
+GenH5.menu.pnum.GENERIC_H553UGYX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H553UGYX.build.variant=STM32H5xx/H543UGY_H553UGY
+GenH5.menu.pnum.GENERIC_H553UGYX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H553.svd
+

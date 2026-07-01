@@ -10,7 +10,6 @@ GenWBA.menu.pnum.GENERIC_WBA55HEFX.upload.maximum_data_size=98304
 GenWBA.menu.pnum.GENERIC_WBA55HEFX.build.board=GENERIC_WBA55HEFX
 GenWBA.menu.pnum.GENERIC_WBA55HEFX.build.product_line=STM32WBA55xx
 GenWBA.menu.pnum.GENERIC_WBA55HEFX.build.variant=STM32WBAxx/WBA55H(E-G)F
-GenWBA.menu.pnum.GENERIC_WBA55HEFX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WBAxx/STM32WBA55.svd
 
 # Generic WBA55HGFx
 GenWBA.menu.pnum.GENERIC_WBA55HGFX=Generic WBA55HGFx

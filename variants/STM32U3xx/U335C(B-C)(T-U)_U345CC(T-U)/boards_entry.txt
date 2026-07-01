@@ -1,0 +1,59 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U335CBTx
+GenU3.menu.pnum.GENERIC_U335CBTX=Generic U335CBTx
+GenU3.menu.pnum.GENERIC_U335CBTX.upload.maximum_size=131072
+GenU3.menu.pnum.GENERIC_U335CBTX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335CBTX.build.board=GENERIC_U335CBTX
+GenU3.menu.pnum.GENERIC_U335CBTX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335CBTX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U335CBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U335CBUx
+GenU3.menu.pnum.GENERIC_U335CBUX=Generic U335CBUx
+GenU3.menu.pnum.GENERIC_U335CBUX.upload.maximum_size=131072
+GenU3.menu.pnum.GENERIC_U335CBUX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335CBUX.build.board=GENERIC_U335CBUX
+GenU3.menu.pnum.GENERIC_U335CBUX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335CBUX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U335CBUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U335CCTx
+GenU3.menu.pnum.GENERIC_U335CCTX=Generic U335CCTx
+GenU3.menu.pnum.GENERIC_U335CCTX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U335CCTX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335CCTX.build.board=GENERIC_U335CCTX
+GenU3.menu.pnum.GENERIC_U335CCTX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335CCTX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U335CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U335CCUx
+GenU3.menu.pnum.GENERIC_U335CCUX=Generic U335CCUx
+GenU3.menu.pnum.GENERIC_U335CCUX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U335CCUX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335CCUX.build.board=GENERIC_U335CCUX
+GenU3.menu.pnum.GENERIC_U335CCUX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335CCUX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U335CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U345CCTx
+GenU3.menu.pnum.GENERIC_U345CCTX=Generic U345CCTx
+GenU3.menu.pnum.GENERIC_U345CCTX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U345CCTX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U345CCTX.build.board=GENERIC_U345CCTX
+GenU3.menu.pnum.GENERIC_U345CCTX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U345CCTX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U345CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U345.svd
+
+# Generic U345CCUx
+GenU3.menu.pnum.GENERIC_U345CCUX=Generic U345CCUx
+GenU3.menu.pnum.GENERIC_U345CCUX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U345CCUX.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U345CCUX.build.board=GENERIC_U345CCUX
+GenU3.menu.pnum.GENERIC_U345CCUX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U345CCUX.build.variant=STM32U3xx/U335C(B-C)(T-U)_U345CC(T-U)
+GenU3.menu.pnum.GENERIC_U345CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U345.svd
+
