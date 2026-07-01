@@ -1,17 +1,28 @@
 I3CBus	KEYWORD1
+I3C	KEYWORD1
 I3CDiscoveredDevice	KEYWORD1
 I3CKnownDevice	KEYWORD1
 I3CBusBeginConfig	KEYWORD1
 I3CTargetConfig	KEYWORD1
 I3CControllerIbiInfo	KEYWORD1
 I3CRole	KEYWORD1
+I3CBusType	KEYWORD1
+I3CTransferType	KEYWORD1
+I3CControllerConfig	KEYWORD1
 
 begin	KEYWORD2
 beginTarget	KEYWORD2
-beginBus	KEYWORD2
 discover	KEYWORD2
-setBusFrequency	KEYWORD2
+assignDynamicAddresses	KEYWORD2
 setClock	KEYWORD2
+setBusType	KEYWORD2
+getBusType	KEYWORD2
+setMixedBusOpenDrainFrequency	KEYWORD2
+getMixedBusOpenDrainFrequency	KEYWORD2
+getRole	KEYWORD2
+isController	KEYWORD2
+isTarget	KEYWORD2
+end	KEYWORD2
 
 write	KEYWORD2
 read	KEYWORD2
@@ -20,31 +31,37 @@ readReg	KEYWORD2
 writeRegBuffer	KEYWORD2
 readRegBuffer	KEYWORD2
 
+i2cWrite	KEYWORD2
+i2cRead	KEYWORD2
+i2cWriteRead	KEYWORD2
+i2cWriteReg	KEYWORD2
+i2cReadReg	KEYWORD2
+i2cWriteRegBuffer	KEYWORD2
+i2cReadRegBuffer	KEYWORD2
+scanI2CDevices	KEYWORD2
+
 isI2CDeviceReady	KEYWORD2
 isI3CDeviceReady	KEYWORD2
 
 resetDynamicAddresses	KEYWORD2
 disableEvents	KEYWORD2
-disableAllEvents	KEYWORD2
 assignDynamicAddress	KEYWORD2
 assignAllStaticAsDynamic	KEYWORD2
+setEvents	KEYWORD2
 
 getbcr	KEYWORD2
 getdcr	KEYWORD2
 getpid	KEYWORD2
 
-entdaa	KEYWORD2
-
 hasAddress	KEYWORD2
 address	KEYWORD2
+configureTarget	KEYWORD2
 send	KEYWORD2
 receive	KEYWORD2
 
 sendIbi	KEYWORD2
 enableTargetEvents	KEYWORD2
 disableTargetEvents	KEYWORD2
-availableTargetEvent	KEYWORD2
-fetchTargetEvent	KEYWORD2
 hasTargetEvent	KEYWORD2
 readTargetEvent	KEYWORD2
 
@@ -56,3 +73,5 @@ hasIbi	KEYWORD2
 peekIbi	KEYWORD2
 readIbi	KEYWORD2
 onIbi	KEYWORD2
+
+halHandle	KEYWORD2
