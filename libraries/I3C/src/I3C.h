@@ -158,6 +158,8 @@ class I3CBus {
     bool isController() const;
     bool isTarget() const;
 
+    void end();
+
     // ------------------------------------------------------------------------
     // Default I3C controller transfers
     // ------------------------------------------------------------------------
@@ -539,6 +541,9 @@ class I3CBus {
     void disableIRQs();
     void registerInstanceOwner();
     void unregisterInstanceOwner();
+
+    void deinitClocks();
+    void deinitGPIO();
 
     // ------------------------------------------------------------------------
     // Internal state

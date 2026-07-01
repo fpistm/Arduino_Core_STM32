@@ -331,6 +331,60 @@ bool I3CBus::isTarget() const
   return _role == I3CRole::Target;
 }
 
+void I3CBus::end()
+{
+  if (_initialized) {
+    disableIRQs();
+    unregisterInstanceOwner();
+
+    (void)HAL_I3C_DeInit(&_hi3c);
+
+    deinitGPIO();
+    deinitClocks();
+
+    _initialized = false;
+    _role = I3CRole::None;
+
+    _ibiPending = false;
+    _lastIbi = {};
+    _targetEventPending = false;
+    _lastTargetEventId = 0U;
+
+    std::memset(&_hi3c, 0, sizeof(_hi3c));
+    _instance = nullptr;
+  }
+}
+
+void I3CBus::deinitClocks()
+{
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    __HAL_RCC_I3C1_FORCE_RESET();
+    __HAL_RCC_I3C1_RELEASE_RESET();
+    __HAL_RCC_I3C1_CLK_DISABLE();
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    __HAL_RCC_I3C2_FORCE_RESET();
+    __HAL_RCC_I3C2_RELEASE_RESET();
+    __HAL_RCC_I3C2_CLK_DISABLE();
+  }
+#endif
+}
+
+void I3CBus::deinitGPIO()
+{
+  if (_sdaPin != NC) {
+    pin_function(_sdaPin, STM_PIN_DATA(STM_MODE_ANALOG, GPIO_NOPULL, 0));
+  }
+
+  if (_sclPin != NC) {
+    pin_function(_sclPin, STM_PIN_DATA(STM_MODE_ANALOG, GPIO_NOPULL, 0));
+  }
+}
+
 // ============================================================================
 // Default I3C controller transfers
 // ============================================================================
