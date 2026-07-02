@@ -499,6 +499,38 @@ __STATIC_INLINE uint32_t LL_RCC_HSE_IsEnabled(void)
 }
 
 /**
+  * @brief  Select HSI as clock source for MRSUBG timer bit interpolation.
+  *         (FMRAT = 1: MRSUBG timer uses HSI clock)
+  * @rmtoll CR           FMRAT        LL_RCC_FMRAT_UseHSI
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_FMRAT_UseHSI(void)
+{
+  SET_BIT(RCC->CR, RCC_CR_FMRAT);
+}
+
+/**
+  * @brief  Select HSE as clock source for MRSUBG timer bit interpolation.
+  *         (FMRAT = 0: MRSUBG timer uses precise HSE clock)
+  * @rmtoll CR           FMRAT        LL_RCC_FMRAT_UseHSE
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_FMRAT_UseHSE(void)
+{
+  CLEAR_BIT(RCC->CR, RCC_CR_FMRAT);
+}
+
+/**
+  * @brief  Check if MRSUBG timer bit interpolation uses HSI clock.
+  * @rmtoll CR           FMRAT        LL_RCC_FMRAT_IsHSI
+  * @retval 1UL if FMRAT bit is set (HSI used), 0UL if clear (HSE used).
+  */
+__STATIC_INLINE uint32_t LL_RCC_FMRAT_IsHSI(void)
+{
+  return (READ_BIT(RCC->CR, RCC_CR_FMRAT) == RCC_CR_FMRAT) ? 1UL : 0UL;
+}
+
+/**
   * @brief  Check if HSE oscillator Ready
   * @rmtoll CR           HSERDY        LL_RCC_HSE_IsReady
   * @retval State of bit (1 or 0).

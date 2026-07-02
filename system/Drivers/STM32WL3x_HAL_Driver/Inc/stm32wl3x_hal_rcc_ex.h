@@ -103,8 +103,8 @@ typedef struct
   uint32_t SPI3I2SClockSelection;   /*!< Specifies SPI3_I2S clock source.
                                          This parameter can be a value of @ref RCCEx_SPI3_I2S_Clock_Source */
 
-  uint32_t RTCWDGSUBGLPAWURLCDLCSCClockSelection; /*!< Specifies RTC, WDG and BLEWKUP clock source.
-                                             This parameter can be a value of @ref RCCEx_RTC_WDG_BLEWKUP_Clock_Source */
+  uint32_t RTCWDGSUBGLPAWURLCDLCSCClockSelection; /*!< Specifies RTC, WDG and SUBG clock source.
+                                             This parameter can be a value of @ref RCCEx_RTC_WDG_SUBG_Clock_Source */
 
 #if defined(RCC_CFGR_LPUCLKSEL)
   uint32_t LPUART1ClockSelection;   /*!< Specifies LPUART1 clock source.
@@ -196,12 +196,12 @@ typedef struct
 /**
   * @}
   */
-/** @defgroup RCCEx_RTC_WDG_BLEWKUP_Clock_Source RTC, WDG, BLEWKUP Clock Source
+/** @defgroup RCCEx_RTC_WDG_SUBG_Clock_Source RTC, WDG, SUBG Clock Source
   * @{
   */
-#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_LSE             LL_RCC_LSCO_CLKSOURCE_LSE            /*!< RTC, WDG and BLEWKUP LSE clock source selection     */
-#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_LSI             LL_RCC_LSCO_CLKSOURCE_LSI            /*!< RTC, WDG and BLEWKUP LSI clock source selection     */
-#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_DIV512          LL_RCC_LSCO_CLKSOURCE_HSI64M_DIV2048 /*!< RTC, WDG and BLEWKUP 32K clock source selection     */
+#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_LSE             LL_RCC_LSCO_CLKSOURCE_LSE            /*!< RTC, WDG and SUBG LSE clock source selection     */
+#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_LSI             LL_RCC_LSCO_CLKSOURCE_LSI            /*!< RTC, WDG and SUBG LSI clock source selection     */
+#define RCC_RTC_WDG_SUBG_LPAWUR_LCD_LCSC_CLKSOURCE_DIV512          LL_RCC_LSCO_CLKSOURCE_HSI64M_DIV2048 /*!< RTC, WDG and SUBG 32K clock source selection     */
 
 /**
   * @}

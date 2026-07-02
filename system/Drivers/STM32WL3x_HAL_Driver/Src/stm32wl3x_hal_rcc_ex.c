@@ -264,10 +264,26 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
         case RCC_LPUART1_CLKSOURCE_LSE:
           frequency = LSE_VALUE;
           break;
+
         case RCC_LPUART1_CLKSOURCE_16M:
         default:
-          frequency = HSE_VALUE / 2;
+        {
+          /* When 16M clock is selected, its source depends on HSE selection:
+           * - Direct HSE:   HSE / 3
+           * - RC64MPLL path: HSE / 4
+           */
+          if (LL_RCC_DIRECT_HSE_IsEnabled() != 0U)
+          {
+            /* Direct HSE clock source selected */
+            frequency = HSE_VALUE / 3U;
+          }
+          else
+          {
+            /* RC64MPLL clock source selected */
+            frequency = HSE_VALUE / 4U;
+          }
           break;
+        }
       }
       break;
 #endif /* RCC_CFGR_LPUCLKSEL */

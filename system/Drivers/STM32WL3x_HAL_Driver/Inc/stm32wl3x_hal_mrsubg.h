@@ -76,6 +76,7 @@ extern "C" {
   * @{
   */
 
+
 /**
   * @brief Send a specific command to the STM32WL3x.
   * @param __CMD_NAME__ code of the command to send.
@@ -276,7 +277,7 @@ extern "C" {
   */
 #define __HAL_MRSUBG_WMBUS_ENABLE_AND_SQI_MASK()        \
   {                                                       \
-    CLEAR_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_nAND_SELECT); \
+    CLEAR_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_NAND_SELECT); \
     SET_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_SQI_TIMEOUT_MASK); \
   }
 
@@ -468,45 +469,236 @@ typedef struct
 /** @defgroup MRSUBG_Exported_Functions MRSUBG Exported Functions
   * @{
   */
+
+/**
+  * @brief  Initialize the low-level hardware (MSP) for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_MspInit(void);
+/**
+  * @brief  De-initialize the low-level hardware (MSP) for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_MspDeInit(void);
 
+/**
+  * @brief  IRQ callback for MRSubG events.
+  * @retval None
+  */
 void HAL_MRSubG_IRQ_Callback(void);
+/**
+  * @brief  BUSY callback for MRSubG events.
+  * @retval None
+  */
 void HAL_MRSubG_BUSY_Callback(void);
+/**
+  * @brief  TX/RX sequence callback for MRSubG events.
+  * @retval None
+  */
 void HAL_MRSubG_TX_RX_SEQUENCE_Callback(void);
+/**
+  * @brief  Wakeup callback for MRSubG events.
+  * @retval None
+  */
 void HAL_MRSubG_WKUP_Callback(void);
+/**
+  * @brief  IRQ handler for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_IRQHandler(void);
+/**
+  * @brief  BUSY IRQ handler for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_BUSY_IRQHandler(void);
+/**
+  * @brief  TX/RX sequence IRQ handler for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_TX_RX_SEQUENCE_IRQHandler(void);
+/**
+  * @brief  Wakeup IRQ handler for MRSubG.
+  * @retval None
+  */
 void HAL_MRSubG_WKUP_IRQHandler(void);
 
+/**
+  * @brief  Get the MRSubG IP version.
+  * @retval Version struct with product, version, and revision fields.
+  */
 SMRSubGVersion_t HAL_MRSubGGetVersion(void);
+/**
+  * @brief  Initialize the MRSubG radio interface according to the specified parameters.
+  * @param  pxSRadioInitStruct Pointer to a SMRSubGConfig_t structure with configuration info.
+  * @retval 0 if OK, 1 if error during VCO calibration.
+  */
 uint8_t HAL_MRSubG_Init(SMRSubGConfig_t *pxSRadioInitStruct);
+/**
+  * @brief  Get the current radio configuration.
+  * @param  pxSRadioInitStruct Pointer to a SMRSubGConfig_t structure to fill.
+  * @retval None
+  */
 void HAL_MRSubG_GetInfo(SMRSubGConfig_t *pxSRadioInitStruct);
+/**
+  * @brief  Set the base carrier frequency.
+  * @param  lFBase Base carrier frequency in Hz.
+  * @retval None
+  */
 void HAL_MRSubG_SetFrequencyBase(uint32_t lFBase);
+/**
+  * @brief  Get the base carrier frequency.
+  * @retval Base carrier frequency in Hz.
+  */
 uint32_t HAL_MRSubG_GetFrequencyBase(void);
+/**
+  * @brief  Set the datarate.
+  * @param  lDatarate Datarate in sps.
+  * @retval None
+  */
 void HAL_MRSubG_SetDatarate(uint32_t lDatarate);
+/**
+  * @brief  Get the datarate.
+  * @retval Datarate in sps.
+  */
 uint32_t HAL_MRSubG_GetDatarate(void);
+/**
+  * @brief  Set the frequency deviation.
+  * @param  lFDev Frequency deviation in Hz.
+  * @retval None
+  */
 void HAL_MRSubG_SetFrequencyDev(uint32_t lFDev);
+/**
+  * @brief  Get the frequency deviation.
+  * @retval Frequency deviation in Hz.
+  */
 uint32_t HAL_MRSubG_GetFrequencyDev(void);
+#if defined(IS_169MHZ)
+/**
+  * @brief  Prepare the radio configuration for 169 MHz TX operations.
+  *         Restores the base frequency to the default configuration and
+  *         adjusts the frequency deviation for 169 MHz transmission.
+  * @retval None.
+  */
+void HAL_MRSubG_169MHz_prepareTx(void);
+/**
+  * @brief  Prepare the radio configuration for 169 MHz RX operations.
+  *         Restores the frequency deviation to the default configuration and
+  *         adjusts the base frequency for 169 MHz reception.
+  * @retval None.
+  */
+void HAL_MRSubG_169MHz_prepareRx(void);
+#endif /* IS_169MHZ && GENERATOR_STM32WL3X */
+/**
+  * @brief  Set the channel filter bandwidth.
+  * @param  lBandwidth Channel filter bandwidth in Hz.
+  * @retval None
+  */
 void HAL_MRSubG_SetChannelBW(uint32_t lBandwidth);
+/**
+  * @brief  Get the channel filter bandwidth.
+  * @retval Channel filter bandwidth in Hz.
+  */
 uint32_t HAL_MRSubG_GetChannelBW(void);
+/**
+  * @brief  Set the modulation type and DSSS exponent.
+  * @param  xModulation Modulation type.
+  * @param  dsssExponent DSSS spreading exponent (0 = disabled).
+  * @retval None
+  */
 void HAL_MRSubG_SetModulation(MRSubGModSelect xModulation, uint8_t dsssExponent);
+/**
+  * @brief  Get the modulation type.
+  * @retval Modulation type.
+  */
 MRSubGModSelect HAL_MRSubG_GetModulation(void);
+/**
+  * @brief  Get the RSSI value in dBm.
+  * @retval RSSI value in dBm.
+  */
 int32_t HAL_MRSubG_GetRssidBm(void);
+/**
+  * @brief  Set the RSSI threshold in dBm.
+  * @param  rssiTh RSSI threshold in dBm.
+  * @retval None
+  */
 void HAL_MRSubG_SetRSSIThreshold(int16_t rssiTh);
+/**
+  * @brief  Get the RSSI threshold in dBm.
+  * @retval RSSI threshold in dBm.
+  */
 int32_t HAL_MRSubG_GetRSSIThreshold(void);
+/**
+  * @brief  Set the PA output power level in dBm.
+  * @param  cIndex PA_LEVEL index [0:7].
+  * @param  lPowerdBm Output power in dBm.
+  * @param  drvMode PA drive mode.
+  * @retval None
+  */
 void HAL_MRSubG_SetPALeveldBm(uint8_t cIndex, int8_t lPowerdBm, MRSubG_PA_DRVMode drvMode);
+/**
+  * @brief  Get the PA output power level in dBm.
+  * @retval Output power in dBm.
+  */
 int8_t HAL_MRSubG_GetPALeveldBm(void);
+/**
+  * @brief  Get the number of bytes after each TX/RX transaction.
+  * @retval Number of bytes.
+  */
 uint32_t HAL_MRSubG_GetBytesOfTransaction(void);
+/**
+  * @brief  Convert microseconds to sequencer absolute time units.
+  * @param  microseconds Time in microseconds.
+  * @retval Absolute time units.
+  */
 uint32_t HAL_MRSubG_Sequencer_Microseconds(uint32_t microseconds);
+/**
+  * @brief  Convert milliseconds to sequencer absolute time units.
+  * @param  milliseconds Time in milliseconds.
+  * @retval Absolute time units.
+  */
 uint32_t HAL_MRSubG_Sequencer_Milliseconds(uint32_t milliseconds);
+/**
+  * @brief  Convert seconds to sequencer absolute time units.
+  * @param  seconds Time in seconds.
+  * @retval Absolute time units.
+  */
 uint32_t HAL_MRSubG_Sequencer_Seconds(uint32_t seconds);
+/**
+  * @brief  Store static configuration registers to sequencer global config table.
+  * @param  cfg Pointer to global configuration table struct.
+  * @retval SUCCESS or ERROR.
+  */
 ErrorStatus HAL_MRSubG_Sequencer_ApplyStaticConfig(MRSubG_Sequencer_GlobalConfiguration_t *cfg);
+/**
+  * @brief  Store dynamic configuration registers to sequencer action config table.
+  * @param  cfg Pointer to action configuration table struct.
+  * @param  cmd Command to issue for this action.
+  * @retval SUCCESS or ERROR.
+  */
 ErrorStatus HAL_MRSubG_Sequencer_ApplyDynamicConfig(MRSubG_Sequencer_ActionConfiguration_t *cfg, MRSubGCmd cmd);
+/**
+  * @brief  Set the payload length for Basic packet format.
+  * @param  nPayloadLength Payload length in bytes.
+  * @retval None
+  */
 void HAL_MRSubG_PktBasicSetPayloadLength(uint16_t nPayloadLength);
+/**
+  * @brief  Initialize the Basic packet format.
+  * @param  pxPktBasicInit Pointer to Basic packet init structure.
+  * @retval None
+  */
 void HAL_MRSubG_PacketBasicInit(MRSubG_PcktBasicFields_t *pxPktBasicInit);
+/**
+  * @brief  Initialize the WMBUS packet format.
+  * @param  pxPktWMbusInit Pointer to WMBUS packet init structure.
+  * @retval None
+  */
 void HAL_MRSubG_WMBus_PacketInit(MRSubG_WMBUS_PcktFields_t *pxPktWMbusInit);
+/**
+  * @brief  Initialize the 802.15.4 packet format.
+  * @param  px802_15_4PktInit Pointer to 802.15.4 packet init structure.
+  * @retval None
+  */
 void HAL_MRSubG_802_15_4_PacketInit(MRSubG_802_15_4_PcktFields_t *px802_15_4PktInit);
 
 /**

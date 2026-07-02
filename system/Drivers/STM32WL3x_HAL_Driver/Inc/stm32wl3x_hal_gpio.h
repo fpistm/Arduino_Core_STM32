@@ -139,10 +139,10 @@ typedef enum
   * @brief GPIO Output Maximum frequency
   * @{
   */
-#define GPIO_SPEED_FREQ_LOW             0x00000000u  /*!< Low speed       */
-#define GPIO_SPEED_FREQ_MEDIUM          0x00000001u  /*!< Medium speed    */
-#define GPIO_SPEED_FREQ_HIGH            0x00000002u  /*!< High speed      */
-#define GPIO_SPEED_FREQ_VERY_HIGH       0x00000003u  /*!< Very high speed */
+#define GPIO_SPEED_FREQ_LOW             0x00000000U  /*!< Low speed       */
+#define GPIO_SPEED_FREQ_MEDIUM          0x00000001U  /*!< Medium speed    */
+#define GPIO_SPEED_FREQ_HIGH            0x00000002U  /*!< High speed      */
+#define GPIO_SPEED_FREQ_VERY_HIGH       0x00000003U  /*!< Very high speed */
 /**
   * @}
   */
@@ -151,9 +151,9 @@ typedef enum
   * @brief GPIO Pull-Up or Pull-Down Activation
   * @{
   */
-#define GPIO_NOPULL                     0x00000000u   /*!< No Pull-up or Pull-down activation  */
-#define GPIO_PULLUP                     0x00000001u   /*!< Pull-up activation                  */
-#define GPIO_PULLDOWN                   0x00000002u   /*!< Pull-down activation                */
+#define GPIO_NOPULL                     0x00000000U   /*!< No Pull-up or Pull-down activation  */
+#define GPIO_PULLUP                     0x00000001U   /*!< Pull-up activation                  */
+#define GPIO_PULLDOWN                   0x00000002U   /*!< Pull-down activation                */
 /**
   * @}
   */
@@ -215,36 +215,36 @@ typedef enum
 /** @defgroup GPIO_Private_Constants GPIO Private Constants
   * @{
   */
-#define GPIO_MODE_Pos                           0u
-#define GPIO_MODE                               (0x3uL << GPIO_MODE_Pos)
-#define MODE_INPUT                              (0x0uL << GPIO_MODE_Pos)
-#define MODE_OUTPUT                             (0x1uL << GPIO_MODE_Pos)
-#define MODE_AF                                 (0x2uL << GPIO_MODE_Pos)
-#define MODE_ANALOG                             (0x3uL << GPIO_MODE_Pos)
-#define OUTPUT_TYPE_Pos                         4u
-#define OUTPUT_TYPE                             (0x1uL << OUTPUT_TYPE_Pos)
-#define OUTPUT_PP                               (0x0uL << OUTPUT_TYPE_Pos)
-#define OUTPUT_OD                               (0x1uL << OUTPUT_TYPE_Pos)
-#define EXTI_MODE_Pos                           16u
-#define EXTI_MODE                               (0x3uL << EXTI_MODE_Pos)
-#define EXTI_IT                                 (0x1uL << EXTI_MODE_Pos)
-#define EXTI_EVT                                (0x2uL << EXTI_MODE_Pos)
-#define DETECTION_TYPE_Pos                      18u
-#define DETECTION_TYPE                          (0x1uL << DETECTION_TYPE_Pos)
-#define DETECTION_TYPE_EDGE                     (0x0uL << DETECTION_TYPE_Pos)
-#define DETECTION_TYPE_LEVEL                    (0x1uL << DETECTION_TYPE_Pos)
-#define EDGE_SELECTION_Pos                      20u
-#define EDGE_SELECTION                          (0x1uL << EDGE_SELECTION_Pos)
-#define EDGE_SELECTION_SINGLE                   (0x0uL << EDGE_SELECTION_Pos)
-#define EDGE_SELECTION_BOTH                     (0x1uL << EDGE_SELECTION_Pos)
-#define TRIGGER_MODE_Pos                        22u
-#define TRIGGER_MODE                            (0x1uL << TRIGGER_MODE_Pos)
-#define TRIGGER_RISING                          (0x1uL << TRIGGER_MODE_Pos)
-#define TRIGGER_FALLING                         (0x0uL << TRIGGER_MODE_Pos)
-#define EDGE_LEVEL_Pos                          24u
-#define EDGE_LEVEL                              (0x1uL << EDGE_LEVEL_Pos)
-#define EDGE_LOW                                (0x0uL << EDGE_LEVEL_Pos)
-#define EDGE_HIGH                               (0x1uL << EDGE_LEVEL_Pos)
+#define GPIO_MODE_Pos                           0U
+#define GPIO_MODE                               (0x3UL << GPIO_MODE_Pos)
+#define MODE_INPUT                              (0x0UL << GPIO_MODE_Pos)
+#define MODE_OUTPUT                             (0x1UL << GPIO_MODE_Pos)
+#define MODE_AF                                 (0x2UL << GPIO_MODE_Pos)
+#define MODE_ANALOG                             (0x3UL << GPIO_MODE_Pos)
+#define OUTPUT_TYPE_Pos                         4U
+#define OUTPUT_TYPE                             (0x1UL << OUTPUT_TYPE_Pos)
+#define OUTPUT_PP                               (0x0UL << OUTPUT_TYPE_Pos)
+#define OUTPUT_OD                               (0x1UL << OUTPUT_TYPE_Pos)
+#define EXTI_MODE_Pos                           16U
+#define EXTI_MODE                               (0x3UL << EXTI_MODE_Pos)
+#define EXTI_IT                                 (0x1UL << EXTI_MODE_Pos)
+#define EXTI_EVT                                (0x2UL << EXTI_MODE_Pos)
+#define DETECTION_TYPE_Pos                      18U
+#define DETECTION_TYPE                          (0x1UL << DETECTION_TYPE_Pos)
+#define DETECTION_TYPE_EDGE                     (0x0UL << DETECTION_TYPE_Pos)
+#define DETECTION_TYPE_LEVEL                    (0x1UL << DETECTION_TYPE_Pos)
+#define EDGE_SELECTION_Pos                      20U
+#define EDGE_SELECTION                          (0x1UL << EDGE_SELECTION_Pos)
+#define EDGE_SELECTION_SINGLE                   (0x0UL << EDGE_SELECTION_Pos)
+#define EDGE_SELECTION_BOTH                     (0x1UL << EDGE_SELECTION_Pos)
+#define TRIGGER_MODE_Pos                        22U
+#define TRIGGER_MODE                            (0x1UL << TRIGGER_MODE_Pos)
+#define TRIGGER_RISING                          (0x1UL << TRIGGER_MODE_Pos)
+#define TRIGGER_FALLING                         (0x0UL << TRIGGER_MODE_Pos)
+#define EDGE_LEVEL_Pos                          24U
+#define EDGE_LEVEL                              (0x1UL << EDGE_LEVEL_Pos)
+#define EDGE_LOW                                (0x0UL << EDGE_LEVEL_Pos)
+#define EDGE_HIGH                               (0x1UL << EDGE_LEVEL_Pos)
 /**
   * @}
   */
@@ -254,11 +254,11 @@ typedef enum
   */
 #define IS_GPIO_PIN_ACTION(ACTION)  (((ACTION) == GPIO_PIN_RESET) || ((ACTION) == GPIO_PIN_SET))
 
-#define IS_GPIO_PIN(__PIN__)        ((((uint32_t)(__PIN__) & GPIO_PIN_MASK) != 0x00u) &&\
-                                     (((uint32_t)(__PIN__) & ~GPIO_PIN_MASK) == 0x00u))
+#define IS_GPIO_PIN(__PIN__)        ((((uint32_t)(__PIN__) & GPIO_PIN_MASK) != 0x00U) &&\
+                                     (((uint32_t)(__PIN__) & ~GPIO_PIN_MASK) == 0x00U))
 
 #define IS_GPIO_COMMON_PIN(__RESETMASK__, __SETMASK__)  \
-  (((uint32_t)(__RESETMASK__) & (uint32_t)(__SETMASK__)) == 0x00u)
+  (((uint32_t)(__RESETMASK__) & (uint32_t)(__SETMASK__)) == 0x00U)
 
 
 #define IS_GPIO_MODE(__MODE__)      (((__MODE__) == GPIO_MODE_INPUT)              ||\

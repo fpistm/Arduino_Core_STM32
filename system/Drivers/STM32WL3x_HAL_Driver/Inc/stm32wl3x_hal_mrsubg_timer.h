@@ -22,7 +22,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
@@ -264,6 +264,6 @@ void HAL_MRSUBG_TIMER_MspDeInit(void);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /*STM32WL3x_HAL_MRSUBG_TIMER_H */

@@ -1030,7 +1030,7 @@ HAL_StatusTypeDef HAL_ADC_PollForConversion(ADC_HandleTypeDef *hadc, uint32_t Ti
   *          ADC_IRQ_FLAG_AWD1     ADC analog watchdog event
   *          ADC_IRQ_FLAG_EOS     ADC sequence of conversion completed event
   *          ADC_IRQ_FLAG_EODS    ADC Down Sampler conversion completed Event
-  *         (1) todo: Only available on STM32WB0x
+  *         (1) todo: Only available on STM32WL3x
   * @param Timeout Timeout value in millisecond.
   * @note   The relevant flag is cleared if found to be set, except for
   *         ADC_IRQ_FLAG_OVRDS.

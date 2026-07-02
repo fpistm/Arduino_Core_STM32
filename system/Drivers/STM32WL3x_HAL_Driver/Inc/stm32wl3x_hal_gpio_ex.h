@@ -139,7 +139,7 @@ extern "C" {
   * @{
   */
 
-#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0uL : 1uL)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL : 1UL)
 
  /**
   * @}

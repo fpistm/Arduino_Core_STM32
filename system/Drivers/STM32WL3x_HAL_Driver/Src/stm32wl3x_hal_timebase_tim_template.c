@@ -55,6 +55,9 @@ extern TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef        TimHandle;
 /* Private function prototypes -----------------------------------------------*/
 void TIM1_IRQHandler(void);
+#if (USE_HAL_TIM_REGISTER_CALLBACKS == 1U)
+void TimeBase_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+#endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -143,7 +146,11 @@ void HAL_ResumeTick(void)
   * @param  htim : TIM handle
   * @retval None
   */
+#if (USE_HAL_TIM_REGISTER_CALLBACKS == 1U)
+void TimeBase_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+#else
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+#endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
 {
   HAL_IncTick();
 }

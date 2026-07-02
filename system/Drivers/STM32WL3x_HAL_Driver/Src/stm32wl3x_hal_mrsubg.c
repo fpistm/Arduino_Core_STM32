@@ -34,6 +34,13 @@
   * @{
   */
 #define MAX_DBM       0x51
+#define MRSUBG_CHFLT_M_VALUES      16U
+#define MRSUBG_CHFLT_E_VALUES      10U
+#define MRSUBG_CHFLT_TABLE_SIZE    (MRSUBG_CHFLT_M_VALUES * MRSUBG_CHFLT_E_VALUES)
+#if defined(IS_169MHZ)
+#define MRSUBG_169MHZ_IF_GRANULARITY 244U
+#define MRSUBG_169MHZ_FDEV_MULTIPLIER 5U
+#endif /* IS_169MHZ */
 
 /**
   * @}
@@ -85,18 +92,22 @@
   * @{
   */
 
-static const uint32_t s_Channel_Filter_Bandwidth[99] =
+static const uint32_t s_Channel_Filter_Bandwidth[MRSUBG_CHFLT_TABLE_SIZE] =
 {
-  1600000, 1510000, 1422000, 1332000, 1244000, 1154000, 1066000, \
-  976000, 888000, 800000, 755000, 711000, 666000, 622000, 577000, \
-  533000, 488000, 444000, 400000, 377000, 355000, 333000, 311000, \
-  288000, 266000, 244000, 222000, 200000, 188000, 178000, 166000, \
-  155000, 144000, 133000, 122000, 111000, 100000, 94400, 88900, 83300, \
-  77800, 72200, 66700, 61100, 55600, 50000, 47200, 44400, 41600, 38900, \
-  36100, 33300, 30500, 27800, 25000, 23600, 22200, 20800, 19400, 18100, \
-  16600, 15300, 13900, 12500, 11800, 11100, 10400, 9700, 9000, 8300, 7600, \
-  6900, 6125, 5910, 5550, 5200, 4870, 4500, 4100, 3800, 3500, 3125, 2940, \
-  2780, 2600, 2400, 2200, 2100, 1900, 1700
+  1600000, 1510000, 1422000, 1332000, 1244000, 1154000, 1066000, 976000, \
+  888000, 800000, 755600, 711100, 666700, 622200, 577800, 533300, \
+  800000, 755000, 711000, 666000, 622000, 577000, 533000, 488000, \
+  444000, 400000, 377800, 355600, 333300, 311100, 288900, 266700, \
+  400000, 377000, 355000, 333000, 311000, 288000, 266000, 244000, \
+  222000, 200000, 188900, 177800, 166700, 155600, 144400, 133300, \
+  200000, 188000, 178000, 166000, 155000, 144000, 133000, 122000, \
+  111000, 100000, 94400, 88900, 83300, 77800, 72200, 66700, \
+  100000, 94400, 88900, 83300, 77800, 72200, 66700, 61100, 55600, 50000, 47200, 44400, 41700, 38900, 36100, 33300, \
+  50000, 47200, 44400, 41600, 38900, 36100, 33300, 30500, 27800, 25000, 23600, 22200, 20800, 19400, 18060, 16670, \
+  25000, 23600, 22200, 20800, 19400, 18100, 16600, 15300, 13900, 12500, 11800, 11100, 10420, 9720, 9030, 8330, \
+  12500, 11800, 11100, 10400, 9700, 9000, 8300, 7600, 6900, 6250, 5900, 5560, 5210, 4860, 4510, 4170, \
+  6125, 5910, 5550, 5200, 4870, 4500, 4100, 3800, 3500, 3120, 2950, 2780, 2600, 2430, 2260, 2080, \
+  3125, 2940, 2780, 2600, 2400, 2200, 2100, 1900, 1700, 1560, 1480, 1390, 1300, 1220, 1130, 1040
 };
 
 const uint32_t SFD_2FSK[] =
@@ -112,6 +123,12 @@ const uint32_t SFD_4FSK[] =
 };
 
 static WMbusSubmode s_cWMbusSubmode = WMBUS_SUBMODE_NOT_CONFIGURED;
+#if defined(IS_169MHZ)
+static uint32_t s_mrsubg_169_default_base_freq = 0U;
+static uint32_t s_mrsubg_169_default_fdev = 0U;
+static uint32_t s_mrsubg_169_rx_base_backup = 0U;
+static uint32_t s_mrsubg_169_tx_fdev_backup = 0U;
+#endif /* IS_169MHZ */
 
 /**
   * @}
@@ -130,6 +147,13 @@ static void MRSubG_ComputeSynthWord(uint32_t frequency, uint8_t *synth_int, uint
 static int32_t MRSubG_ConvertRssiToDbm(uint16_t rssi_level_from_register);
 static uint8_t MRSubG_GetAllowedMaxOutputPower(MRSubG_PA_DRVMode paMode);
 static void MRSUBG_EvaluateDSSS(MRSubGModSelect xModulation, uint8_t dsssExponent);
+#if defined(IS_169MHZ)
+static void MRSubG_169MHz_CaptureDefaults(void);
+static void MRSubG_169MHz_RestoreBaseFrequency(void);
+static void MRSubG_169MHz_AdjustBaseFrequencyForRx(void);
+static void MRSubG_169MHz_AdjustFrequencyDevForTx(void);
+static void MRSubG_169MHz_RestoreFrequencyDev(void);
+#endif /* IS_169MHZ */
 
 /**
   * @brief  Computes the synth word from a given frequency.
@@ -237,13 +261,17 @@ static void MRSubG_SearchDatarateME(uint32_t lDatarate, uint16_t *pcM, uint8_t *
 static uint32_t MRSubG_ComputeFreqDeviation(uint8_t cM, uint8_t cE, uint8_t bs)
 {
   uint32_t f_xo = LL_GetXTALFreq();
+  uint64_t denominator = ((uint64_t)bs) * (1ULL << 19);
+  uint64_t mantissa;
 
   if (cE == 0)
   {
-    return (uint32_t)((uint64_t)f_xo * (cM * bs / 8) / (bs * (1 << 19)));
+    mantissa = (((uint64_t)cM) * ((uint64_t)bs)) / 8ULL;
+    return (uint32_t)(((uint64_t)f_xo * mantissa) / denominator);
   }
 
-  return (uint32_t)((uint64_t)f_xo * ((256 + cM) * (1 << (cE - 1)) * bs / 8) / (bs * (1 << 19)));;
+  mantissa = ((((uint64_t)256 + (uint64_t)cM) * (1ULL << (cE - 1)) * (uint64_t)bs) / 8ULL);
+  return (uint32_t)(((uint64_t)f_xo * mantissa) / denominator);
 }
 
 /**
@@ -297,15 +325,15 @@ static void MRSubG_SearchFreqDevME(uint32_t lFDev, uint8_t *pcM, uint8_t *pcE, u
   *         The API will search the closer value according to a fixed table of channel
   *         bandwidth values (@ref s_Channel_Filter_Bandwidth) returning the corresponding mantissa
   *         and exponent value.
-  * @param  lBandwidth bandwidth expressed in Hz. This parameter ranging between 1700 and 1600000.
+  * @param  lBandwidth bandwidth expressed in Hz. This parameter ranging between 1040 and 1600000.
   * @param  pcM pointer to the returned mantissa value.
   * @param  pcE pointer to the returned exponent value.
   * @retval None.
   */
 static void MRSubG_SearchChannelBwME(uint32_t lBandwidth, uint8_t *pcM, uint8_t *pcE)
 {
-  int8_t i;
-  int8_t i_tmp;
+  int16_t i;
+  int16_t i_tmp;
   uint32_t f_dig;
   int32_t chfltCalculation[3];
   uint8_t j;
@@ -314,7 +342,7 @@ static void MRSubG_SearchChannelBwME(uint32_t lBandwidth, uint8_t *pcM, uint8_t 
   f_dig = LL_GetXTALFreq() / 3;
 
   /* Search the channel filter bandwidth table index */
-  for (i = 0; i < 99 &&
+  for (i = 0; i < MRSUBG_CHFLT_TABLE_SIZE &&
        (lBandwidth < (uint32_t)(((uint64_t)s_Channel_Filter_Bandwidth[i] * f_dig) / 16000000));
        i++)
     ;
@@ -326,7 +354,7 @@ static void MRSubG_SearchChannelBwME(uint32_t lBandwidth, uint8_t *pcM, uint8_t 
 
     for (j = 0; j < 3; j++)
     {
-      if (((i_tmp + j - 1) >= 0) && ((i_tmp + j - 1) <= 98))
+      if (((i_tmp + j - 1) >= 0) && ((i_tmp + j - 1) < MRSUBG_CHFLT_TABLE_SIZE))
       {
         chfltCalculation[j] = (int32_t)lBandwidth -
                               (int32_t)(((uint64_t)s_Channel_Filter_Bandwidth[i_tmp + j - 1] * f_dig) / 16000000);
@@ -349,8 +377,8 @@ static void MRSubG_SearchChannelBwME(uint32_t lBandwidth, uint8_t *pcM, uint8_t 
     }
   }
 
-  (*pcE) = (uint8_t)(i / 9);
-  (*pcM) = (uint8_t)(i % 9);
+  (*pcE) = (uint8_t)(i / MRSUBG_CHFLT_M_VALUES);
+  (*pcM) = (uint8_t)(i % MRSUBG_CHFLT_M_VALUES);
 }
 
 /*
@@ -415,6 +443,66 @@ static void MRSUBG_EvaluateDSSS(MRSubGModSelect xModulation, uint8_t dsssExponen
   MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->DSSS_CTRL,  MR_SUBG_GLOB_STATIC_DSSS_CTRL_SPREADING_EXP, dsssExponent);
   MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->DSSS_CTRL,  MR_SUBG_GLOB_STATIC_DSSS_CTRL_ACQ_THR, dsss_acq_thr);
 }
+#if defined(IS_169MHZ)
+
+static void MRSubG_169MHz_CaptureDefaults(void)
+{
+  if (s_mrsubg_169_default_base_freq == 0U)
+  {
+    s_mrsubg_169_default_base_freq = HAL_MRSubG_GetFrequencyBase();
+  }
+
+  if (s_mrsubg_169_default_fdev == 0U)
+  {
+    s_mrsubg_169_default_fdev = HAL_MRSubG_GetFrequencyDev();
+  }
+}
+
+static void MRSubG_169MHz_RestoreBaseFrequency(void)
+{
+  MRSubG_169MHz_CaptureDefaults();
+  HAL_MRSubG_SetFrequencyBase(s_mrsubg_169_default_base_freq);
+  s_mrsubg_169_rx_base_backup = 0U;
+}
+
+static void MRSubG_169MHz_AdjustBaseFrequencyForRx(void)
+{
+  MRSubG_169MHz_CaptureDefaults();
+
+  if (s_mrsubg_169_rx_base_backup == 0U)
+  {
+    uint32_t if_dig = __HAL_MRSUBG_GET_IF_OFFSET_DIG() * MRSUBG_169MHZ_IF_GRANULARITY;
+    s_mrsubg_169_rx_base_backup = HAL_MRSubG_GetFrequencyBase();
+    HAL_MRSubG_SetFrequencyBase(s_mrsubg_169_rx_base_backup - if_dig);
+  }
+}
+
+static void MRSubG_169MHz_AdjustFrequencyDevForTx(void)
+{
+  MRSubG_169MHz_CaptureDefaults();
+
+  if (s_mrsubg_169_tx_fdev_backup == 0U)
+  {
+    s_mrsubg_169_tx_fdev_backup = HAL_MRSubG_GetFrequencyDev();
+    HAL_MRSubG_SetFrequencyDev(s_mrsubg_169_tx_fdev_backup * MRSUBG_169MHZ_FDEV_MULTIPLIER);
+  }
+}
+
+static void MRSubG_169MHz_RestoreFrequencyDev(void)
+{
+  MRSubG_169MHz_CaptureDefaults();
+
+  if (s_mrsubg_169_tx_fdev_backup != 0U)
+  {
+    HAL_MRSubG_SetFrequencyDev(s_mrsubg_169_tx_fdev_backup);
+    s_mrsubg_169_tx_fdev_backup = 0U;
+  }
+  else
+  {
+    HAL_MRSubG_SetFrequencyDev(s_mrsubg_169_default_fdev);
+  }
+}
+#endif /* IS_169MHZ */
 
 /**
   * @}
@@ -455,7 +543,7 @@ uint8_t HAL_MRSubG_Init(SMRSubGConfig_t *pxSRadioInitStruct)
   HAL_MRSubG_MspInit();
 
   /* Setup design values for default registers */
-  MODIFY_REG_FIELD(MR_SUBG_RADIO->AFC1_CONFIG, MR_SUBG_RADIO_AFC1_CONFIG_AFC_FAST_PERIOD, 0x00);
+  MODIFY_REG_FIELD(MR_SUBG_RADIO->AFC1_CONFIG, MR_SUBG_RADIO_AFC1_CONFIG_AFC_FAST_PERIOD, 0x18);
 
   MODIFY_REG_FIELD(MR_SUBG_RADIO->CLKREC_CTRL0, MR_SUBG_RADIO_CLKREC_CTRL0_PSTFLT_LEN, 0x01);
   MODIFY_REG_FIELD(MR_SUBG_RADIO->CLKREC_CTRL0, MR_SUBG_RADIO_CLKREC_CTRL0_CLKREC_P_GAIN_FAST, 0x03);
@@ -531,20 +619,20 @@ void HAL_MRSubG_SetFrequencyBase(uint32_t lFBase)
   MODIFY_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_SYNTH_FRAC, synth_frac);
   MODIFY_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->ADDITIONAL_CTRL, MR_SUBG_GLOB_DYNAMIC_ADDITIONAL_CTRL_CH_NUM, 0x00);
 
-#if defined(STM32WL33XA)
+  b_factor = (band / 4) - 1;
+
+#if defined(IS_169MHZ)
+  /* 169 MHz profile-specific BS encoding. */
   b_factor = (20 - band) / 12;
-#elif defined(STM32WL3RX)
+#endif /* IS_169MHZ */
+
+#if defined(STM32WL3RX)
+  /* STM32WL3RX-specific DIV12 handling for the LOW_LOW band. */
   if (band == 12)
   {
     SET_BIT(MR_SUBG_RADIO->RFANA_PLL_IN, MR_SUBG_RADIO_RFANA_PLL_IN_DIV12_SEL);
     b_factor = 1;
   }
-  else
-  {
-    b_factor = (band / 4) - 1;
-  }
-#else
-  b_factor = (band / 4) - 1;
 #endif /* STM32WL3RX */
 
   MODIFY_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS, b_factor);
@@ -556,24 +644,21 @@ void HAL_MRSubG_SetFrequencyBase(uint32_t lFBase)
   */
 uint32_t HAL_MRSubG_GetFrequencyBase(void)
 {
-#if defined(STM32WL33XA)
-  uint8_t bs = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS);
+  uint8_t bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
+
+#if defined(IS_169MHZ)
+  /* 169 MHz profile-specific BS decoding. */
+  bs = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS);
   bs = bs ? 8 : 20;
-#else
-  uint8_t bs;
+#endif /* IS_169MHZ */
+
 #if defined(STM32WL3RX)
+  /* STM32WL3RX-specific DIV12 handling for the LOW_LOW band. */
   if (READ_BIT(MR_SUBG_RADIO->RFANA_PLL_IN, MR_SUBG_RADIO_RFANA_PLL_IN_DIV12_SEL))
   {
     bs = 12;
   }
-  else
-  {
-    bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
-  }
-#else
-  bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
 #endif /* STM32WL3RX */
-#endif /* STM32WL33XA */
 
   uint8_t synth_int = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_SYNTH_INT);
   uint32_t synth_frac = READ_REG(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ) & MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_SYNTH_FRAC;
@@ -643,23 +728,21 @@ void HAL_MRSubG_SetFrequencyDev(uint32_t lFDev)
   uint8_t uFDevE;
   uint8_t bs;
 
-#if defined(STM32WL33XA)
+  bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
+
+#if defined(IS_169MHZ)
+  /* 169 MHz profile-specific BS decoding. */
   bs = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS);
   bs = bs ? 8 : 20;
-#else
+#endif /* IS_169MHZ */
+
 #if defined(STM32WL3RX)
+  /* STM32WL3RX-specific DIV12 handling for the LOW_LOW band. */
   if (READ_BIT(MR_SUBG_RADIO->RFANA_PLL_IN, MR_SUBG_RADIO_RFANA_PLL_IN_DIV12_SEL)) /* Checking if 315MHz band */
   {
     bs = 12;
   }
-  else
-  {
-    bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
-  }
-#else
-  bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
 #endif /* STM32WL3RX */
-#endif /* STM32WL33XA */
 
   /* Calculates the frequency deviation mantissa and exponent */
   MRSubG_SearchFreqDevME(lFDev, &uFDevM, &uFDevE, bs);
@@ -681,23 +764,21 @@ uint32_t HAL_MRSubG_GetFrequencyDev(void)
   uint32_t factor2;
   uint8_t bs;
 
-#if defined(STM32WL33XA)
+  bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
+
+#if defined(IS_169MHZ)
+  /* 169 MHz profile-specific BS decoding. */
   bs = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS);
   bs = bs ? 8 : 20;
-#else
+#endif /* IS_169MHZ */
+
 #if defined(STM32WL3RX)
+  /* STM32WL3RX-specific DIV12 handling for the LOW_LOW band. */
   if (READ_BIT(MR_SUBG_RADIO->RFANA_PLL_IN, MR_SUBG_RADIO_RFANA_PLL_IN_DIV12_SEL)) /* Checking if 315MHz band */
   {
     bs = 12;
   }
-  else
-  {
-    bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
-  }
-#else
-  bs = (READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->SYNTH_FREQ, MR_SUBG_GLOB_DYNAMIC_SYNTH_FREQ_BS) + 1) * 4;
 #endif /* STM32WL3RX */
-#endif /* STM32WL33XA */
 
   fdev_m = READ_REG(MR_SUBG_GLOB_DYNAMIC->MOD1_CONFIG) & MR_SUBG_GLOB_DYNAMIC_MOD1_CONFIG_FDEV_M;
   fdev_e = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->MOD1_CONFIG, MR_SUBG_GLOB_DYNAMIC_MOD1_CONFIG_FDEV_E);
@@ -709,6 +790,32 @@ uint32_t HAL_MRSubG_GetFrequencyDev(void)
 
   return f_dev;
 }
+#if defined(IS_169MHZ)
+
+/**
+  * @brief  Prepare the radio configuration for 169 MHz TX operations.
+  *         Restores the base frequency to the default configuration and
+  *         adjusts the frequency deviation for 169 MHz transmission.
+  * @retval None.
+  */
+void HAL_MRSubG_169MHz_prepareTx(void)
+{
+  MRSubG_169MHz_RestoreBaseFrequency();
+  MRSubG_169MHz_AdjustFrequencyDevForTx();
+}
+
+/**
+  * @brief  Prepare the radio configuration for 169 MHz RX operations.
+  *         Restores the frequency deviation to the default configuration and
+  *         adjusts the base frequency for 169 MHz reception.
+  * @retval None.
+  */
+void HAL_MRSubG_169MHz_prepareRx(void)
+{
+  MRSubG_169MHz_RestoreFrequencyDev();
+  MRSubG_169MHz_AdjustBaseFrequencyForRx();
+}
+#endif /* IS_169MHZ */
 
 /**
   * @brief  Set the channel filter bandwidth.
@@ -753,23 +860,24 @@ void HAL_MRSubG_SetChannelBW(uint32_t lBandwidth)
   if_offset = (((f_if * 100) * 65536) / f_dig) * 10;
 
   /* Set IF */
-#if defined(STM32WL33XA)
-  /* WL33xA */
+#if defined(IS_169MHZ)
+  /* 169 MHz profile-specific IF analog offset handling. */
   MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_ANA, 0);
-#elif defined(STM32WL3RX)
-  /* Checking if 315MHz band */
+#endif /* IS_169MHZ */
+
+#if !defined(IS_169MHZ) && defined(STM32WL3RX)
+  /* STM32WL3RX-specific IF analog offset handling for the LOW_LOW band. */
   if (READ_BIT(MR_SUBG_RADIO->RFANA_PLL_IN, MR_SUBG_RADIO_RFANA_PLL_IN_DIV12_SEL))
   {
-    uint32_t if_offset_ana = if_offset * 3 / 2;
-    MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_ANA, if_offset_ana);
+    MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_ANA, (if_offset * 3 / 2));
   }
   else
   {
     MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_ANA, if_offset);
   }
-#else
+#elif !defined(IS_169MHZ)
   MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_ANA, if_offset);
-#endif /*STM32WL3RX*/
+#endif /* !defined(IS_169MHZ) && defined(STM32WL3RX) */
 
   MODIFY_REG_FIELD(MR_SUBG_GLOB_STATIC->IF_CTRL, MR_SUBG_GLOB_STATIC_IF_CTRL_IF_OFFSET_DIG, if_offset);
 }
@@ -784,17 +892,19 @@ uint32_t HAL_MRSubG_GetChannelBW(void)
   uint8_t ce;
   uint8_t index;
   uint32_t fclk;
-  uint32_t correction_factor;
 
   fclk = LL_GetXTALFreq() / 3;
-  correction_factor = fclk / 16000000;
 
   cm = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->MOD1_CONFIG, MR_SUBG_GLOB_DYNAMIC_MOD1_CONFIG_CHFLT_M);
   ce = READ_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->MOD1_CONFIG, MR_SUBG_GLOB_DYNAMIC_MOD1_CONFIG_CHFLT_E);
 
-  index = ce * 9 + cm;
+  if (ce > MRSUBG_CHFLT_E_VALUES - 1)
+  {
+    ce = MRSUBG_CHFLT_E_VALUES - 1;
+  }
 
-  return correction_factor * s_Channel_Filter_Bandwidth[index];
+  index = (ce * MRSUBG_CHFLT_M_VALUES) + cm;
+  return (uint32_t)(((uint64_t)s_Channel_Filter_Bandwidth[index] * fclk) / 16000000);
 }
 
 /**
@@ -1190,7 +1300,7 @@ void HAL_MRSubG_PacketBasicInit(MRSubG_PcktBasicFields_t *pxPktBasicInit)
   LL_MRSubG_PacketHandlerWhitening(pxPktBasicInit->DataWhitening);
   LL_MRSubG_PacketHandlerCoding(pxPktBasicInit->Coding);
   LL_MRSubG_PacketHandlerSetCrcMode(pxPktBasicInit->CrcMode);
-  MODIFY_REG(MR_SUBG_GLOB_STATIC->CRC_INIT, MR_SUBG_GLOB_STATIC_CRC_INIT_CRC_INIT_VAL, 0xFFFFFFFF);
+  WRITE_REG(MR_SUBG_GLOB_STATIC->CRC_INIT, 0xFFFFFFFF);
 
   /* Set the Fixed or Variable Packet Length mode */
   LL_MRSUBG_SetFixedVariableLength(pxPktBasicInit->FixVarLength);
