@@ -498,7 +498,7 @@ uint32_t HAL_MRSUBG_TIMER_StartVirtualTimer(VTIMER_HandleType_t *timerHandle, ui
   */
 uint32_t HAL_MRSUBG_TIMER_StartVirtualTimerMs(VTIMER_HandleType_t *timerHandle, uint32_t msRelTimeout)
 {
-  uint64_t time = msRelTimeout * 1000;
+  uint64_t time = (uint64_t)msRelTimeout * 1000U;
   uint8_t retVal;
   retVal = _start_timer(timerHandle, (HAL_MRSUBG_TIMER_GetCurrentSysTime() + time));
   _virtualTimeBaseEnable(ENABLE);

@@ -41,37 +41,44 @@ extern "C" {
   */
 
 /* Legacy aliases */
+
 #if defined(IS_169MHZ)
-#define STM32WL33XA
+/*Check compatible board*/
+#if !defined(STM32WL33XA)
+#error "IS_169MHZ is defined but no compatible board is selected. Add STM32WL33XA or extend the mapping for new boards."
+#endif /* !STM32WL33XA */
 #endif /* IS_169MHZ */
 
 #if defined(STM32WL33XA)
+
 /* WL33xA */
-#define LOW_BAND_FACTOR       20  /*!< Band select factor for middle band. Factor B in the equation of the user manual */
-#define HIGH_BAND_FACTOR      8   /*!< Band select factor for high band. Factor B in the equation of the user manual */
+#define LOW_BAND_FACTOR           20  /*!< Band select factor for middle band. Factor B in the equation of the user manual */
+#define HIGH_BAND_FACTOR          8   /*!< Band select factor for high band.  Factor B in the equation of the user manual */
 
-#define LOW_BAND_LOWER_LIMIT    159200000   /*!< Lower limit of the low band */
-#define LOW_BAND_UPPER_LIMIT    185600000   /*!< Upper limit of the low band */
-#define HIGH_BAND_LOWER_LIMIT   398000000   /*!< Lower limit of the high band */
-#define HIGH_BAND_UPPER_LIMIT   464000000   /*!< Upper limit of the high band */
-#else
+#define LOW_BAND_LOWER_LIMIT      159200000   /*!< Lower limit of the low band */
+#define LOW_BAND_UPPER_LIMIT      185600000   /*!< Upper limit of the low band */
+#define HIGH_BAND_LOWER_LIMIT     398000000   /*!< Lower limit of the high band */
+#define HIGH_BAND_UPPER_LIMIT     464000000   /*!< Upper limit of the high band */
+
+#else  /* !STM32WL33XA */
+
+/* Common values for all other boards */
+#define LOW_BAND_FACTOR           8   /*!< Band select factor for middle band. Factor B in the equation of the user manual */
+#define HIGH_BAND_FACTOR          4   /*!< Band select factor for high band.  Factor B in the equation of the user manual */
+
+#define LOW_BAND_LOWER_LIMIT      413000000   /*!< Lower limit of the low band */
+#define LOW_BAND_UPPER_LIMIT      479000000   /*!< Upper limit of the low band */
+#define HIGH_BAND_LOWER_LIMIT     826000000   /*!< Lower limit of the high band */
+#define HIGH_BAND_UPPER_LIMIT     958000000   /*!< Upper limit of the high band */
+
 #if defined(STM32WL3RX)
-/* WL3x including WL3Rx at 315 MHz */
-#define LOW_LOW_BAND_FACTOR   12  /*!< Band select factor for middle band. Factor B in the equation of the user manual */
+/* WL3x including WL3Rx at 315 MHz: adds low-low band support */
+#define LOW_LOW_BAND_FACTOR       12          /*!< Band select factor for low-low band. Factor B in the equation of the user manual */
+
+#define LOW_LOW_BAND_LOWER_LIMIT  275500000   /*!< Lower limit of the low-low band */
+#define LOW_LOW_BAND_UPPER_LIMIT  318500000   /*!< Upper limit of the low-low band */
 #endif /* STM32WL3RX */
 
-#define LOW_BAND_FACTOR       8   /*!< Band select factor for middle band. Factor B in the equation of the user manual */
-#define HIGH_BAND_FACTOR      4   /*!< Band select factor for high band. Factor B in the equation of the user manual */
-
-#if defined(STM32WL3RX)
-#define LOW_LOW_BAND_LOWER_LIMIT    275500000   /*!< Lower limit of the low low band */
-#define LOW_LOW_BAND_UPPER_LIMIT    318500000   /*!< Upper limit of the low low band */
-#endif /* STM32WL3RX */
-
-#define LOW_BAND_LOWER_LIMIT    413000000   /*!< Lower limit of the low band */
-#define LOW_BAND_UPPER_LIMIT    479000000   /*!< Upper limit of the low band */
-#define HIGH_BAND_LOWER_LIMIT   826000000   /*!< Lower limit of the high band */
-#define HIGH_BAND_UPPER_LIMIT   958000000   /*!< Upper limit of the high band */
 #endif /* STM32WL33XA */
 
 #define MINIMUM_DATARATE    100 /*!< Minimum datarate supported by STM32WL3x 100 bps */
@@ -119,6 +126,7 @@ then a match can never occur because SEQ_F is only set when the sequencer termin
 
 #define PREAMBLE_BYTE(v)        (4*v)
 #define SYNC_BYTE(v)            ((8*v)-1)
+#define MRSUBG_RADIO_SYNTH0_ANA_ENG_REG         (*((__IO uint32_t *)((uint32_t)MR_SUBG_RADIO + 0xC0U)))
 /**
   * @}
   */
@@ -273,6 +281,42 @@ typedef enum
 } MRSubGRXMode;
 
 /**
+  * @brief  STM32WL3x PA CFG Filtering
+  */
+typedef enum
+{
+  FILTERING = 0x00,  /*!< 00: filtering   */
+  RAMPING    = 0x01,  /*!< 01: ramping     */
+  SWITCHING  = 0x02   /*!< 10: switching   */
+} MRSubGPaCfgFilt;
+
+/**
+  * @brief  STM32WL3x RX PGA attenuation (RFD_RX_PGA_AGCGAIN[2:0]) - 6 dB steps, binary code.
+  */
+typedef enum
+{
+  AGC_PGA_ATTEN_0dB  = 0x0U, /*!< 000:  0 dB   */
+  AGC_PGA_ATTEN_6dB  = 0x1U, /*!< 001: -6 dB   */
+  AGC_PGA_ATTEN_12dB = 0x2U, /*!< 010: -12 dB  */
+  AGC_PGA_ATTEN_18dB = 0x3U, /*!< 011: -18 dB  */
+  AGC_PGA_ATTEN_24dB = 0x4U, /*!< 100: -24 dB  */
+  AGC_PGA_ATTEN_30dB = 0x5U  /*!< 101: -30 dB */
+} MRSubGAgcPgaAtten;
+
+/**
+  * @brief  STM32WL3x RX LNA attenuation (RFD_RX_ATTEN_AGCGAIN[3:0]) - 6 dB steps, thermometric code.
+  */
+typedef enum
+{
+  AGC_LNA_ATTEN_0dB  = 0x0U, /*!< 0000:  0 dB  */
+  AGC_LNA_ATTEN_6dB  = 0x1U, /*!< 0001: -6 dB  */
+  AGC_LNA_ATTEN_12dB = 0x3U, /*!< 0011: -12 dB */
+  AGC_LNA_ATTEN_18dB = 0x7U, /*!< 0111: -18 dB */
+  AGC_LNA_ATTEN_24dB = 0xFU  /*!< 1111: -24 dB */
+} MRSubGAgcLnaAtten;
+
+
+/**
   * @brief  STM32WL3x preamble pattern enumeration
   */
 typedef enum
@@ -339,10 +383,10 @@ typedef enum
   PKT_CRC_MODE_8BITS       = 0x01, /*!< CRC length 8 bits  - poly: 0x07     */
   PKT_CRC_MODE_16BITS_1    = 0x02, /*!< CRC length 16 bits - poly: 0x8005   */
   PKT_CRC_MODE_16BITS_2    = 0x03, /*!< CRC length 16 bits - poly: 0x1021   */
-  FCS_16BIT              = 0x03, /*!< CRC length 16 bits - poly: 0x1021   */
+  FCS_16BIT                = 0x03, /*!< CRC length 16 bits - poly: 0x1021   */
   PKT_CRC_MODE_24BITS      = 0x04, /*!< CRC length 24 bits - poly: 0x864CFB */
   PKT_CRC_MODE_32BITS      = 0x05, /*!< CRC length 32 bits - poly: 0x04C11DB7 */
-  FCS_32BIT              = 0x05, /*!< CRC length 32 bits - poly: 0x04C11DB7 */
+  FCS_32BIT                = 0x05, /*!< CRC length 32 bits - poly: 0x04C11DB7 */
 } MRSubG_PcktCrcMode;
 
 /**
@@ -597,7 +641,31 @@ __STATIC_INLINE void LL_MRSubG_SetISIEqualizer(MRSubG_ISIEQMode isiEq)
   */
 __STATIC_INLINE void LL_MRSubG_StrobeCommand(MRSubGCmd xCommandCode)
 {
-  MODIFY_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->COMMAND, MR_SUBG_GLOB_DYNAMIC_COMMAND_COMMAND_ID, xCommandCode);
+  if ((xCommandCode == CMD_TX) || (xCommandCode == CMD_RX) ||
+      (xCommandCode == CMD_LOCKRX) || (xCommandCode == CMD_LOCKTX))
+  {
+    volatile uint32_t __mrsubg_delay;
+    uint32_t command_reg_backup = READ_REG(MR_SUBG_GLOB_DYNAMIC->COMMAND);
+
+    WRITE_REG(MR_SUBG_GLOB_DYNAMIC->COMMAND,
+              (command_reg_backup & MR_SUBG_GLOB_DYNAMIC_COMMAND_BACK2LOCKON) |
+              MR_SUBG_GLOB_DYNAMIC_COMMAND_BACK2ACTIVE |
+              CMD_NOP);
+    WRITE_REG(MRSUBG_RADIO_SYNTH0_ANA_ENG_REG, 0x87U);
+    WRITE_REG(MR_SUBG_GLOB_DYNAMIC->COMMAND,
+              (command_reg_backup & ~MR_SUBG_GLOB_DYNAMIC_COMMAND_COMMAND_ID) | xCommandCode);
+
+    for (__mrsubg_delay = 0U; __mrsubg_delay < 3U; __mrsubg_delay++)
+    {
+      __NOP();
+    }
+
+    WRITE_REG(MRSUBG_RADIO_SYNTH0_ANA_ENG_REG, 0x07U);
+  }
+  else
+  {
+    MODIFY_REG_FIELD(MR_SUBG_GLOB_DYNAMIC->COMMAND, MR_SUBG_GLOB_DYNAMIC_COMMAND_COMMAND_ID, xCommandCode);
+  }
 }
 
 /**
@@ -684,6 +752,123 @@ __STATIC_INLINE void LL_MRSubG_SetPADegen(FunctionalState xNewState)
   {
     CLEAR_BIT(MR_SUBG_RADIO->PA_REG, MR_SUBG_RADIO_PA_REG_PA_DEGEN_ON);
   }
+}
+
+/**
+  * @brief  Get the PA_DEGEN_ON bit state.
+  * @retval ENABLE if degeneration mode is enabled,
+  *         DISABLE otherwise.
+  */
+__STATIC_INLINE FunctionalState LL_MRSubG_GetPADegen(void)
+{
+  return (READ_BIT(MR_SUBG_RADIO->PA_REG, MR_SUBG_RADIO_PA_REG_PA_DEGEN_ON) != 0U)
+         ? ENABLE : DISABLE;
+}
+
+/**
+  * @brief  Set the PA FIR configuration (CFG_FILT[1:0]).
+  *         This field selects the PA filtering mode:
+  *           - 00: filtering
+  *           - 01: ramping
+  *           - 10: switching
+  * @param  mode  PA configuration value of type @ref MRSubGPaCfgFilt.
+  * @retval None.
+  */
+__STATIC_INLINE void LL_MRSubG_SetPaCfgFilt(MRSubGPaCfgFilt mode)
+{
+  MODIFY_REG(MR_SUBG_RADIO->PA_REG, MR_SUBG_RADIO_PA_REG_CFG_FILT_Msk,
+             (mode << MR_SUBG_RADIO_PA_REG_CFG_FILT_Pos));
+}
+
+/**
+  * @brief  Get the PA FIR configuration (CFG_FILT[1:0]).
+  * @retval PA configuration value of type @ref MRSubGPaCfgFilt.
+  */
+__STATIC_INLINE MRSubGPaCfgFilt LL_MRSubG_GetPaCfgFilt(void)
+{
+  return (MRSubGPaCfgFilt)((READ_REG(MR_SUBG_RADIO->PA_REG) &
+                            MR_SUBG_RADIO_PA_REG_CFG_FILT_Msk) >>
+                           MR_SUBG_RADIO_PA_REG_CFG_FILT_Pos);
+}
+
+/**
+  * @brief  Enable/Disable AGC analog test mode (FORCE_AGC_GAINS).
+  *         0: gains controlled by AGC controller.
+  *         1: gains forced by AGC_ANA_ENG register fields.
+  * @param  state ENABLE to force gains, DISABLE for normal AGC control.
+  * @retval None.
+  */
+__STATIC_INLINE void LL_MRSubG_SetAgcForceGains(FunctionalState state)
+{
+  if (state == ENABLE)
+  {
+    SET_BIT(MR_SUBG_RADIO->AGC_ANA_ENG, MR_SUBG_RADIO_AGC_ANA_ENG_FORCE_AGC_GAINS);
+  }
+  else
+  {
+    CLEAR_BIT(MR_SUBG_RADIO->AGC_ANA_ENG, MR_SUBG_RADIO_AGC_ANA_ENG_FORCE_AGC_GAINS);
+  }
+}
+
+/**
+  * @brief  Get AGC analog test mode state (FORCE_AGC_GAINS).
+  * @retval ENABLE if gains are forced by AGC_ANA_ENG,
+  *         DISABLE if gains are controlled by AGC controller.
+  */
+__STATIC_INLINE FunctionalState LL_MRSubG_GetAgcForceGains(void)
+{
+  return (READ_BIT(MR_SUBG_RADIO->AGC_ANA_ENG,
+                   MR_SUBG_RADIO_AGC_ANA_ENG_FORCE_AGC_GAINS) != 0U)
+         ? ENABLE : DISABLE;
+}
+
+/**
+  * @brief  Set RX PGA attenuation (RFD_RX_PGA_AGCGAIN[2:0]).
+  * @param  atten Value from @ref MRSubGAgcPgaAtten.
+  * @retval None.
+  */
+__STATIC_INLINE void LL_MRSubG_SetAgcPgaAtten(MRSubGAgcPgaAtten atten)
+{
+  MODIFY_REG(MR_SUBG_RADIO->AGC_ANA_ENG,
+             MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_PGA_AGCGAIN_Msk,
+             atten << MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_PGA_AGCGAIN_Pos);
+}
+
+/**
+  * @brief  Get RX PGA attenuation (RFD_RX_PGA_AGCGAIN[2:0]).
+  * @retval Value from @ref MRSubGAgcPgaAtten.
+  */
+__STATIC_INLINE MRSubGAgcPgaAtten LL_MRSubG_GetAgcPgaAtten(void)
+{
+  return (MRSubGAgcPgaAtten)
+         ((READ_REG(MR_SUBG_RADIO->AGC_ANA_ENG) &
+           MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_PGA_AGCGAIN_Msk) >>
+          MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_PGA_AGCGAIN_Pos);
+}
+
+/**
+  * @brief  Set RX LNA attenuation (RFD_RX_ATTEN_AGCGAIN[3:0]).
+  *         Thermometric code in 6 dB steps.
+  * @param  atten Value from @ref MRSubGAgcLnaAtten.
+  * @retval None.
+  */
+__STATIC_INLINE void LL_MRSubG_SetAgcLnaAtten(MRSubGAgcLnaAtten atten)
+{
+  MODIFY_REG(MR_SUBG_RADIO->AGC_ANA_ENG,
+             MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_ATTEN_AGCGAIN_Msk,
+             atten << MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_ATTEN_AGCGAIN_Pos);
+}
+
+/**
+  * @brief  Get RX LNA attenuation (RFD_RX_ATTEN_AGCGAIN[3:0]).
+  * @retval Value from @ref MRSubGAgcLnaAtten.
+  */
+__STATIC_INLINE MRSubGAgcLnaAtten LL_MRSubG_GetAgcLnaAtten(void)
+{
+  return (MRSubGAgcLnaAtten)
+         ((READ_REG(MR_SUBG_RADIO->AGC_ANA_ENG) &
+           MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_ATTEN_AGCGAIN_Msk) >>
+          MR_SUBG_RADIO_AGC_ANA_ENG_RFD_RX_ATTEN_AGCGAIN_Pos);
 }
 
 /**
@@ -1165,10 +1350,10 @@ __STATIC_INLINE void LL_MRSubG_SetRxOrnAndSelect(FlagStatus xNewState)
 {
   if (xNewState == SET)
   {
-    SET_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_nAND_SELECT);
+    SET_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_NAND_SELECT);
   }
   else
-    CLEAR_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_nAND_SELECT);
+    CLEAR_BIT(MR_SUBG_GLOB_DYNAMIC->RX_TIMER, MR_SUBG_GLOB_DYNAMIC_RX_TIMER_RX_OR_NAND_SELECT);
 }
 
 /**

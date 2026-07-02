@@ -96,16 +96,15 @@
 #if defined(VECT_TAB_SRAM)
 #define VECT_TAB_BASE_ADDRESS   SRAM_BASE       /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x100. */
-#define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
-                                                     This value must be a multiple of 0x100. */
 #else
 #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x100. */
-#define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
-                                                     This value must be a multiple of 0x100. */
 #endif /* VECT_TAB_SRAM */
+#if !defined(VECT_TAB_OFFSET)
+#define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table offset field.
+                                                     This value must be a multiple of 0x100. */
+#endif /* VECT_TAB_OFFSET */
 #endif /* USER_VECT_TAB_ADDRESS */
-
 /******************************************************************************/
 
 /*!< HW TRIMMING Defines */
@@ -200,12 +199,14 @@ void SystemInit(void)
   if ((RCC->CSR == 0) && ((PWR->IWUF != 0) || (PWR->WUFA != 0) || (PWR->WUFB != 0)))
   {
     RAM_VR.WakeupFromSleepFlag = 1; /* A wakeup from power save occurred */
+#if !defined(NO_CTX_RESTORE)
     CPUcontextRestore();            /* Restore the context */
     /* if the context restore worked properly, we should never return here */
     while(1)
     {
       NVIC_SystemReset();
     }
+#endif /* NO_CTX_RESTORE */
   }
 
   /* Configure the Vector Table location */

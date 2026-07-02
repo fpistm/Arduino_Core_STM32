@@ -644,6 +644,156 @@ __STATIC_INLINE uint32_t LL_PWR_GetRAMBankRet(void)
 }
 
 /**
+  * @brief  Enable the RF Regulator.
+  * @rmtoll CR2         RFREGEN      LL_PWR_EnableRFREGEN
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_EnableRFREGEN(void)
+{
+  SET_BIT(PWR->CR2, PWR_CR2_RFREGEN);
+}
+
+/**
+  * @brief  Disable the RF Regulator.
+  * @rmtoll CR2         RFREGEN      LL_PWR_DisableRFREGEN
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_DisableRFREGEN(void)
+{
+  CLEAR_BIT(PWR->CR2, PWR_CR2_RFREGEN);
+}
+
+/**
+  * @brief  Checks if RF regulator is enabled or disabled.
+  * @rmtoll CR2         RFREGEN       LL_PWR_GetRFREGEN
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_GetRFREGEN(void)
+{
+  return (READ_BIT(PWR->CR2, PWR_CR2_RFREGEN) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Enable the RF Regulator Bypass.
+  * @rmtoll CR2         RFREGBYP      LL_PWR_EnableRFREGBYP
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_EnableRFREGBYP(void)
+{
+  SET_BIT(PWR->CR2, PWR_CR2_RFREGBYP);
+}
+
+/**
+  * @brief  Disable the RF Regulator Bypass.
+  * @rmtoll CR2         RFREGBYP      LL_PWR_DisableRFREGBYP
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_DisableRFREGBYP(void)
+{
+  CLEAR_BIT(PWR->CR2, PWR_CR2_RFREGBYP);
+}
+
+/**
+  * @brief  Checks if the RF Regulator Bypass is enabled or disabled.
+  * @rmtoll CR2         RFREGBYP       LL_PWR_GetRFREGBYP
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_GetRFREGBYP(void)
+{
+  return (READ_BIT(PWR->CR2, PWR_CR2_RFREGBYP) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Enable the RF Regulator External Supply Bypass capability.
+  * @rmtoll CR2         RFREGCEXT      LL_PWR_EnableRFREGCEXT
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_EnableRFREGCEXT(void)
+{
+  SET_BIT(PWR->CR2, PWR_CR2_RFREGCEXT);
+}
+
+/**
+  * @brief  Disable the RF Regulator External Supply Bypass capability.
+  * @rmtoll CR2         RFREGCEXT      LL_PWR_DisableRFREGCEXT
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_DisableRFREGCEXT(void)
+{
+  CLEAR_BIT(PWR->CR2, PWR_CR2_RFREGCEXT);
+}
+
+/**
+  * @brief  Checks if the the RF Regulator External Supply Bypass capability.
+  * @rmtoll CR2         RFREGCEXT       LL_PWR_GetRFREGCEXT
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_GetRFREGCEXT(void)
+{
+  return (READ_BIT(PWR->CR2, PWR_CR2_RFREGCEXT) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Get the RF Regulator on status.
+  * @rmtoll CR2       RFREGON_STATUS         LL_PWR_IsActiveFlag_RFREGON_STATUS
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_RFREGON_STATUS(void)
+{
+  return ((READ_BIT(PWR->CR2, PWR_CR2_RFREGON_STATUS) == (PWR_CR2_RFREGON_STATUS)) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Get the RF Regulator ready flag.
+  * @rmtoll CR2       RFREGRDY         LL_PWR_IsActiveFlag_RFREGRDY
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_RFREGRDY(void)
+{
+  return ((READ_BIT(PWR->CR2, PWR_CR2_RFREGRDY) == (PWR_CR2_RFREGRDY)) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Get the LPREG status.
+  * @rmtoll CR2       LPREG_VH_STATUS         LL_PWR_IsActiveFlag_LPREG_VH_STATUS
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_LPREG_VH_STATUS(void)
+{
+  return ((READ_BIT(PWR->CR2, PWR_CR2_LPREG_VH_STATUS) == (PWR_CR2_LPREG_VH_STATUS)) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Force the LPREG voltage to 1.2 V during Deepstop mode.
+  * @rmtoll CR2         LPREG_FORCE_VH      LL_PWR_EnableLPREGVH
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_EnableLPREGVH(void)
+{
+  SET_BIT(PWR->CR2, PWR_CR2_LPREG_FORCE_VH);
+}
+
+/**
+  * @brief  Force the LPREG voltage to 1 V during Deepstop mode.
+  * @rmtoll CR2         LPREG_FORCE_VH      LL_PWR_DisableLPREGVH
+  * @retval None
+  */
+__STATIC_INLINE void LL_PWR_DisableLPREGVH(void)
+{
+  CLEAR_BIT(PWR->CR2, PWR_CR2_LPREG_FORCE_VH);
+}
+
+/**
+  * @brief  Checks the LPREG voltage during Deepstop mode.
+  * @rmtoll CR2         LPREG_FORCE_VH       LL_PWR_GetLPREGVH
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_PWR_GetLPREGVH(void)
+{
+  return (READ_BIT(PWR->CR2, PWR_CR2_LPREG_FORCE_VH) ? 1UL : 0UL);
+}
+
+/**
   * @brief  Enable the PVD (Programmable Voltage Detector).
   * @rmtoll CR2          PVDE           LL_PWR_EnablePVD
   * @retval None
@@ -1914,37 +2064,6 @@ __STATIC_INLINE uint32_t LL_PWR_GetMRTrim(void)
     return (uint32_t)(READ_BIT(PWR->TRIMR, PWR_TRIMR_TRIM_MR) >> PWR_TRIMR_TRIM_MR_Pos);
   }
 }
-
-#if defined(PWR_ENGTRIM_TRIM_LSI_LPMU)
-/**
-  * @brief  Set Low Speed Internal oscillator LPMU trimming value.
-  * @rmtoll ENGTRIM               LL_PWR_SetLPMULSITrim
-  * @param  Trim Low Speed Internal oscillator trimming value
-  * @retval None
-  */
-__STATIC_INLINE void LL_PWR_SetLSILPMUTrim(uint32_t Trim)
-{
-  MODIFY_REG(PWR->ENGTRIM, PWR_ENGTRIM_TRIM_LSI_LPMU, ((Trim << PWR_ENGTRIM_TRIM_LSI_LPMU_Pos) & PWR_ENGTRIM_TRIM_LSI_LPMU));
-  SET_BIT(PWR->ENGTRIM, PWR_ENGTRIM_TRIMLSILPMUEN);
-}
-
-/**
-  * @brief  Get Low Speed Internal oscillator LPMU trimming value.
-  * @rmtoll TRIMR/ENGTRIM               LL_PWR_GetLSITrim
-  * @retval Low Speed Internal oscillator trimming value
-  */
-__STATIC_INLINE uint32_t LL_PWR_GetLSILPMUTrim(void)
-{
-  if (READ_BIT(PWR->ENGTRIM, PWR_ENGTRIM_TRIMLSILPMUEN))
-  {
-    return (uint32_t)(READ_BIT(PWR->ENGTRIM, PWR_ENGTRIM_TRIM_LSI_LPMU) >> PWR_ENGTRIM_TRIM_LSI_LPMU_Pos);
-  }
-  else
-  {
-    return (uint32_t)(READ_BIT(PWR->TRIMR, PWR_TRIMR_TRIM_LSI_LPMU) >> PWR_TRIMR_TRIM_LSI_LPMU_Pos);
-  }
-}
-#endif /* PWR_ENGTRIM_TRIM_LSI_LPMU */
 
 #if defined(PWR_ENGTRIM_TRIM_RFDREG)
 /**

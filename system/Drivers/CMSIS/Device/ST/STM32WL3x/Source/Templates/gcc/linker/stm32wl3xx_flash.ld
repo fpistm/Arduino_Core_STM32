@@ -27,10 +27,6 @@ STM32WL3x memory map
 |                       |
 |  FLASH (256K)         |
 +-----------------------+ 0x10040000
-|                       |
-+-----------------------| 0x100017FF
-|   ROM (6K)            |
-+-----------------------+ 0x10000000
 */
 
 
@@ -41,10 +37,6 @@ _MEMORY_RAM_END_     = 0x20007FFF;
 _MEMORY_FLASH_BEGIN_ = 0x10040000;
 _MEMORY_FLASH_SIZE_  = 0x40000;          /* 256KB */
 _MEMORY_FLASH_END_   = 0x1007FFFF;
-
-_MEMORY_ROM_BEGIN_   = 0x10000000;
-_MEMORY_ROM_SIZE_    = 0x01800;          /* 6KB */
-_MEMORY_ROM_END_     = 0x100017FF;
 
 
 MEMORY_FLASH_APP_OFFSET = DEFINED(MEMORY_FLASH_APP_OFFSET) ? (MEMORY_FLASH_APP_OFFSET) : (0) ;
@@ -66,7 +58,6 @@ MEMORY
   REGION_RAM (xrw)              : ORIGIN = _MEMORY_RAM_BEGIN_, LENGTH = _MEMORY_RAM_SIZE_
   REGION_FLASH_BOOTLOADER (rx)  : ORIGIN = _MEMORY_FLASH_BEGIN_, LENGTH = MEMORY_FLASH_APP_OFFSET
   REGION_FLASH (rx)             : ORIGIN = _MEMORY_FLASH_BEGIN_ + MEMORY_FLASH_APP_OFFSET, LENGTH = MEMORY_FLASH_APP_SIZE
-  REGION_ROM (rx)               : ORIGIN = _MEMORY_ROM_BEGIN_, LENGTH = _MEMORY_ROM_SIZE_
 }
 
 /* Define output sections */
@@ -170,15 +161,6 @@ SECTIONS
     _estack = .;         /* define a global symbol at stack end */
     . = ALIGN(4);
   } > REGION_RAM
-
-
-  .rom_info (NOLOAD) :
-  {
-    . = ALIGN(4);
-    KEEP(*(.rom_info))
-    . = ALIGN(4);
-  } >REGION_ROM
-
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {

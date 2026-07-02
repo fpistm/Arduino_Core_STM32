@@ -130,7 +130,7 @@
   *          - SUCCESS: SPI registers are de-initialized
   *          - ERROR: SPI registers are not de-initialized
   */
-ErrorStatus LL_SPI_DeInit(SPI_TypeDef *SPIx)
+ErrorStatus LL_SPI_DeInit(const SPI_TypeDef *SPIx)
 {
   ErrorStatus status = ERROR;
 
@@ -167,8 +167,9 @@ ErrorStatus LL_SPI_DeInit(SPI_TypeDef *SPIx)
 
 /**
   * @brief  Initialize the SPI registers according to the specified parameters in SPI_InitStruct.
-  * @note   As some bits in SPI configuration registers can only be written when the SPI is disabled (SPI_CR1_SPE bit =0),
-  *         SPI peripheral should be in disabled state prior calling this function. Otherwise, ERROR result will be returned.
+  * @note   As some bits in SPI configuration registers can only be written when the
+  *         SPI is disabled (SPI_CR1_SPE bit = 0), SPI peripheral should be in disabled state prior
+  *         calling this function. Otherwise, ERROR result will be returned.
   * @param  SPIx SPI Instance
   * @param  SPI_InitStruct pointer to a @ref LL_SPI_InitTypeDef structure
   * @retval An ErrorStatus enumeration value. (Return always SUCCESS)
@@ -238,10 +239,8 @@ ErrorStatus LL_SPI_Init(SPI_TypeDef *SPIx, LL_SPI_InitTypeDef *SPI_InitStruct)
     status = SUCCESS;
   }
 
-#if defined (SPI_I2S_SUPPORT)
   /* Activate the SPI mode (Reset I2SMOD bit in I2SCFGR register) */
   CLEAR_BIT(SPIx->I2SCFGR, SPI_I2SCFGR_I2SMOD);
-#endif /* SPI_I2S_SUPPORT */
   return status;
 }
 
@@ -278,7 +277,6 @@ void LL_SPI_StructInit(LL_SPI_InitTypeDef *SPI_InitStruct)
   * @}
   */
 
-#if defined(SPI_I2S_SUPPORT)
 /** @addtogroup I2S_LL
   * @{
   */
@@ -355,7 +353,7 @@ void LL_SPI_StructInit(LL_SPI_InitTypeDef *SPI_InitStruct)
   *          - SUCCESS: SPI registers are de-initialized
   *          - ERROR: SPI registers are not de-initialized
   */
-ErrorStatus LL_I2S_DeInit(SPI_TypeDef *SPIx)
+ErrorStatus LL_I2S_DeInit(const SPI_TypeDef *SPIx)
 {
   return LL_SPI_DeInit(SPIx);
 }
@@ -542,7 +540,6 @@ void LL_I2S_ConfigPrescaler(SPI_TypeDef *SPIx, uint32_t PrescalerLinear, uint32_
 /**
   * @}
   */
-#endif /* SPI_I2S_SUPPORT */
 
 #endif /* defined (SPI1) || defined (SPI3) */
 

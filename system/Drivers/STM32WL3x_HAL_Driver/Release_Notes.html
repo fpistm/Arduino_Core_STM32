@@ -25,7 +25,7 @@
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
+  <link rel="stylesheet" href="./_htmresc/mini-st_2020.css" />
   <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
 </head>
 <body>
@@ -34,7 +34,7 @@
 <center>
 <h1 id="release-notes-for">Release Notes for</h1>
 <h1 id="stm32wl3xx-hal-drivers"><mark>STM32WL3xx HAL Drivers</mark></h1>
-<p>Copyright © 2024-2025 STMicroelectronics</p>
+<p>Copyright © 2024-2026 STMicroelectronics</p>
 <a href="https://www.st.com" class="logo"><img
 src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
 </center>
@@ -68,26 +68,81 @@ drivers)</li>
 <section id="update-history" class="col-sm-12 col-lg-8">
 <h1>Update History</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section5" checked aria-hidden="true">
-<label for="collapse-section5" checked aria-hidden="true"><strong>V1.3.1
-/ 20-November-2025</strong></label>
+<input type="checkbox" id="collapse-section7" checked aria-hidden="true">
+<label for="collapse-section7" aria-hidden="true"><strong>V1.5.0 /
+05-June-2026</strong></label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
 <ul>
-<li>Correction to the I2C HAL driver</li>
+<li>Updated the MRSUBG HAL driver to enhance support for 169MHz
+transmission and reception on suitable boards.</li>
+<li>Updated the MRSUBG LL driver to work-around a radio PLL startup
+issue.</li>
+<li>Updated the MRSUBG channel filter bandwidth table (increased
+configurability).</li>
+<li>Added several PWR LL APIs to manipulate CR2 register fields.</li>
 </ul>
 <h2 id="contents">Contents</h2>
 <h3 id="hal-drivers-updates"><strong>HAL Drivers</strong> updates</h3>
 <ul>
-<li><strong>HAL I2C</strong> driver
+<li><strong>HAL MRSUBG</strong>/ <strong>LL MRSUBG</strong> driver
 <ul>
-<li>Pin definitions for SMBUS and Fast Mode Plus now split across the
-two I2C IP instances (I2C1 and I2C2).</li>
+<li><p>Added 169MHz TX and RX preparation functions</p>
+<pre><code>void HAL_MRSubG_169MHz_prepareTx(void)</code></pre>
+</li>
+<pre><code>void HAL_MRSubG_169MHz_prepareRx(void)</code></pre>
+</li></li>
+<li><p><code> s_Channel_Filter_Bandwidth[] </code> has been extended
+with more configuration values (160 vs 99)</p>
+<p><strong><em>Note: legacy values have been kept</em></strong></p></li>
+<li><p>AFC1_CONFIG register set to 0x18 (reset value) in
+<code>HAL_MRSubG_Init()</code></p></li>
+<li><p><code>LL_MRSubG_StrobeCommand(MRSubGCmd xCommandCode)</code>
+updated to implement a SW work-around for the “Incorrect base frequency
+at PLL startup” issue (Refer to the product Errata documents for more
+details).</p></li>
+</ul></li>
+<li><strong>HAL PWR</strong>/ <strong>LL PWR</strong> driver
+<ul>
+<li>Added following LL APIs to read &amp; set additional CR2 register
+fields
+<pre><code>__STATIC_INLINE void LL_PWR_EnableRFREGEN(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_DisableRFREGEN(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_GetRFREGEN(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_EnableRFREGBYP(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_DisableRFREGBYP(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_GetRFREGBYP(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_EnableRFREGCEXT(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_DisableRFREGCEXT(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_GetRFREGCEXT(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_RFREGON_STATUS(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_RFREGRDY(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_IsActiveFlag_LPREG_VH_STATUS(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_EnableLPREGVH(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_PWR_DisableLPREGVH(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_PWR_GetLPREGVH(void)</code></pre>
+</li></li>
+<li>Removed LL functions related to non-user registers (not used by any
+code)</li>
 </ul></li>
 </ul>
 <h2 id="backward-compatibility">Backward compatibility</h2>
 <ul>
-<li>Not applicable</li>
+<li>Yes</li>
 </ul>
 <h2 id="known-limitations">Known Limitations</h2>
 <ul>
@@ -104,18 +159,115 @@ two I2C IP instances (I2C1 and I2C2).</li>
 </div>
 </div>
 <div class="collapse">
+<input type="checkbox" id="collapse-section6" aria-hidden="true">
+<label for="collapse-section6" aria-hidden="true"><strong>V1.4.0 /
+04-February-2026</strong></label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<ul>
+<li>Update of I2C and SMBUS HAL drivers to fix build warnings.</li>
+<li>Added LL APIs to manipulate AGC_ANA_ENG and PA_REG bitfields.</li>
+<li>Added LL APIs related to RCC “CR” register</li>
+<li>fixed HAL_RCCEx_GetPeriphCLKFreq()</li>
+</ul>
+<h2 id="contents-1">Contents</h2>
+<h3 id="hal-drivers-updates-1"><strong>HAL Drivers</strong> updates</h3>
+<ul>
+<li><strong>HAL I2C</strong> driver
+<ul>
+<li>Reworked ‘Fast Mode Plus’ macro definition.</li>
+</ul></li>
+<li><strong>HAL SMBUS</strong> driver
+<ul>
+<li>Reworked ‘Fast Mode Plus’ macro definition.</li>
+</ul></li>
+<li><strong>HAL MRSUBG</strong>/ <strong>LL MRSUBG</strong> driver
+<ul>
+<li>Fixed a typo in a bitmask macro (“nAND” -&gt; “NAND”), to align to
+its CMSIS definition</li>
+<li>Added get &amp; set LL APIs for PA_REG fields</li>
+<li>Added LL APIs for AGC_ANA_ENG register fields</li>
+</ul></li>
+<li><strong>HAL RCC</strong>/ <strong>LL RCC</strong> driver
+<ul>
+<li>added get &amp; set LL APIs for CR register bit #15 (“FMRAT”)
+<pre><code>__STATIC_INLINE void LL_RCC_FMRAT_UseHSI(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE void LL_RCC_FMRAT_UseHSE(void)</code></pre>
+</li>
+<pre><code>__STATIC_INLINE uint32_t LL_RCC_FMRAT_IsHSI(void)</code></pre>
+</li></li>
+<li>HAL_RCCEx_GetPeriphCLKFreq() fixed to return correct value for all
+clock configurations</li>
+</ul></li>
+</ul>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<ul>
+<li>Yes</li>
+</ul>
+<h2 id="known-limitations-1">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="dependencies-1">Dependencies</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="notes-1">Notes</h2>
+<ul>
+<li>None</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" aria-hidden="true">
+<label for="collapse-section5" checked aria-hidden="true"><strong>V1.3.1
+/ 20-November-2025</strong></label>
+<div>
+<h2 id="main-changes-2">Main Changes</h2>
+<ul>
+<li>Correction to the I2C and SMBUS HAL drivers</li>
+</ul>
+<h2 id="contents-2">Contents</h2>
+<h3 id="hal-drivers-updates-2"><strong>HAL Drivers</strong> updates</h3>
+<ul>
+<li><strong>HAL I2C</strong> driver
+<ul>
+<li>Pin definitions for SMBUS and Fast Mode Plus now split across the
+two I2C IP instances (I2C1 and I2C2).</li>
+</ul></li>
+</ul>
+<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<ul>
+<li>Not applicable</li>
+</ul>
+<h2 id="known-limitations-2">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="dependencies-2">Dependencies</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="notes-2">Notes</h2>
+<ul>
+<li>None</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
 <input type="checkbox" id="collapse-section4" aria-hidden="true">
 <label for="collapse-section4" checked aria-hidden="true"><strong>V1.3.0
 / 29-October-2025</strong></label>
 <div>
-<h2 id="main-changes-1">Main Changes</h2>
+<h2 id="main-changes-3">Main Changes</h2>
 <ul>
 <li>HAL and LL drivers updates to support STM32WL3Rx product line.</li>
 <li>Corrections/enhancements to the following HAL drivers: ADC, MRSUBG,
 RCC, MRSUBG Timer, GPIO, UART, USART, LCSC, PWR.</li>
 </ul>
-<h2 id="contents-1">Contents</h2>
-<h3 id="hal-drivers-updates-1"><strong>HAL Drivers</strong> updates</h3>
+<h2 id="contents-3">Contents</h2>
+<h3 id="hal-drivers-updates-3"><strong>HAL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL ADC</strong> driver
 <ul>
@@ -184,19 +336,19 @@ USART_PRESCALER_TAB array</li>
 <li>NUCLEO-WL3RKB1 board</li>
 <li>NUCLEO-WL3RKB2 board</li>
 </ul>
-<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<h2 id="backward-compatibility-3">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-1">Known Limitations</h2>
+<h2 id="known-limitations-3">Known Limitations</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="dependencies-1">Dependencies</h2>
+<h2 id="dependencies-3">Dependencies</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="notes-1">Notes</h2>
+<h2 id="notes-3">Notes</h2>
 <ul>
 <li>None</li>
 </ul>
@@ -207,12 +359,12 @@ USART_PRESCALER_TAB array</li>
 <label for="collapse-section3" checked aria-hidden="true"><strong>V1.2.0
 / 04-June-2025</strong></label>
 <div>
-<h2 id="main-changes-2">Main Changes</h2>
+<h2 id="main-changes-4">Main Changes</h2>
 <h3 id="release-of-hal-and-ll-drivers-for-stm32wl3x-devices">Release of
 <strong>HAL and LL drivers</strong> for <strong>STM32WL3x</strong>
 devices</h3>
-<h2 id="contents-2">Contents</h2>
-<h3 id="hal-drivers-updates-2"><strong>HAL Drivers</strong> updates</h3>
+<h2 id="contents-4">Contents</h2>
+<h3 id="hal-drivers-updates-4"><strong>HAL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL MRSUBG</strong> driver
 <ul>
@@ -259,19 +411,19 @@ boards</h2>
 <li>NUCLEO-WL33CC1 board</li>
 <li>NUCLEO-WL33CC2 board</li>
 </ul>
-<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<h2 id="backward-compatibility-4">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-2">Known Limitations</h2>
+<h2 id="known-limitations-4">Known Limitations</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="dependencies-2">Dependencies</h2>
+<h2 id="dependencies-4">Dependencies</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="notes-2">Notes</h2>
+<h2 id="notes-4">Notes</h2>
 <ul>
 <li>None</li>
 </ul>
@@ -282,7 +434,7 @@ boards</h2>
 <label for="collapse-section2" checked aria-hidden="true"><strong>V1.1.0
 / 5-February-2025</strong></label>
 <div>
-<h2 id="main-changes-3">Main Changes</h2>
+<h2 id="main-changes-5">Main Changes</h2>
 <h3 id="release-of-hal-and-ll-drivers-for-stm32wl3x-devices-1">Release
 of <strong>HAL and LL drivers</strong> for <strong>STM32WL3x</strong>
 devices</h3>
@@ -345,7 +497,7 @@ USART_PRESCALER_TAB array</li>
 </ul></li>
 </ul>
 <p>Check the code documentation for further details.</p>
-<h2 id="contents-3">Contents</h2>
+<h2 id="contents-5">Contents</h2>
 <ul>
 <li>Release of HAL/LL drivers
 <ul>
@@ -362,19 +514,19 @@ boards</h2>
 <li>NUCLEO-WL33CC1 board</li>
 <li>NUCLEO-WL33CC2 board</li>
 </ul>
-<h2 id="backward-compatibility-3">Backward compatibility</h2>
+<h2 id="backward-compatibility-5">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-3">Known Limitations</h2>
+<h2 id="known-limitations-5">Known Limitations</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="dependencies-3">Dependencies</h2>
+<h2 id="dependencies-5">Dependencies</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="notes-3">Notes</h2>
+<h2 id="notes-5">Notes</h2>
 <ul>
 <li>None</li>
 </ul>
@@ -385,12 +537,12 @@ boards</h2>
 <label for="collapse-section1" checked aria-hidden="true"><strong>V1.0.0
 / 30-October-2024</strong></label>
 <div>
-<h2 id="main-changes-4">Main Changes</h2>
+<h2 id="main-changes-6">Main Changes</h2>
 <h3
 id="first-official-release-of-hal-and-ll-drivers-for-stm32wl33-devices">First
 Official Release of <strong>HAL and LL drivers</strong> for
 <strong>STM32WL33</strong> devices</h3>
-<h2 id="contents-4">Contents</h2>
+<h2 id="contents-6">Contents</h2>
 <ul>
 <li>First Official Release of HAL/LL drivers
 <ul>
@@ -406,19 +558,19 @@ boards</h2>
 <ul>
 <li>NUCLEO-WL33CC board</li>
 </ul>
-<h2 id="backward-compatibility-4">Backward compatibility</h2>
+<h2 id="backward-compatibility-6">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-4">Known Limitations</h2>
+<h2 id="known-limitations-6">Known Limitations</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="dependencies-4">Dependencies</h2>
+<h2 id="dependencies-6">Dependencies</h2>
 <ul>
 <li>None</li>
 </ul>
-<h2 id="notes-4">Notes</h2>
+<h2 id="notes-6">Notes</h2>
 <ul>
 <li>None</li>
 </ul>
