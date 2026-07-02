@@ -28,3 +28,4 @@ target_link_libraries(I3C INTERFACE
   I3C_bin
   $<TARGET_OBJECTS:I3C_bin>
 )
+

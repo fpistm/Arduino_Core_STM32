@@ -22,6 +22,7 @@ add_library(variant_bin STATIC EXCLUDE_FROM_ALL
   generic_clock.c
   PeripheralPins.c
   PeripheralPins_ETHERCAT_DUINO.c
+  PeripheralPins_F7x6ZG.c
   variant_ETHERCAT_DUINO.cpp
   variant_generic.cpp
   variant_NUCLEO_F7x6ZG.cpp
