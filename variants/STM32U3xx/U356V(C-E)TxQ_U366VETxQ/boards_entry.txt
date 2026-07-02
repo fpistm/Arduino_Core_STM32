@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U356VCTxQ
+GenU3.menu.pnum.GENERIC_U356VCTXQ=Generic U356VCTxQ
+GenU3.menu.pnum.GENERIC_U356VCTXQ.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U356VCTXQ.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356VCTXQ.build.board=GENERIC_U356VCTXQ
+GenU3.menu.pnum.GENERIC_U356VCTXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356VCTXQ.build.variant=STM32U3xx/U356V(C-E)TxQ_U366VETxQ
+GenU3.menu.pnum.GENERIC_U356VCTXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U356VETxQ
+GenU3.menu.pnum.GENERIC_U356VETXQ=Generic U356VETxQ
+GenU3.menu.pnum.GENERIC_U356VETXQ.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U356VETXQ.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356VETXQ.build.board=GENERIC_U356VETXQ
+GenU3.menu.pnum.GENERIC_U356VETXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356VETXQ.build.variant=STM32U3xx/U356V(C-E)TxQ_U366VETxQ
+GenU3.menu.pnum.GENERIC_U356VETXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U366VETxQ
+GenU3.menu.pnum.GENERIC_U366VETXQ=Generic U366VETxQ
+GenU3.menu.pnum.GENERIC_U366VETXQ.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U366VETXQ.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U366VETXQ.build.board=GENERIC_U366VETXQ
+GenU3.menu.pnum.GENERIC_U366VETXQ.build.product_line=STM32U366xx
+GenU3.menu.pnum.GENERIC_U366VETXQ.build.variant=STM32U3xx/U356V(C-E)TxQ_U366VETxQ
+GenU3.menu.pnum.GENERIC_U366VETXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U366.svd
+

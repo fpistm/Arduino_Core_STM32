@@ -164,6 +164,7 @@
 #define PB7_ALT1                (PB7  | ALT1)
 #define PB8_ALT1                (PB8  | ALT1)
 #define PB9_ALT1                (PB9  | ALT1)
+#define PB12_ALT1               (PB12 | ALT1)
 #define PB14_ALT1               (PB14 | ALT1)
 #define PB14_ALT2               (PB14 | ALT2)
 #define PB15_ALT1               (PB15 | ALT1)
@@ -182,7 +183,10 @@
 #define PC11_ALT1               (PC11 | ALT1)
 #define PF8_ALT1                (PF8  | ALT1)
 #define PF9_ALT1                (PF9  | ALT1)
+#define PG11_ALT1               (PG11 | ALT1)
+#define PG12_ALT1               (PG12 | ALT1)
 #define PG13_ALT1               (PG13 | ALT1)
+#define PG14_ALT1               (PG14 | ALT1)
 
 #define NUM_DIGITAL_PINS        112
 #define NUM_ANALOG_INPUTS       20

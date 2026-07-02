@@ -1,0 +1,86 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic H543ZEJx
+GenH5.menu.pnum.GENERIC_H543ZEJX=Generic H543ZEJx
+GenH5.menu.pnum.GENERIC_H543ZEJX.upload.maximum_size=524288
+GenH5.menu.pnum.GENERIC_H543ZEJX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZEJX.build.board=GENERIC_H543ZEJX
+GenH5.menu.pnum.GENERIC_H543ZEJX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZEJX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZEJX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543ZETx
+GenH5.menu.pnum.GENERIC_H543ZETX=Generic H543ZETx
+GenH5.menu.pnum.GENERIC_H543ZETX.upload.maximum_size=524288
+GenH5.menu.pnum.GENERIC_H543ZETX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZETX.build.board=GENERIC_H543ZETX
+GenH5.menu.pnum.GENERIC_H543ZETX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZETX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543ZEZx
+GenH5.menu.pnum.GENERIC_H543ZEZX=Generic H543ZEZx
+GenH5.menu.pnum.GENERIC_H543ZEZX.upload.maximum_size=524288
+GenH5.menu.pnum.GENERIC_H543ZEZX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZEZX.build.board=GENERIC_H543ZEZX
+GenH5.menu.pnum.GENERIC_H543ZEZX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZEZX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZEZX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543ZGJx
+GenH5.menu.pnum.GENERIC_H543ZGJX=Generic H543ZGJx
+GenH5.menu.pnum.GENERIC_H543ZGJX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H543ZGJX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZGJX.build.board=GENERIC_H543ZGJX
+GenH5.menu.pnum.GENERIC_H543ZGJX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZGJX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZGJX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543ZGTx
+GenH5.menu.pnum.GENERIC_H543ZGTX=Generic H543ZGTx
+GenH5.menu.pnum.GENERIC_H543ZGTX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H543ZGTX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZGTX.build.board=GENERIC_H543ZGTX
+GenH5.menu.pnum.GENERIC_H543ZGTX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZGTX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543ZGZx
+GenH5.menu.pnum.GENERIC_H543ZGZX=Generic H543ZGZx
+GenH5.menu.pnum.GENERIC_H543ZGZX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H543ZGZX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543ZGZX.build.board=GENERIC_H543ZGZX
+GenH5.menu.pnum.GENERIC_H543ZGZX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543ZGZX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H543ZGZX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H553ZGJx
+GenH5.menu.pnum.GENERIC_H553ZGJX=Generic H553ZGJx
+GenH5.menu.pnum.GENERIC_H553ZGJX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H553ZGJX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H553ZGJX.build.board=GENERIC_H553ZGJX
+GenH5.menu.pnum.GENERIC_H553ZGJX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H553ZGJX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H553ZGJX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H553.svd
+
+# Generic H553ZGTx
+GenH5.menu.pnum.GENERIC_H553ZGTX=Generic H553ZGTx
+GenH5.menu.pnum.GENERIC_H553ZGTX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H553ZGTX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H553ZGTX.build.board=GENERIC_H553ZGTX
+GenH5.menu.pnum.GENERIC_H553ZGTX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H553ZGTX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H553ZGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H553.svd
+
+# Generic H553ZGZx
+GenH5.menu.pnum.GENERIC_H553ZGZX=Generic H553ZGZx
+GenH5.menu.pnum.GENERIC_H553ZGZX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H553ZGZX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H553ZGZX.build.board=GENERIC_H553ZGZX
+GenH5.menu.pnum.GENERIC_H553ZGZX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H553ZGZX.build.variant=STM32H5xx/H543Z(E-G)(J-T-Z)_H553ZG(J-T-Z)
+GenH5.menu.pnum.GENERIC_H553ZGZX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H553.svd
+

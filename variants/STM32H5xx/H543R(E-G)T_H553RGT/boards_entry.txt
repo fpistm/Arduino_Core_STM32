@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic H543RETx
+GenH5.menu.pnum.GENERIC_H543RETX=Generic H543RETx
+GenH5.menu.pnum.GENERIC_H543RETX.upload.maximum_size=524288
+GenH5.menu.pnum.GENERIC_H543RETX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543RETX.build.board=GENERIC_H543RETX
+GenH5.menu.pnum.GENERIC_H543RETX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543RETX.build.variant=STM32H5xx/H543R(E-G)T_H553RGT
+GenH5.menu.pnum.GENERIC_H543RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H543RGTx
+GenH5.menu.pnum.GENERIC_H543RGTX=Generic H543RGTx
+GenH5.menu.pnum.GENERIC_H543RGTX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H543RGTX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H543RGTX.build.board=GENERIC_H543RGTX
+GenH5.menu.pnum.GENERIC_H543RGTX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H543RGTX.build.variant=STM32H5xx/H543R(E-G)T_H553RGT
+GenH5.menu.pnum.GENERIC_H543RGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H543.svd
+
+# Generic H553RGTx
+GenH5.menu.pnum.GENERIC_H553RGTX=Generic H553RGTx
+GenH5.menu.pnum.GENERIC_H553RGTX.upload.maximum_size=1048576
+GenH5.menu.pnum.GENERIC_H553RGTX.upload.maximum_data_size=311296
+GenH5.menu.pnum.GENERIC_H553RGTX.build.board=GENERIC_H553RGTX
+GenH5.menu.pnum.GENERIC_H553RGTX.build.product_line=STM32H562xx
+GenH5.menu.pnum.GENERIC_H553RGTX.build.variant=STM32H5xx/H543R(E-G)T_H553RGT
+GenH5.menu.pnum.GENERIC_H553RGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32H5xx/STM32H553.svd
+

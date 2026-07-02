@@ -1,0 +1,59 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U356CCTx
+GenU3.menu.pnum.GENERIC_U356CCTX=Generic U356CCTx
+GenU3.menu.pnum.GENERIC_U356CCTX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U356CCTX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356CCTX.build.board=GENERIC_U356CCTX
+GenU3.menu.pnum.GENERIC_U356CCTX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356CCTX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U356CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U356CCUx
+GenU3.menu.pnum.GENERIC_U356CCUX=Generic U356CCUx
+GenU3.menu.pnum.GENERIC_U356CCUX.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U356CCUX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356CCUX.build.board=GENERIC_U356CCUX
+GenU3.menu.pnum.GENERIC_U356CCUX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356CCUX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U356CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U356CETx
+GenU3.menu.pnum.GENERIC_U356CETX=Generic U356CETx
+GenU3.menu.pnum.GENERIC_U356CETX.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U356CETX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356CETX.build.board=GENERIC_U356CETX
+GenU3.menu.pnum.GENERIC_U356CETX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356CETX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U356CETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U356CEUx
+GenU3.menu.pnum.GENERIC_U356CEUX=Generic U356CEUx
+GenU3.menu.pnum.GENERIC_U356CEUX.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U356CEUX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U356CEUX.build.board=GENERIC_U356CEUX
+GenU3.menu.pnum.GENERIC_U356CEUX.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U356CEUX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U356CEUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U356.svd
+
+# Generic U366CETx
+GenU3.menu.pnum.GENERIC_U366CETX=Generic U366CETx
+GenU3.menu.pnum.GENERIC_U366CETX.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U366CETX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U366CETX.build.board=GENERIC_U366CETX
+GenU3.menu.pnum.GENERIC_U366CETX.build.product_line=STM32U366xx
+GenU3.menu.pnum.GENERIC_U366CETX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U366CETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U366.svd
+
+# Generic U366CEUx
+GenU3.menu.pnum.GENERIC_U366CEUX=Generic U366CEUx
+GenU3.menu.pnum.GENERIC_U366CEUX.upload.maximum_size=524288
+GenU3.menu.pnum.GENERIC_U366CEUX.upload.maximum_data_size=196608
+GenU3.menu.pnum.GENERIC_U366CEUX.build.board=GENERIC_U366CEUX
+GenU3.menu.pnum.GENERIC_U366CEUX.build.product_line=STM32U366xx
+GenU3.menu.pnum.GENERIC_U366CEUX.build.variant=STM32U3xx/U356C(C-E)(T-U)_U366CE(T-U)
+GenU3.menu.pnum.GENERIC_U366CEUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U366.svd
+

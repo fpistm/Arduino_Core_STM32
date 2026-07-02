@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic U335RBIxQ
+GenU3.menu.pnum.GENERIC_U335RBIXQ=Generic U335RBIxQ
+GenU3.menu.pnum.GENERIC_U335RBIXQ.upload.maximum_size=131072
+GenU3.menu.pnum.GENERIC_U335RBIXQ.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335RBIXQ.build.board=GENERIC_U335RBIXQ
+GenU3.menu.pnum.GENERIC_U335RBIXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335RBIXQ.build.variant=STM32U3xx/U335R(B-C)IxQ_U345RCIxQ
+GenU3.menu.pnum.GENERIC_U335RBIXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U335RCIxQ
+GenU3.menu.pnum.GENERIC_U335RCIXQ=Generic U335RCIxQ
+GenU3.menu.pnum.GENERIC_U335RCIXQ.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U335RCIXQ.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U335RCIXQ.build.board=GENERIC_U335RCIXQ
+GenU3.menu.pnum.GENERIC_U335RCIXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335RCIXQ.build.variant=STM32U3xx/U335R(B-C)IxQ_U345RCIxQ
+GenU3.menu.pnum.GENERIC_U335RCIXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
+
+# Generic U345RCIxQ
+GenU3.menu.pnum.GENERIC_U345RCIXQ=Generic U345RCIxQ
+GenU3.menu.pnum.GENERIC_U345RCIXQ.upload.maximum_size=262144
+GenU3.menu.pnum.GENERIC_U345RCIXQ.upload.maximum_data_size=81920
+GenU3.menu.pnum.GENERIC_U345RCIXQ.build.board=GENERIC_U345RCIXQ
+GenU3.menu.pnum.GENERIC_U345RCIXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U345RCIXQ.build.variant=STM32U3xx/U335R(B-C)IxQ_U345RCIxQ
+GenU3.menu.pnum.GENERIC_U345RCIXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U345.svd
+
