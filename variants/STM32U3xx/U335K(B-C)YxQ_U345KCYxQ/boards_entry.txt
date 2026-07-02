@@ -8,7 +8,7 @@ GenU3.menu.pnum.GENERIC_U335KBYXQ=Generic U335KBYxQ
 GenU3.menu.pnum.GENERIC_U335KBYXQ.upload.maximum_size=131072
 GenU3.menu.pnum.GENERIC_U335KBYXQ.upload.maximum_data_size=81920
 GenU3.menu.pnum.GENERIC_U335KBYXQ.build.board=GENERIC_U335KBYXQ
-GenU3.menu.pnum.GENERIC_U335KBYXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335KBYXQ.build.product_line=STM32U335xx
 GenU3.menu.pnum.GENERIC_U335KBYXQ.build.variant=STM32U3xx/U335K(B-C)YxQ_U345KCYxQ
 GenU3.menu.pnum.GENERIC_U335KBYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
 
@@ -17,7 +17,7 @@ GenU3.menu.pnum.GENERIC_U335KCYXQ=Generic U335KCYxQ
 GenU3.menu.pnum.GENERIC_U335KCYXQ.upload.maximum_size=262144
 GenU3.menu.pnum.GENERIC_U335KCYXQ.upload.maximum_data_size=81920
 GenU3.menu.pnum.GENERIC_U335KCYXQ.build.board=GENERIC_U335KCYXQ
-GenU3.menu.pnum.GENERIC_U335KCYXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U335KCYXQ.build.product_line=STM32U335xx
 GenU3.menu.pnum.GENERIC_U335KCYXQ.build.variant=STM32U3xx/U335K(B-C)YxQ_U345KCYxQ
 GenU3.menu.pnum.GENERIC_U335KCYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U335.svd
 
@@ -26,7 +26,7 @@ GenU3.menu.pnum.GENERIC_U345KCYXQ=Generic U345KCYxQ
 GenU3.menu.pnum.GENERIC_U345KCYXQ.upload.maximum_size=262144
 GenU3.menu.pnum.GENERIC_U345KCYXQ.upload.maximum_data_size=81920
 GenU3.menu.pnum.GENERIC_U345KCYXQ.build.board=GENERIC_U345KCYXQ
-GenU3.menu.pnum.GENERIC_U345KCYXQ.build.product_line=STM32U356xx
+GenU3.menu.pnum.GENERIC_U345KCYXQ.build.product_line=STM32U345xx
 GenU3.menu.pnum.GENERIC_U345KCYXQ.build.variant=STM32U3xx/U335K(B-C)YxQ_U345KCYxQ
 GenU3.menu.pnum.GENERIC_U345KCYXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32U3xx/STM32U345.svd
 
