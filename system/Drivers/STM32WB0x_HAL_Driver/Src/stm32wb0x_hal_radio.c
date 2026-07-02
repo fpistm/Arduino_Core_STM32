@@ -22,7 +22,6 @@
 /** @addtogroup STM32WB0x_HAL_Driver
   * @{
   */
-#ifdef HAL_RADIO_MODULE_ENABLED
 
 /** @addtogroup RADIO
   * @{
@@ -1803,7 +1802,7 @@ void HAL_RADIO_TXRX_SEQ_IRQHandler(void)
 /**
   * @}
   */
-#endif /* HAL_RADIO_MODULE_ENABLED */
+
 /**
   * @}
   */

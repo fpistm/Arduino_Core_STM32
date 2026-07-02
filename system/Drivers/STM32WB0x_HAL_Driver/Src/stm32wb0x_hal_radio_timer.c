@@ -56,7 +56,7 @@
 /** @addtogroup STM32WB0x_HAL_Driver
   * @{
   */
-#ifdef HAL_RADIO_TIMER_MODULE_ENABLED
+
 /** @addtogroup RADIO_TIMER
   * @brief HAL RADIO TIMER  module driver
   * @{
@@ -1112,7 +1112,7 @@ static void _get_calibration_data(CalibrationDataTypeDef *calibrationData)
   int32_t a2;
 
   period =  LL_RADIO_TIMER_GetLSIPeriod(RADIO_CTRL);
-  while (period != (int32_t)LL_RADIO_TIMER_GetLSIPeriod(RADIO_CTRL) || period == 0)
+  while (period != LL_RADIO_TIMER_GetLSIPeriod(RADIO_CTRL) || period == 0)
   {
     period = LL_RADIO_TIMER_GetLSIPeriod(RADIO_CTRL);
   }
@@ -1126,7 +1126,7 @@ static void _get_calibration_data(CalibrationDataTypeDef *calibrationData)
   mult = 0x753 ;
   freq = LL_RADIO_TIMER_GetLSIFrequency(RADIO_CTRL);
 
-  while (freq != (int32_t)LL_RADIO_TIMER_GetLSIFrequency(RADIO_CTRL) || freq == 0)
+  while (freq != LL_RADIO_TIMER_GetLSIFrequency(RADIO_CTRL) || freq == 0)
   {
     freq = LL_RADIO_TIMER_GetLSIFrequency(RADIO_CTRL);
   }
@@ -1267,6 +1267,7 @@ static VTIMER_HandleType *_update_user_timeout(VTIMER_HandleType *rootNode, uint
 #if defined (STM32WB06) || defined (STM32WB07)
       bool share = FALSE;
       uint8_t dummy = _check_radio_activity(FALSE);
+      UNUSED(dummy);
 #endif
       delay = curr->expiryTime - RADIO_TIMER_Context.last_system_time;
       if (delay > 0)
@@ -1825,7 +1826,7 @@ void HAL_RADIO_TIMER_ERROR_IRQHandler(void)
 /**
   * @}
   */
-#endif /* HAL_RADIO_TIMER_MODULE_ENABLED */
+
 /**
   * @}
   */
