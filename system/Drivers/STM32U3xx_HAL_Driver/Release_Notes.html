@@ -40,17 +40,135 @@
 <div class="col-sm-12 col-lg-8">
 <h1 id="update-history">Update History</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section4" checked aria-hidden="true"> <label for="collapse-section4" checked aria-hidden="true"><strong>V1.3.0 / 04-February-2026</strong></label>
+<input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" checked aria-hidden="true"><strong>V1.4.0 / 03-June-2026</strong></label>
 <div>
 <h2 id="official-release">Official release</h2>
+<ul>
+<li>Official Release of STM32CubeU3 HAL/LL Drivers supporting STM32U335xx/STM32U345xx/STM32U356xx/STM32U366xx/STM32U375xx/STM32U385xx/STM32U3B5xx/STM32U3C5xx devices</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<h3 id="hal-drivers-updates"><strong>HAL Drivers</strong> updates</h3>
+<ul>
+<li><strong>HAL ADC</strong> driver
+<ul>
+<li>Fix ADC Peripheral Definitions for STM32U3-256K</li>
+</ul></li>
+<li><strong>HAL CCB</strong> driver
+<ul>
+<li>Update related to recover from seed Error sequence after RNG v4_4 SW workaround</li>
+<li>Update related to the last RNG specification HTCR–&gt; HTCR[0]</li>
+<li>Update related to a typo in the call register(CR-&gt;SR)</li>
+<li>Add CCB handle to RNG resilience recover seed error call</li>
+<li>Include ll_rng.h in ccb driver</li>
+</ul></li>
+<li><strong>HAL_CRYP</strong> driver
+<ul>
+<li>SA0076 fixed</li>
+<li>Update related to tickstart variable that should be not flagged by SAES</li>
+<li>Update related to recover from seed Error sequence after RNG v4_4 SW workaround</li>
+<li>Fix Failed Decryption with AES GCM Cipher TAG issue</li>
+<li>Update related to TK: Failed Decryption with AES GCM Cipher TAG issue</li>
+<li>McuAstyle warning fixed</li>
+<li>Coverity issue INTEGER_OVERFLOW fixed</li>
+<li>Update related to non availability of SAES in U3-256k</li>
+<li>Update related to a typo in the call register(CR-&gt;SR)</li>
+</ul></li>
+<li><strong>HAL GPIO </strong> driver
+<ul>
+<li>fix for Build errors: identifier “GPIO_AF6_SPI2” is undefined</li>
+<li>Remove unavailable GPIO_AF1_USART3 alternate function</li>
+<li>Fix MCUAstyle errors</li>
+</ul></li>
+<li><strong>HAL GTZC </strong> driver
+<ul>
+<li>fix GTZC_PERIPH_ADC12 macro for STM32U3-256K</li>
+</ul></li>
+<li><strong>HAL IRDA </strong> driver
+<ul>
+<li>Remove UART5 support</li>
+</ul></li>
+<li><strong>HAL LCD </strong> driver
+<ul>
+<li>Fix some McuStyle errors</li>
+</ul></li>
+<li><strong>HAL PWR </strong> driver
+<ul>
+<li>Update SRAM1 pages for STM32U3-256K</li>
+</ul></li>
+<li><strong>HAL RCC </strong> driver
+<ul>
+<li>Add extra MCO on PB8 for STM32U3 512K</li>
+<li>Fix incorrect macros and logic for MCO in RCC for STM32U3 512K</li>
+<li>Fix MCUAstyle errors</li>
+</ul></li>
+<li><strong>HAL RNG </strong> driver
+<ul>
+<li>Update HAL_RNGEx_GetConfig to get NoiseSource (NSCR)</li>
+<li>Update recover from seed Error sequence after the requested RNG v4_4 SW workaround</li>
+<li>Add to error state check at the beginning of seed recover sequence</li>
+<li>Update related to a typo in the call register(CR-&gt;SR)</li>
+<li>Update the comment of NistCompliance field (RNG_ConfigTypeDef)</li>
+<li>Fix MISRAC2012-Rule-13.5 warning</li>
+</ul></li>
+<li><strong>HAL SMARTCARD </strong> driver
+<ul>
+<li>Fixed for USART2 support for STM32U3-2M</li>
+</ul></li>
+<li><strong>HAL TIM </strong> driver
+<ul>
+<li>Added the external timer trigger source for TIM2 and TIM4</li>
+</ul></li>
+<li><strong>HAL UART </strong> driver
+<ul>
+<li>USART2 is undefined in the context of U3 derivatives</li>
+<li>Add UART5 and USART1 AF support for STM32U3 512K</li>
+</ul></li>
+<li><strong>HAL USART </strong> driver
+<ul>
+<li>USART2 is undefined in the context of U3 derivatives</li>
+</ul></li>
+<li><strong>HAL USB </strong> driver
+<ul>
+<li>Fix to avoid out of band possible read</li>
+<li>Fix to update RX count reg in single operation</li>
+<li>Add get frame number support</li>
+</ul></li>
+</ul>
+<h3 id="ll-drivers-updates"><strong>LL Drivers</strong> updates</h3>
+<ul>
+<li><strong>LL ADC</strong> driver
+<ul>
+<li>Fixing conflicting definition of __LL_ADC_COMMON_INSTANCE</li>
+</ul></li>
+<li><strong>LL RCC </strong> driver
+<ul>
+<li>Update RCC LL functions for RTC similar to other STM32 products</li>
+</ul></li>
+</ul>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<ul>
+<li>Not applicable</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>Not applicable</li>
+</ul>
+<p><br />
+</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section4" aria-hidden="true"> <label for="collapse-section4" checked aria-hidden="true"><strong>V1.3.0 / 04-February-2026</strong></label>
+<div>
+<h2 id="official-release-1">Official release</h2>
 <ul>
 <li>Official Release of STM32CubeU3 HAL/LL Drivers supporting STM32U375xx/STM32U385xx/STM32U3B5xx/STM32U3C5xx devices
 <ul>
 <li>First delivery of HAL HSP driver</li>
 </ul></li>
 </ul>
-<h2 id="contents">Contents</h2>
-<h3 id="hal-drivers-updates"><strong>HAL Drivers</strong> updates</h3>
+<h2 id="contents-1">Contents</h2>
+<h3 id="hal-drivers-updates-1"><strong>HAL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL CCB</strong> driver
 <ul>
@@ -193,7 +311,7 @@
 <li>Add IsMemoryMapped() API</li>
 </ul></li>
 </ul>
-<h3 id="ll-drivers-updates"><strong>LL Drivers</strong> updates</h3>
+<h3 id="ll-drivers-updates-1"><strong>LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>LL COMP</strong> driver
 <ul>
@@ -247,11 +365,11 @@
 <li>Fix Misra-C:2012 warnings Rule-12.2</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations">Known Limitations</h2>
+<h2 id="known-limitations-1">Known Limitations</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
@@ -266,8 +384,8 @@
 <ul>
 <li>Maintenance Release of STM32CubeU3 HAL/LL Drivers supporting STM32U375xx/STM32U385xx devices</li>
 </ul>
-<h2 id="contents-1">Contents</h2>
-<h3 id="hal-drivers-updates-1"><strong>HAL Drivers</strong> updates</h3>
+<h2 id="contents-2">Contents</h2>
+<h3 id="hal-drivers-updates-2"><strong>HAL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL FLASH</strong> driver
 <ul>
@@ -293,7 +411,7 @@
 <li>Comments enhancement</li>
 </ul></li>
 </ul>
-<h3 id="ll-drivers-updates-1"><strong>LL Drivers</strong> updates</h3>
+<h3 id="ll-drivers-updates-2"><strong>LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>LL PWR</strong> driver
 <ul>
@@ -304,11 +422,11 @@
 <li>Comments enhancement</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<h2 id="backward-compatibility-2">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-1">Known Limitations</h2>
+<h2 id="known-limitations-2">Known Limitations</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
@@ -323,8 +441,8 @@
 <ul>
 <li>Maintenance Release of STM32CubeU3 HAL/LL Drivers supporting STM32U375xx/STM32U385xx devices</li>
 </ul>
-<h2 id="contents-2">Contents</h2>
-<h3 id="hal-drivers-updates-2"><strong>HAL Drivers</strong> updates</h3>
+<h2 id="contents-3">Contents</h2>
+<h3 id="hal-drivers-updates-3"><strong>HAL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL CCB</strong> driver
 <ul>
@@ -380,7 +498,7 @@
 <li>Check BUSY flag instead of TC flag in indirect mode to be sure that command is well completed (FIFO flush)</li>
 </ul></li>
 </ul>
-<h3 id="ll-drivers-updates-2"><strong>LL Drivers</strong> updates</h3>
+<h3 id="ll-drivers-updates-3"><strong>LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>LL LPUART</strong> driver
 <ul>
@@ -391,11 +509,11 @@
 <li>Solve Coverity out-of-bound memory access warning in use of USART_PRESCALER_TAB array</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<h2 id="backward-compatibility-3">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-2">Known Limitations</h2>
+<h2 id="known-limitations-3">Known Limitations</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
@@ -410,7 +528,7 @@
 <ul>
 <li>First Official Release of STM32CubeU3 HAL/LL Drivers supporting STM32U375xx/STM32U385xx devices</li>
 </ul>
-<h2 id="contents-3">Contents</h2>
+<h2 id="contents-4">Contents</h2>
 <ul>
 <li>STM32CubeU3 HAL/LL Drivers supporting STM32U375xx/STM32U385xx devices :
 <ul>
@@ -423,11 +541,11 @@
 <li>STM32U375xx/STM32U385xx devices</li>
 <li>NUCLEO-U385RG-Q (Rev.E) board</li>
 </ul>
-<h2 id="backward-compatibility-3">Backward compatibility</h2>
+<h2 id="backward-compatibility-4">Backward compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>
-<h2 id="known-limitations-3">Known Limitations</h2>
+<h2 id="known-limitations-4">Known Limitations</h2>
 <ul>
 <li>None</li>
 </ul>
