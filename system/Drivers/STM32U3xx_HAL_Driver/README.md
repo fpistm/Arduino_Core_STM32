@@ -1,6 +1,6 @@
 # STM32CubeU3 HAL Driver MCU Component
 
-![tag](https://img.shields.io/badge/tag-v1.3.0-brightgreen.svg)
+![tag](https://img.shields.io/badge/tag-v1.4.0-brightgreen.svg)
 
 ## Overview
 
