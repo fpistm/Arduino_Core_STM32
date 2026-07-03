@@ -3,6 +3,7 @@
 
 #if defined(I3C1_BASE) || defined(I3C2_BASE)
 
+#if !defined(USE_HALV2_DRIVER)
 // ============================================================================
 // I2C helpers on mixed I3C bus
 // ============================================================================
@@ -398,4 +399,5 @@ int I3CBus::readRegBuffer(uint8_t addr,
          : readRegBuffer(addr, reg, pData, len, timeout);
 }
 
-#endif
+#endif /* !USE_HALV2_DRIVER */
+#endif /* I3C1_BASE || I3C2_BASE */

@@ -14,7 +14,7 @@
 #include <SPI.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
-#if defined(I3C1_BASE) || defined(I3C2_BASE)
+#if (defined(I3C1_BASE) || defined(I3C2_BASE)) && defined(HAL_I3C_MODULE_ENABLED)
   #include <I3C.h>
 #endif
 
@@ -135,7 +135,7 @@ void setup() {
   Wire.requestFrom(2, 1);
   Wire.end();
 
-#if defined(I3C1_BASE) || defined(I3C2_BASE)
+#if (defined(I3C1_BASE) || defined(I3C2_BASE)) && defined(HAL_I3C_MODULE_ENABLED)
   // I3C
   I3C.setBusType(I3CBusType::Pure);
   I3C.setMixedBusOpenDrainFrequency(1000000U);
