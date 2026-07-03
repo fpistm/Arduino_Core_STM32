@@ -37,7 +37,7 @@ int I3CBus::i2cWrite(uint8_t staticAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = staticAddr;
@@ -86,7 +86,7 @@ int I3CBus::i2cRead(uint8_t staticAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = staticAddr;
@@ -141,7 +141,7 @@ int I3CBus::i2cWriteRead(uint8_t staticAddr,
   } else {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     // 1) write phase with RESTART
@@ -225,7 +225,7 @@ int I3CBus::i2cWriteRegBuffer(uint8_t staticAddr,
       (len <= 31U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     uint8_t            data[32] = {0};
     HAL_StatusTypeDef  st;
 

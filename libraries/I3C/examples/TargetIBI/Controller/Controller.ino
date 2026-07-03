@@ -1,6 +1,5 @@
 #include "I3C.h"
 
-#define I3C_BUS I3C1Bus
 static I3CDiscoveredDevice devices[8];
 static volatile bool callbackSeen = false;
 
@@ -24,13 +23,13 @@ void setup() {
 
   Serial.println("=== Controller IBI Example ===");
 
-  if (!I3C_BUS.begin(I3C_SDA, I3C_SCL, 1000000U)) {
+  if (!I3C.begin(I3C_SDA, I3C_SCL, 1000000U)) {
     Serial.println("begin() failed");
     while (1) {}
   }
 
   size_t found = 0;
-  int rc = I3C_BUS.discover(devices, 8, &found);
+  int rc = I3C.discover(devices, 8, &found);
 
   if (rc != 0 || found == 0) {
     Serial.println("No target found");
@@ -39,13 +38,13 @@ void setup() {
 
   uint8_t da = devices[0].dynAddr;
 
-  I3C_BUS.onIbi(myIbiCallback, (void *)&callbackSeen);
+  I3C.onIbi(myIbiCallback, (void *)&callbackSeen);
 
-  rc = I3C_BUS.enableIbi(1, da, false, false, 1000);
+  rc = I3C.enableIbi(1, da, false, false, 1000);
   Serial.print("enableIbi rc = ");
   Serial.println(rc);
 
-  rc = I3C_BUS.enableControllerEvents();
+  rc = I3C.enableControllerEvents();
   Serial.print("enableControllerEvents rc = ");
   Serial.println(rc);
 
@@ -53,15 +52,15 @@ void setup() {
 }
 
 void loop() {
-  if (I3C_BUS.hasIbi()) {
+  if (I3C.hasIbi()) {
     I3CControllerIbiInfo ibi{};
-    if (I3C_BUS.peekIbi(ibi)) {
+    if (I3C.peekIbi(ibi)) {
       Serial.print("peekIbi source DA = 0x");
       printHex2(ibi.sourceDa);
       Serial.println();
     }
 
-    if (I3C_BUS.readIbi(ibi)) {
+    if (I3C.readIbi(ibi)) {
       Serial.print("readIbi source DA = 0x");
       printHex2(ibi.sourceDa);
       Serial.println();

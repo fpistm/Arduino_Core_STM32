@@ -21,14 +21,14 @@ void setup() {
 
   Serial.println("=== I3C ScanBus ===");
 
-  if (!I3C1Bus.begin(I3C_SDA, I3C_SCL, 1000000U)) {
+  if (!I3C.begin(I3C_SDA, I3C_SCL, 1000000U)) {
     Serial.println("begin() failed");
     while (1) {}
   }
 
   size_t found = 0;
 
-  int rc = I3C1Bus.discover(devices, 8, &found);
+  int rc = I3C.discover(devices, 8, &found);
 
   Serial.print("discover rc = ");
   Serial.println(rc);

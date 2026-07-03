@@ -119,7 +119,7 @@ struct I3CControllerConfig {
 
 class I3CBus {
   public:
-    explicit I3CBus(I3C_TypeDef *inst = I3C1) : _instance(inst) {}
+    explicit I3CBus() : _instance(nullptr) {}
 
     // ------------------------------------------------------------------------
     // Controller initialization and bus configuration
@@ -146,7 +146,7 @@ class I3CBus {
                uint32_t mixedOdHz,
                const I3CControllerConfig &ctrlCfg);
 
-    int setClock(uint32_t hz);
+    bool setClock(uint32_t hz);
 
     void setBusType(I3CBusType type);
     I3CBusType getBusType() const;
@@ -157,6 +157,8 @@ class I3CBus {
     I3CRole getRole() const;
     bool isController() const;
     bool isTarget() const;
+
+    void end();
 
     // ------------------------------------------------------------------------
     // Default I3C controller transfers
@@ -397,9 +399,9 @@ class I3CBus {
     int disableTargetEvents(uint32_t interruptMask);
 
     bool setEvents(uint8_t dynAddr,
-                  bool enable,
-                  uint8_t events,
-                  uint32_t timeout = 1000U);
+                   bool enable,
+                   uint8_t events,
+                   uint32_t timeout = 1000U);
 
     bool hasTargetEvent() const;
     bool readTargetEvent(uint32_t &eventId);
@@ -440,6 +442,11 @@ class I3CBus {
     }
 
   private:
+    // ------------------------------------------------------------------------
+    // Instance
+    // ------------------------------------------------------------------------
+    bool prepareInstanceFromPins();
+
     enum class I3CAddrState : uint8_t {
       Free,
       Reserved,
@@ -496,29 +503,47 @@ class I3CBus {
     // Low-level CCC helpers
     // ------------------------------------------------------------------------
     bool cccBroadcastWrite(uint8_t cccId,
-                          const uint8_t *data,
-                          uint16_t length,
-                          bool withDefByte,
-                          uint32_t timeout = 1000U);
+                           const uint8_t *data,
+                           uint16_t length,
+                           bool withDefByte,
+                           uint32_t timeout = 1000U);
 
     bool cccDirectWrite(uint8_t targetAddr,
-                       uint8_t cccId,
-                       const uint8_t *data,
-                       uint16_t length,
-                       bool withDefByte,
-                       uint32_t timeout = 1000U);
+                        uint8_t cccId,
+                        const uint8_t *data,
+                        uint16_t length,
+                        bool withDefByte,
+                        uint32_t timeout = 1000U);
 
     bool cccDirectRead(uint8_t targetAddr,
-                      uint8_t cccId,
-                      uint8_t *rxData,
-                      uint16_t rxLength,
-                      uint32_t timeout = 1000);
+                       uint8_t cccId,
+                       uint8_t *rxData,
+                       uint16_t rxLength,
+                       uint32_t timeout = 1000);
 
     // ------------------------------------------------------------------------
     // Internal utility helpers
     // ------------------------------------------------------------------------
     static uint32_t bigToLittle32(uint32_t x);
     static uint64_t extractPid48FromEntdaaPayload(uint64_t payload);
+
+    // ------------------------------------------------------------------------
+    // Clock helpers
+    // ------------------------------------------------------------------------
+    uint32_t getPeripheralClockFreq() const;
+    bool buildControllerTiming(uint32_t freq, LL_I3C_CtrlBusConfTypeDef &outCtrl) const;
+    bool buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const;
+
+    // ------------------------------------------------------------------------
+    // Irq helpers
+    // ------------------------------------------------------------------------
+    void enableIRQs();
+    void disableIRQs();
+    void registerInstanceOwner();
+    void unregisterInstanceOwner();
+
+    void deinitClocks();
+    void deinitGPIO();
 
     // ------------------------------------------------------------------------
     // Internal state
@@ -541,6 +566,11 @@ class I3CBus {
     I3CBusType _busType = I3CBusType::Pure;
     uint32_t _mixedBusOdFreq = 1000000U;
 
+    bool _irqEnabled = false;
+
+    static constexpr uint32_t I3C_CTRL_WORDS_MAX = 2U;
+    static constexpr uint32_t I3C_CCC_TX_SCRATCH_MAX = 16U;
+
     PinName _sdaPin = digitalPinToPinName(I3C_SDA);
     PinName _sclPin = digitalPinToPinName(I3C_SCL);
 };
@@ -549,12 +579,6 @@ class I3CBus {
 // Global instances
 // ============================================================================
 
-#if defined(I3C1)
-  extern I3CBus I3C1Bus;
-#endif
-
-#if defined(I3C2)
-  extern I3CBus I3C2Bus;
-#endif
+extern I3CBus I3C;
 
 #endif

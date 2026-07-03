@@ -6,14 +6,15 @@
 // ============================================================================
 // Global bus instances
 // ============================================================================
-
 #if defined(I3C1)
-  I3CBus I3C1Bus(I3C1);
+  static I3CBus *g_i3c1Owner = nullptr;
 #endif
 
 #if defined(I3C2)
-  I3CBus I3C2Bus(I3C2);
+  static I3CBus *g_i3c2Owner = nullptr;
 #endif
+
+I3CBus I3C;
 
 // ============================================================================
 // File-local constants and helpers
@@ -85,17 +86,38 @@ extern "C" void HAL_I3C_NotifyCallback(I3C_HandleTypeDef *hi3c, uint32_t eventId
 {
   if ((hi3c != nullptr) && (hi3c->Instance != nullptr)) {
 #if defined(I3C1)
-    if (hi3c->Instance == I3C1) {
-      I3C1Bus.handleHalNotify(eventId);
+    if ((hi3c->Instance == I3C1) && (g_i3c1Owner != nullptr)) {
+      g_i3c1Owner->handleHalNotify(eventId);
     }
 #endif
 
 #if defined(I3C2)
-    if (hi3c->Instance == I3C2) {
-      I3C2Bus.handleHalNotify(eventId);
+    if ((hi3c->Instance == I3C2) && (g_i3c2Owner != nullptr)) {
+      g_i3c2Owner->handleHalNotify(eventId);
     }
 #endif
   }
+}
+
+// ------------------------------------------------------------------------
+// instance
+// ------------------------------------------------------------------------
+bool I3CBus::prepareInstanceFromPins()
+{
+  bool result = false;
+
+  if ((_sdaPin != NC) && (_sclPin != NC)) {
+    void *merged    = pinmap_merge_peripheral(
+                        pinmap_peripheral(_sdaPin, PinMap_I3C_SDA),
+                        pinmap_peripheral(_sclPin, PinMap_I3C_SCL));
+
+    if (merged != (void *)NP) {
+      _instance = reinterpret_cast<I3C_TypeDef *>(merged);
+      result = true;
+    }
+  }
+
+  return result;
 }
 
 // ============================================================================
@@ -106,16 +128,10 @@ bool I3CBus::initGPIO()
 {
   bool result = false;
 
-  if ((_sdaPin != NC) && (_sclPin != NC)) {
-    void *periphSDA = pinmap_peripheral(_sdaPin, PinMap_I3C_SDA);
-    void *periphSCL = pinmap_peripheral(_sclPin, PinMap_I3C_SCL);
-    void *merged    = pinmap_merge_peripheral(periphSDA, periphSCL);
-
-    if ((merged != (void *)NP) && (merged == _instance)) {
-      pinmap_pinout(_sdaPin, PinMap_I3C_SDA);
-      pinmap_pinout(_sclPin, PinMap_I3C_SCL);
-      result = true;
-    }
+  if ((_sdaPin != NC) && (_sclPin != NC) && (_instance != nullptr)) {
+    pinmap_pinout(_sdaPin, PinMap_I3C_SDA);
+    pinmap_pinout(_sclPin, PinMap_I3C_SCL);
+    result = true;
   }
 
   return result;
@@ -124,54 +140,16 @@ bool I3CBus::initGPIO()
 bool I3CBus::initClocks()
 {
   bool result = false;
-  HAL_StatusTypeDef hal_status = HAL_OK;
-
-  if (_instance == I3C1) {
 #if defined(I3C1)
-    RCC_PeriphCLKInitTypeDef PeriphClkInit {};
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I3C1;
-#if defined(RCC_I3C1CLKSOURCE_PCLK1)
-    PeriphClkInit.I3c1ClockSelection = RCC_I3C1CLKSOURCE_PCLK1;
-#else
-#error "I3C1: no known PCLK source"
-#endif
-
-    hal_status = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-    if (hal_status == HAL_OK) {
-      __HAL_RCC_I3C1_CLK_ENABLE();
-
-      HAL_NVIC_SetPriority(I3C1_EV_IRQn, 0, 0);
-      HAL_NVIC_EnableIRQ(I3C1_EV_IRQn);
-      HAL_NVIC_SetPriority(I3C1_ER_IRQn, 0, 0);
-      HAL_NVIC_EnableIRQ(I3C1_ER_IRQn);
-
-      result = true;
-    }
-#endif
+  if (_instance == I3C1) {
+    __HAL_RCC_I3C1_CLK_ENABLE();
+    result = true;
   }
-#if defined(I3C2)
-  else if (_instance == I3C2) {
-    RCC_PeriphCLKInitTypeDef PeriphClkInit {};
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I3C2;
-#if defined(RCC_I3C2CLKSOURCE_PCLK2)
-    PeriphClkInit.I3c2ClockSelection = RCC_I3C2CLKSOURCE_PCLK2;
-#elif defined(RCC_I3C2CLKSOURCE_PCLK3)
-    PeriphClkInit.I3c2ClockSelection = RCC_I3C2CLKSOURCE_PCLK3;
-#else
-#error "I3C2: no known PCLK source"
 #endif
-
-    hal_status = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
-    if (hal_status == HAL_OK) {
-      __HAL_RCC_I3C2_CLK_ENABLE();
-
-      HAL_NVIC_SetPriority(I3C2_EV_IRQn, 0, 0);
-      HAL_NVIC_EnableIRQ(I3C2_EV_IRQn);
-      HAL_NVIC_SetPriority(I3C2_ER_IRQn, 0, 0);
-      HAL_NVIC_EnableIRQ(I3C2_ER_IRQn);
-
-      result = true;
-    }
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    __HAL_RCC_I3C2_CLK_ENABLE();
+    result = true;
   }
 #endif
 
@@ -218,80 +196,81 @@ bool I3CBus::begin(uint32_t freq,
                    uint32_t mixedOdHz,
                    const I3CControllerConfig &ctrlCfg)
 {
-  bool result = false;
+  bool result = true;
 
-  if (_initialized) {
-    result = true;
-  } else {
-    bool local_ok = true;
+  if (!_initialized) {
+    _hi3c.Instance = nullptr;
+    _instance = nullptr;
 
     _busType = type;
     _mixedBusOdFreq = mixedOdHz;
     _ctrlCfg = ctrlCfg;
 
-    if (!initClocks()) {
-      local_ok = false;
-    }
-
-    if (local_ok && !initGPIO()) {
-      local_ok = false;
-    }
-
-    if (local_ok) {
+    if (!prepareInstanceFromPins() || !initClocks() || !initGPIO()) {
+      result = false;
+    } else {
       std::memset(&_hi3c, 0, sizeof(_hi3c));
       _hi3c.Instance = _instance;
       _hi3c.Mode     = HAL_I3C_MODE_CONTROLLER;
 
-      if (HAL_I3C_Init(&_hi3c) != HAL_OK) {
-        local_ok = false;
-      }
-    }
+      LL_I3C_CtrlBusConfTypeDef outCtrl {};
 
-    if (local_ok) {
-      I3C_FifoConfTypeDef fifoCfg {};
-      fifoCfg.RxFifoThreshold = _ctrlCfg.rxFifoThreshold;
-      fifoCfg.TxFifoThreshold = _ctrlCfg.txFifoThreshold;
-      fifoCfg.ControlFifo     = _ctrlCfg.controlFifo;
-      fifoCfg.StatusFifo      = _ctrlCfg.statusFifo;
-
-      if (HAL_I3C_SetConfigFifo(&_hi3c, &fifoCfg) != HAL_OK) {
-        local_ok = false;
-      }
-    }
-
-    if (local_ok) {
-      I3C_CtrlConfTypeDef ctrlCfgHal {};
-      ctrlCfgHal.DynamicAddr    = _ctrlCfg.dynamicAddr;
-      ctrlCfgHal.StallTime      = _ctrlCfg.stallTime;
-      ctrlCfgHal.HotJoinAllowed = _ctrlCfg.hotJoinAllowed ? ENABLE : DISABLE;
-      ctrlCfgHal.ACKStallState  = _ctrlCfg.ackStall ? ENABLE : DISABLE;
-      ctrlCfgHal.CCCStallState  = _ctrlCfg.cccStall ? ENABLE : DISABLE;
-      ctrlCfgHal.TxStallState   = _ctrlCfg.txStall ? ENABLE : DISABLE;
-      ctrlCfgHal.RxStallState   = _ctrlCfg.rxStall ? ENABLE : DISABLE;
-      ctrlCfgHal.HighKeeperSDA  = _ctrlCfg.highKeeperSDA ? ENABLE : DISABLE;
-
-      if (HAL_I3C_Ctrl_Config(&_hi3c, &ctrlCfgHal) != HAL_OK) {
-        local_ok = false;
-      }
-    }
-
-    if (local_ok) {
-      _initialized = true;
-
-      if (freq == 0U) {
-        freq = 1000000U;
+      if (!buildControllerTiming(freq, outCtrl)) {
+        result = false;
+      } else {
+        _hi3c.Init.CtrlBusCharacteristic = outCtrl;
       }
 
-      if (setClock(freq) != 0) {
-        local_ok = false;
+      if (result) {
+        if (HAL_I3C_Init(&_hi3c) != HAL_OK) {
+          result = false;
+        } else {
+#if defined(I3C_END_OF_FRAME_CPLT_ENABLE)
+          if (HAL_I3C_SetConfigEndOfFrame(&_hi3c, I3C_END_OF_FRAME_CPLT_ENABLE) != HAL_OK) {
+            result = false;
+          }
+#endif
+          if (result) {
+            I3C_FifoConfTypeDef fifoCfg {};
+            fifoCfg.RxFifoThreshold = _ctrlCfg.rxFifoThreshold;
+            fifoCfg.TxFifoThreshold = _ctrlCfg.txFifoThreshold;
+            fifoCfg.ControlFifo     = _ctrlCfg.controlFifo;
+            fifoCfg.StatusFifo      = _ctrlCfg.statusFifo;
+
+            if (HAL_I3C_SetConfigFifo(&_hi3c, &fifoCfg) != HAL_OK) {
+              result = false;
+            } else {
+              I3C_CtrlConfTypeDef ctrlCfgHal {};
+              ctrlCfgHal.DynamicAddr    = _ctrlCfg.dynamicAddr;
+              ctrlCfgHal.StallTime      = _ctrlCfg.stallTime;
+              ctrlCfgHal.HotJoinAllowed = _ctrlCfg.hotJoinAllowed ? ENABLE : DISABLE;
+              ctrlCfgHal.ACKStallState  = _ctrlCfg.ackStall ? ENABLE : DISABLE;
+              ctrlCfgHal.CCCStallState  = _ctrlCfg.cccStall ? ENABLE : DISABLE;
+              ctrlCfgHal.TxStallState   = _ctrlCfg.txStall ? ENABLE : DISABLE;
+              ctrlCfgHal.RxStallState   = _ctrlCfg.rxStall ? ENABLE : DISABLE;
+              ctrlCfgHal.HighKeeperSDA  = _ctrlCfg.highKeeperSDA ? ENABLE : DISABLE;
+
+              if (HAL_I3C_Ctrl_Config(&_hi3c, &ctrlCfgHal) != HAL_OK) {
+                result = false;
+              } else {
+                registerInstanceOwner();
+                _initialized = true;
+                _role = I3CRole::Controller;
+              }
+            }
+          }
+        }
+      }
+
+      if (!result) {
+        if (_hi3c.Instance != nullptr) {
+          (void)HAL_I3C_DeInit(&_hi3c);
+        }
+        unregisterInstanceOwner();
+        _initialized = false;
+        _role = I3CRole::None;
       }
     }
-
-    if (local_ok) {
-      _role = I3CRole::Controller;
-    }
-
-    result = local_ok;
   }
 
   return result;
@@ -317,60 +296,21 @@ uint32_t I3CBus::getMixedBusOpenDrainFrequency() const
   return _mixedBusOdFreq;
 }
 
-int I3CBus::setClock(uint32_t i3cFreq)
+bool I3CBus::setClock(uint32_t i3cFreq)
 {
-  int result = 0;
+  bool result = false;
 
 #if !defined(HAL_I3C_MODULE_ENABLED)
-
   (void)i3cFreq;
-  result = 0;
-
 #else
-
-  if (!_initialized) {
-    result = -1;
-  } else if (i3cFreq == 0U) {
-    result = 0;
-  } else {
-    I3C_CtrlTimingTypeDef     inTiming {};
+  if (_initialized && (i3cFreq != 0U)) {
     LL_I3C_CtrlBusConfTypeDef outCtrl {};
-    uint32_t                  srcFreq = 0U;
 
-    if (_instance == I3C1) {
-      srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
-    }
-#if defined(I3C2)
-    else if (_instance == I3C2) {
-      srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
-    }
-#endif
-
-    if (srcFreq == 0U) {
-      result = -1;
-    } else {
-      inTiming.clockSrcFreq = srcFreq;
-      inTiming.i3cPPFreq    = i3cFreq;
-      inTiming.dutyCycle    = 50U;
-
-      if (_busType == I3CBusType::Pure) {
-        inTiming.busType   = I3C_PURE_I3C_BUS;
-        inTiming.i2cODFreq = 0U;
-      } else {
-        inTiming.busType   = I3C_MIXED_BUS;
-        inTiming.i2cODFreq = _mixedBusOdFreq;
-      }
-
-      if (I3C_CtrlTimingComputation(&inTiming, &outCtrl) != SUCCESS) {
-        result = -1;
-      } else if (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) != HAL_OK) {
-        result = -1;
-      } else {
-        result = 0;
-      }
+    if (buildControllerTiming(i3cFreq, outCtrl) &&
+        (HAL_I3C_Ctrl_BusCharacteristicConfig(&_hi3c, &outCtrl) == HAL_OK)) {
+      result = true;
     }
   }
-
 #endif
 
   return result;
@@ -391,6 +331,60 @@ bool I3CBus::isTarget() const
   return _role == I3CRole::Target;
 }
 
+void I3CBus::end()
+{
+  if (_initialized) {
+    disableIRQs();
+    unregisterInstanceOwner();
+
+    (void)HAL_I3C_DeInit(&_hi3c);
+
+    deinitGPIO();
+    deinitClocks();
+
+    _initialized = false;
+    _role = I3CRole::None;
+
+    _ibiPending = false;
+    _lastIbi = {};
+    _targetEventPending = false;
+    _lastTargetEventId = 0U;
+
+    std::memset(&_hi3c, 0, sizeof(_hi3c));
+    _instance = nullptr;
+  }
+}
+
+void I3CBus::deinitClocks()
+{
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    __HAL_RCC_I3C1_FORCE_RESET();
+    __HAL_RCC_I3C1_RELEASE_RESET();
+    __HAL_RCC_I3C1_CLK_DISABLE();
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    __HAL_RCC_I3C2_FORCE_RESET();
+    __HAL_RCC_I3C2_RELEASE_RESET();
+    __HAL_RCC_I3C2_CLK_DISABLE();
+  }
+#endif
+}
+
+void I3CBus::deinitGPIO()
+{
+  if (_sdaPin != NC) {
+    pin_function(_sdaPin, STM_PIN_DATA(STM_MODE_ANALOG, GPIO_NOPULL, 0));
+  }
+
+  if (_sclPin != NC) {
+    pin_function(_sclPin, STM_PIN_DATA(STM_MODE_ANALOG, GPIO_NOPULL, 0));
+  }
+}
+
 // ============================================================================
 // Default I3C controller transfers
 // ============================================================================
@@ -409,7 +403,7 @@ int I3CBus::write(uint8_t dynAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = dynAddr;
@@ -457,7 +451,7 @@ int I3CBus::read(uint8_t dynAddr,
       (len != 0U)) {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     HAL_StatusTypeDef  st;
 
     priv.TargetAddr    = dynAddr;
@@ -504,7 +498,7 @@ int I3CBus::writeRegBuffer(uint8_t dynAddr,
   } else {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     uint8_t            data[32] = {0};
     HAL_StatusTypeDef  st;
 
@@ -556,7 +550,7 @@ int I3CBus::readRegBuffer(uint8_t dynAddr,
   } else {
     I3C_XferTypeDef    context {};
     I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[0x0F];
+    uint32_t           controlBuffer[1] = {};
     uint8_t            regBuf[1] = { reg };
     uint8_t            data[32]  = {0};
     HAL_StatusTypeDef  st;
@@ -651,24 +645,18 @@ int I3CBus::readReg(uint8_t dynAddr,
 bool I3CBus::isI2CDeviceReady(uint8_t addr, uint32_t trials, uint32_t timeout)
 {
   bool result = false;
-
   if (_initialized) {
-    HAL_StatusTypeDef st = HAL_I3C_Ctrl_IsDeviceI2C_Ready(&_hi3c, addr, trials, timeout);
-    result = (st == HAL_OK);
+    result = (HAL_I3C_Ctrl_IsDeviceI2C_Ready(&_hi3c, addr, trials, timeout) == HAL_OK);
   }
-
   return result;
 }
 
 bool I3CBus::isI3CDeviceReady(uint8_t dynAddr, uint32_t trials, uint32_t timeout)
 {
   bool result = false;
-
   if (_initialized) {
-    HAL_StatusTypeDef st = HAL_I3C_Ctrl_IsDeviceI3C_Ready(&_hi3c, dynAddr, trials, timeout);
-    result = (st == HAL_OK);
+    result = (HAL_I3C_Ctrl_IsDeviceI3C_Ready(&_hi3c, dynAddr, trials, timeout) == HAL_OK);
   }
-
   return result;
 }
 
@@ -677,46 +665,46 @@ bool I3CBus::isI3CDeviceReady(uint8_t dynAddr, uint32_t trials, uint32_t timeout
 // ============================================================================
 
 bool I3CBus::cccBroadcastWrite(uint8_t cccId,
-                              const uint8_t *data,
-                              uint16_t length,
-                              bool withDefByte,
-                              uint32_t timeout)
+                               const uint8_t *data,
+                               uint16_t length,
+                               bool withDefByte,
+                               uint32_t timeout)
 {
   bool result = false;
 
   if (_initialized) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[1] = {};
+    uint8_t         txBuffer[I3C_CCC_TX_SCRATCH_MAX] = {};
     I3C_XferTypeDef context {};
-    uint8_t         txBuffer[0x0F];
 
     I3C_CCCTypeDef ccc[] = {
       { 0x00U, cccId, { const_cast<uint8_t *>(data), length }, HAL_I3C_DIRECTION_WRITE },
     };
 
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
-    context.TxBuf.pBuffer   = txBuffer;
-    context.TxBuf.Size      = 4U;
+    if (!(length > sizeof(txBuffer))) {
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 1U;
+      context.TxBuf.pBuffer   = txBuffer;
+      context.TxBuf.Size      = length;
 
-    uint32_t option = withDefByte ? I3C_BROADCAST_WITH_DEFBYTE_RESTART
-                      : I3C_BROADCAST_WITHOUT_DEFBYTE_RESTART;
+      uint32_t option = withDefByte ? I3C_BROADCAST_WITH_DEFBYTE_RESTART
+                        : I3C_BROADCAST_WITHOUT_DEFBYTE_RESTART;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             option);
+      result = (HAL_I3C_AddDescToFrame(
+                  &_hi3c,
+                  ccc,
+                  nullptr,
+                  &context,
+                  COUNTOF(ccc),
+                  option) == HAL_OK);
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
-      if (st == HAL_OK) {
-        result = true;
-      } else {
-        uint32_t err = HAL_I3C_GetError(&_hi3c);
-        if ((err & HAL_I3C_ERROR_CE2) != 0U) {
-          result = true;
+      if (result) {
+        result = (HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout) == HAL_OK);
+        if (!result) {
+          uint32_t err = HAL_I3C_GetError(&_hi3c);
+          if ((err & HAL_I3C_ERROR_CE2) != 0U) {
+            result = true;
+          }
         }
       }
     }
@@ -726,18 +714,18 @@ bool I3CBus::cccBroadcastWrite(uint8_t cccId,
 }
 
 bool I3CBus::cccDirectWrite(uint8_t targetAddr,
-                           uint8_t cccId,
-                           const uint8_t *data,
-                           uint16_t length,
-                           bool withDefByte,
-                           uint32_t timeout)
+                            uint8_t cccId,
+                            const uint8_t *data,
+                            uint16_t length,
+                            bool withDefByte,
+                            uint32_t timeout)
 {
   bool result = false;
 
   if (_initialized) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[2] = {};
+    uint8_t         txBuffer[I3C_CCC_TX_SCRATCH_MAX] = {};
     I3C_XferTypeDef context {};
-    uint8_t         txBuffer[0x0F];
 
     I3C_CCCTypeDef ccc[] = {
       {
@@ -748,26 +736,26 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
       },
     };
 
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
-    context.TxBuf.pBuffer   = txBuffer;
-    context.TxBuf.Size      = 4U;
+    if (!(length > sizeof(txBuffer))) {
 
-    uint32_t option = withDefByte ? I3C_DIRECT_WITH_DEFBYTE_RESTART
-                      : I3C_DIRECT_WITHOUT_DEFBYTE_RESTART;
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 2U;
+      context.TxBuf.pBuffer   = txBuffer;
+      context.TxBuf.Size      = length;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             option);
+      uint32_t option = withDefByte ? I3C_DIRECT_WITH_DEFBYTE_RESTART
+                        : I3C_DIRECT_WITHOUT_DEFBYTE_RESTART;
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout);
-      if (st == HAL_OK) {
-        result = true;
+      result = (HAL_I3C_AddDescToFrame(
+                  &_hi3c,
+                  ccc,
+                  nullptr,
+                  &context,
+                  COUNTOF(ccc),
+                  option) == HAL_OK);
+
+      if (result) {
+        result = (HAL_I3C_Ctrl_TransmitCCC(&_hi3c, &context, timeout) == HAL_OK);
       }
     }
   }
@@ -776,15 +764,15 @@ bool I3CBus::cccDirectWrite(uint8_t targetAddr,
 }
 
 bool I3CBus::cccDirectRead(uint8_t targetAddr,
-                          uint8_t cccId,
-                          uint8_t *rxData,
-                          uint16_t rxLength,
-                          uint32_t timeout)
+                           uint8_t cccId,
+                           uint8_t *rxData,
+                           uint16_t rxLength,
+                           uint32_t timeout)
 {
   bool result = false;
 
   if (_initialized && (rxData != nullptr) && (rxLength != 0U)) {
-    uint32_t        controlBuffer[0xFF];
+    uint32_t        controlBuffer[2] = {};
     I3C_XferTypeDef context {};
 
     I3C_CCCTypeDef ccc[] = {
@@ -797,23 +785,20 @@ bool I3CBus::cccDirectRead(uint8_t targetAddr,
     };
 
     context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = COUNTOF(controlBuffer);
+    context.CtrlBuf.Size    = 2U;
     context.RxBuf.pBuffer   = rxData;
     context.RxBuf.Size      = rxLength;
 
-    HAL_StatusTypeDef st = HAL_I3C_AddDescToFrame(
-                             &_hi3c,
-                             ccc,
-                             nullptr,
-                             &context,
-                             COUNTOF(ccc),
-                             I3C_DIRECT_WITHOUT_DEFBYTE_RESTART);
+    result = (HAL_I3C_AddDescToFrame(
+                &_hi3c,
+                ccc,
+                nullptr,
+                &context,
+                COUNTOF(ccc),
+                I3C_DIRECT_WITHOUT_DEFBYTE_RESTART) == HAL_OK);
 
-    if (st == HAL_OK) {
-      st = HAL_I3C_Ctrl_ReceiveCCC(&_hi3c, &context, timeout);
-      if (st == HAL_OK) {
-        result = true;
-      }
+    if (result) {
+      result = (HAL_I3C_Ctrl_ReceiveCCC(&_hi3c, &context, timeout) == HAL_OK);
     }
   }
 
@@ -938,9 +923,9 @@ bool I3CBus::rstactPeripheralOnly()
 }
 
 bool I3CBus::setEvents(uint8_t dynAddr,
-                      bool enable,
-                      uint8_t events,
-                      uint32_t timeout)
+                       bool enable,
+                       uint8_t events,
+                       uint32_t timeout)
 {
   bool result = false;
 
@@ -976,20 +961,8 @@ void I3CBus::initAddressMap()
 
 bool I3CBus::isValidUsableDynamicAddr(uint8_t addr) const
 {
-  bool result = true;
-
-  if ((addr == 0U) || (addr >= 0x7EU)) {
-    result = false;
-  }
-
-  if (result && ((addr & 0x01U) != 0U)) {
-    result = false;
-  }
-
-  return result;
+  return (((addr != 0U) && (addr < 0x7EU)) && (addr & 0x01U) == 0U);
 }
-
-
 
 bool I3CBus::isAddrFree(uint8_t addr) const
 {
@@ -1002,8 +975,6 @@ void I3CBus::markAddrUsed(uint8_t addr)
     _addrMap[addr] = I3CAddrState::I3CDevice;
   }
 }
-
-
 
 void I3CBus::markAddrFree(uint8_t addr)
 {
@@ -1071,6 +1042,7 @@ int I3CBus::assignDynamicAddresses(I3CDiscoveredDevice *devices,
             result = -3;
             stop   = true;
           } else {
+            markAddrUsed(da);
             devices[count].dynAddr   = da;
             count++;
           }
@@ -1440,98 +1412,52 @@ bool I3CBus::beginTarget(const I3CTargetConfig &cfg)
       result = (configureTarget(cfg) == 0);
     }
   } else {
-    bool local_ok = true;
+    _hi3c.Instance = nullptr;
+    _instance = nullptr;
 
-    if (!initClocks()) {
-      local_ok = false;
-    }
-
-    if (local_ok && !initGPIO()) {
-      local_ok = false;
-    }
-
-    if (local_ok) {
+    if (prepareInstanceFromPins() && initClocks() && initGPIO()) {
       std::memset(&_hi3c, 0, sizeof(_hi3c));
       _hi3c.Instance = _instance;
       _hi3c.Mode     = HAL_I3C_MODE_TARGET;
 
-      I3C_TgtTimingTypeDef     inTiming {};
       LL_I3C_TgtBusConfTypeDef outTgt {};
-      uint32_t                 srcFreq = 0U;
 
-      if (_instance == I3C1) {
-        srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
-      }
-#if defined(I3C2)
-      else if (_instance == I3C2) {
-        srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
-      }
-#endif
+      if (buildTargetTiming(outTgt)) {
+        _hi3c.Init.TgtBusCharacteristic = outTgt;
+        if (HAL_I3C_Init(&_hi3c) == HAL_OK) {
+          I3C_FifoConfTypeDef fifoCfg {};
+          fifoCfg.RxFifoThreshold = HAL_I3C_RXFIFO_THRESHOLD_1_4;
+          fifoCfg.TxFifoThreshold = HAL_I3C_TXFIFO_THRESHOLD_1_4;
+          fifoCfg.ControlFifo     = HAL_I3C_CONTROLFIFO_DISABLE;
+          fifoCfg.StatusFifo      = HAL_I3C_STATUSFIFO_DISABLE;
 
-      if (srcFreq == 0U) {
-        local_ok = false;
-      } else {
-        inTiming.clockSrcFreq = srcFreq;
-
-        if (I3C_TgtTimingComputation(&inTiming, &outTgt) != SUCCESS) {
-          local_ok = false;
-        } else {
-          _hi3c.Init.TgtBusCharacteristic = outTgt;
+          if (HAL_I3C_SetConfigFifo(&_hi3c, &fifoCfg) == HAL_OK) {
+            if (configureTarget(cfg) == 0) {
+              _initialized = true;
+              _role = I3CRole::Target;
+              registerInstanceOwner();
+              result = true;
+            }
+          }
+          if (!result) {
+            if (_hi3c.Instance != nullptr) {
+              (void)HAL_I3C_DeInit(&_hi3c);
+            }
+            unregisterInstanceOwner();
+            _initialized = false;
+            _role = I3CRole::None;
+          }
         }
       }
     }
-
-    if (local_ok) {
-      if (HAL_I3C_Init(&_hi3c) != HAL_OK) {
-        local_ok = false;
-      }
-    }
-
-    if (local_ok) {
-      I3C_FifoConfTypeDef fifoCfg {};
-      fifoCfg.RxFifoThreshold = HAL_I3C_RXFIFO_THRESHOLD_1_4;
-      fifoCfg.TxFifoThreshold = HAL_I3C_TXFIFO_THRESHOLD_1_4;
-      fifoCfg.ControlFifo     = HAL_I3C_CONTROLFIFO_DISABLE;
-      fifoCfg.StatusFifo      = HAL_I3C_STATUSFIFO_DISABLE;
-
-      if (HAL_I3C_SetConfigFifo(&_hi3c, &fifoCfg) != HAL_OK) {
-        local_ok = false;
-      }
-    }
-
-    if (local_ok) {
-      if (configureTarget(cfg) != 0) {
-        local_ok = false;
-      }
-    }
-
-    if (local_ok) {
-      _initialized = true;
-      _role = I3CRole::Target;
-    } else {
-      _role = I3CRole::None;
-    }
-
-    result = local_ok;
   }
-
   return result;
 }
 
 int I3CBus::configureTarget(const I3CTargetConfig &cfg)
 {
   int result = -1;
-  bool can_configure = false;
-
-  if (!_initialized) {
-    if (_hi3c.Mode == HAL_I3C_MODE_TARGET) {
-      can_configure = true;
-    }
-  } else if (_hi3c.Mode == HAL_I3C_MODE_TARGET) {
-    can_configure = true;
-  }
-
-  if (can_configure) {
+  if (_hi3c.Mode == HAL_I3C_MODE_TARGET) {
     I3C_TgtConfTypeDef tgtCfg {};
 
     tgtCfg.Identifier             = cfg.identifier;
@@ -1556,7 +1482,6 @@ int I3CBus::configureTarget(const I3CTargetConfig &cfg)
     HAL_StatusTypeDef st = HAL_I3C_Tgt_Config(&_hi3c, &tgtCfg);
     result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
   }
-
   return result;
 }
 
@@ -1654,7 +1579,13 @@ int I3CBus::enableTargetEvents(I3C_XferTypeDef *pXferData,
   int result = -1;
 
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_TARGET)) {
+    enableIRQs();
     HAL_StatusTypeDef st = HAL_I3C_ActivateNotification(&_hi3c, pXferData, interruptMask);
+    if (st != HAL_OK) {
+      if (_hi3c.Instance->IER == 0U) {
+        disableIRQs();
+      }
+    }
     result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
   }
 
@@ -1668,6 +1599,10 @@ int I3CBus::disableTargetEvents(uint32_t interruptMask)
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_TARGET)) {
     HAL_StatusTypeDef st = HAL_I3C_DeactivateNotification(&_hi3c, interruptMask);
     result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+
+    if ((st == HAL_OK) && (_hi3c.Instance->IER == 0U)) {
+      disableIRQs();
+    }
   }
 
   return result;
@@ -1734,18 +1669,15 @@ int I3CBus::enableIbi(uint8_t deviceIndex,
   int result = -1;
 
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER)) {
-    int rc = configureControllerDevice(deviceIndex,
+    result = configureControllerDevice(deviceIndex,
                                        dynAddr,
                                        true,
                                        withPayload,
                                        false,
                                        stopTransfer);
 
-    if (rc != 0) {
-      result = rc;
-    } else {
-      rc = setEvents(dynAddr, true, I3C_CCC_EVT_INTR, timeout);
-      result = rc;
+    if (result == 0) {
+      result = setEvents(dynAddr, true, I3C_CCC_EVT_INTR, timeout) ? 0 : -1;
     }
   }
 
@@ -1757,7 +1689,13 @@ int I3CBus::enableControllerEvents(uint32_t interruptMask)
   int result = -1;
 
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER)) {
+    enableIRQs();
     HAL_StatusTypeDef st = HAL_I3C_ActivateNotification(&_hi3c, nullptr, interruptMask);
+    if (st != HAL_OK) {
+      if (_hi3c.Instance->IER == 0U) {
+        disableIRQs();
+      }
+    }
     result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
   }
 
@@ -1771,6 +1709,10 @@ int I3CBus::disableControllerEvents(uint32_t interruptMask)
   if (_initialized && (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER)) {
     HAL_StatusTypeDef st = HAL_I3C_DeactivateNotification(&_hi3c, interruptMask);
     result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+
+    if ((st == HAL_OK) && (_hi3c.Instance->IER == 0U)) {
+      disableIRQs();
+    }
   }
 
   return result;
@@ -1843,32 +1785,183 @@ void I3CBus::handleHalNotify(uint32_t eventId)
 }
 
 // ============================================================================
-// IRQ handlers
+// Clock helpers
 // ============================================================================
+uint32_t I3CBus::getPeripheralClockFreq() const
+{
+  uint32_t srcFreq = 0U;
+
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C1);
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    srcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I3C2);
+  }
+#endif
+
+  return srcFreq;
+}
+
+bool I3CBus::buildControllerTiming(uint32_t freq, LL_I3C_CtrlBusConfTypeDef &outCtrl) const
+{
+  bool result = false;
+  uint32_t srcFreq = getPeripheralClockFreq();
+
+  if (srcFreq != 0U) {
+    I3C_CtrlTimingTypeDef inTiming {};
+
+    inTiming.clockSrcFreq = srcFreq;
+    inTiming.i3cPPFreq    = (freq == 0U) ? 1000000U : freq;
+    inTiming.dutyCycle    = 50U;
+
+    if (_busType == I3CBusType::Pure) {
+      inTiming.busType   = I3C_PURE_I3C_BUS;
+      inTiming.i2cODFreq = 0U;
+    } else {
+      inTiming.busType   = I3C_MIXED_BUS;
+      inTiming.i2cODFreq = _mixedBusOdFreq;
+    }
+
+    if (I3C_CtrlTimingComputation(&inTiming, &outCtrl) == SUCCESS) {
+      result = true;
+    }
+  }
+
+  return result;
+}
+
+bool I3CBus::buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const
+{
+  bool result = false;
+  uint32_t srcFreq = getPeripheralClockFreq();
+
+  if (srcFreq != 0U) {
+    I3C_TgtTimingTypeDef inTiming {};
+    inTiming.clockSrcFreq = srcFreq;
+
+    if (I3C_TgtTimingComputation(&inTiming, &outTgt) == SUCCESS) {
+      result = true;
+    }
+  }
+
+  return result;
+}
+
+// ============================================================================
+// IRQ handlers & helpers
+// ============================================================================
+
+void I3CBus::enableIRQs()
+{
+  if (!_irqEnabled) {
+#if defined(I3C1)
+    if (_instance == I3C1) {
+      HAL_NVIC_SetPriority(I3C1_EV_IRQn, 5, 0);
+      HAL_NVIC_EnableIRQ(I3C1_EV_IRQn);
+      HAL_NVIC_SetPriority(I3C1_ER_IRQn, 5, 0);
+      HAL_NVIC_EnableIRQ(I3C1_ER_IRQn);
+      _irqEnabled = true;
+    }
+#endif
+
+#if defined(I3C2)
+    if (_instance == I3C2) {
+      HAL_NVIC_SetPriority(I3C2_EV_IRQn, 5, 0);
+      HAL_NVIC_EnableIRQ(I3C2_EV_IRQn);
+      HAL_NVIC_SetPriority(I3C2_ER_IRQn, 5, 0);
+      HAL_NVIC_EnableIRQ(I3C2_ER_IRQn);
+      _irqEnabled = true;
+    }
+#endif
+  }
+}
+
+void I3CBus::disableIRQs()
+{
+  if (_irqEnabled) {
+#if defined(I3C1)
+    if (_instance == I3C1) {
+      HAL_NVIC_DisableIRQ(I3C1_EV_IRQn);
+      HAL_NVIC_DisableIRQ(I3C1_ER_IRQn);
+    }
+#endif
+
+#if defined(I3C2)
+    if (_instance == I3C2) {
+      HAL_NVIC_DisableIRQ(I3C2_EV_IRQn);
+      HAL_NVIC_DisableIRQ(I3C2_ER_IRQn);
+    }
+#endif
+
+    _irqEnabled = false;
+  }
+}
+
+void I3CBus::registerInstanceOwner()
+{
+#if defined(I3C1)
+  if (_instance == I3C1) {
+    g_i3c1Owner = this;
+  }
+#endif
+
+#if defined(I3C2)
+  if (_instance == I3C2) {
+    g_i3c2Owner = this;
+  }
+#endif
+}
+
+void I3CBus::unregisterInstanceOwner()
+{
+#if defined(I3C1)
+  if ((g_i3c1Owner == this) && (_instance == I3C1)) {
+    g_i3c1Owner = nullptr;
+  }
+#endif
+
+#if defined(I3C2)
+  if ((g_i3c2Owner == this) && (_instance == I3C2)) {
+    g_i3c2Owner = nullptr;
+  }
+#endif
+}
 
 extern "C" void I3C1_EV_IRQHandler(void)
 {
 #if defined(I3C1)
-  HAL_I3C_EV_IRQHandler(I3C1Bus.halHandle());
+  if (g_i3c1Owner != nullptr) {
+    HAL_I3C_EV_IRQHandler(g_i3c1Owner->halHandle());
+  }
 #endif
 }
 
 extern "C" void I3C1_ER_IRQHandler(void)
 {
 #if defined(I3C1)
-  HAL_I3C_ER_IRQHandler(I3C1Bus.halHandle());
+  if (g_i3c1Owner != nullptr) {
+    HAL_I3C_ER_IRQHandler(g_i3c1Owner->halHandle());
+  }
 #endif
 }
 
 #if defined(I3C2)
 extern "C" void I3C2_EV_IRQHandler(void)
 {
-  HAL_I3C_EV_IRQHandler(I3C2Bus.halHandle());
+  if (g_i3c2Owner != nullptr) {
+    HAL_I3C_EV_IRQHandler(g_i3c2Owner->halHandle());
+  }
 }
 
 extern "C" void I3C2_ER_IRQHandler(void)
 {
-  HAL_I3C_ER_IRQHandler(I3C2Bus.halHandle());
+  if (g_i3c2Owner != nullptr) {
+    HAL_I3C_ER_IRQHandler(g_i3c2Owner->halHandle());
+  }
 }
 #endif
 
