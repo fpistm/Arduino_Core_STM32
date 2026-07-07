@@ -150,7 +150,11 @@ class TwoWire : public arduino::HardwareI2C {
     using Print::write;
 
     // Could be used to mix Arduino API and STM32Cube HAL API (ex: DMA). Use at your own risk.
+#if defined(USE_HALV2_DRIVER)
+    hal_i2c_handle_t *getHandle(void)
+#else
     I2C_HandleTypeDef *getHandle(void)
+#endif
     {
       return &(_i2c.handle);
     }

@@ -87,7 +87,7 @@ void dwt_access(bool ena)
     }
   }
 #else /* __CORTEX_M */
-  UNUSED(ena);
+  (void)ena;
 #endif /* __CORTEX_M */
 }
 

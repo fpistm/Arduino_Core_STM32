@@ -23,13 +23,273 @@ extern "C" {
 
 /* Private_Variables */
 #if (defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)) ||\
-    (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY))
+    (defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)) ||\
+    (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1))
 static PinName g_current_pin = NC;
 #endif
 
 /* Private_Defines */
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY)
 
+#if defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1)
+#ifndef ADC_SAMPLINGTIME
+#if defined(LL_ADC_SAMPLINGTIME_8CYCLES)
+#define ADC_SAMPLINGTIME        HAL_ADC_SAMPLING_TIME_8CYCLES
+#else
+#error "ADC sampling time could not be defined!"
+#endif
+#endif /* !ADC_SAMPLINGTIME */
+#ifndef ADC_SAMPLINGTIME_INTERNAL
+#if defined(LL_ADC_SAMPLINGTIME_289CYCLES)
+#define ADC_SAMPLINGTIME_INTERNAL HAL_ADC_SAMPLING_TIME_289CYCLES
+#else
+#error "ADC sampling time could not be defined for internal channels!"
+#endif
+#endif /* !ADC_SAMPLINGTIME_INTERNAL */
+
+#ifndef ADC_REGULAR_RANK
+#define ADC_REGULAR_RANK  1
+#endif
+
+/**
+  * @brief ADC Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param instance: ADC instance
+  * @param pin: ADC pin
+  * @retval None
+  */
+void adc_init(hal_adc_t instance, PinName pin)
+{
+  /*##-1- Enable peripherals and GPIO Clocks #################################*/
+  /* ADC Periph clock enable */
+#ifdef ADC1
+  if (instance == HAL_ADC1) {
+    HAL_RCC_ADC12_EnableClock();
+  }
+#endif
+#ifdef ADC2
+  if (instance == HAL_ADC2) {
+    HAL_RCC_ADC12_EnableClock();
+  }
+
+#endif
+#ifdef ADC3
+  if (instance == HAL_ADC3) {
+    HAL_RCC_ADC3_EnableClock();
+  }
+#endif
+
+  /* Configure ADC GPIO pin */
+  if (!(pin & PADC_BASE)) {
+    pinmap_pinout(pin, PinMap_ADC);
+  }
+}
+
+/**
+  * @brief  DeInitializes the ADC.
+  * @param  instance: ADC instance
+  * @retval None
+  */
+void adc_deinit(hal_adc_t instance)
+{
+#ifdef ADC1
+  if (instance == HAL_ADC1) {
+    HAL_RCC_ADC12_DisableClock();
+  }
+#endif
+#ifdef ADC2
+  if (instance == HAL_ADC2) {
+    HAL_RCC_ADC12_DisableClock();
+  }
+#endif
+#ifdef ADC3
+  if (instance == HAL_ADC3) {
+    HAL_RCC_ADC3_DisableClock();
+  }
+#endif
+}
+
+/**
+  * @brief  Return ADC HAL channel linked to a PinName
+  * @param  pin: PinName
+  * @retval Valid HAL channel
+  */
+hal_adc_channel_t get_adc_channel(PinName pin)
+{
+  uint32_t function = pinmap_function(pin, PinMap_ADC);
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+  switch (STM_PIN_CHANNEL(function)) {
+    case 0:
+      channel = HAL_ADC_CHANNEL_0;
+      break;
+    case 1:
+      channel = HAL_ADC_CHANNEL_1;
+      break;
+    case 2:
+      channel = HAL_ADC_CHANNEL_2;
+      break;
+    case 3:
+      channel = HAL_ADC_CHANNEL_3;
+      break;
+    case 4:
+      channel = HAL_ADC_CHANNEL_4;
+      break;
+    case 5:
+      channel = HAL_ADC_CHANNEL_5;
+      break;
+    case 6:
+      channel = HAL_ADC_CHANNEL_6;
+      break;
+    case 7:
+      channel = HAL_ADC_CHANNEL_7;
+      break;
+    case 8:
+      channel = HAL_ADC_CHANNEL_8;
+      break;
+    case 9:
+      channel = HAL_ADC_CHANNEL_9;
+      break;
+    case 10:
+      channel = HAL_ADC_CHANNEL_10;
+      break;
+    case 11:
+      channel = HAL_ADC_CHANNEL_11;
+      break;
+    case 12:
+      channel = HAL_ADC_CHANNEL_12;
+      break;
+    case 13:
+      channel = HAL_ADC_CHANNEL_13;
+      break;
+    default:
+      _Error_Handler("ADC: Unknown adc channel", (int)(STM_PIN_CHANNEL(function)));
+      break;
+  }
+  return channel;
+}
+
+/**
+  * @brief  Return ADC HAL internal channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal. Value can be:
+  *         PADC_TEMP, PADC_VREF
+  *         Note that not all of these values ​​may be available for all series.
+  * @retval Valid HAL internal channel.
+  */
+hal_adc_channel_t get_adc_internal_channel(PinName pin)
+{
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+  switch (pin) {
+#if defined(LL_ADC_CHANNEL_TEMPSENSOR)
+    case PADC_TEMP:
+      channel = HAL_ADC_CHANNEL_TEMPSENSOR;
+      break;
+#endif
+#if defined(LL_ADC_CHANNEL_VREFINT)
+    case PADC_VREF:
+      channel = HAL_ADC_CHANNEL_VREFINT;
+      break;
+#endif
+    default:
+      _Error_Handler("ADC: Unknown adc internal PiName", (int)(pin));
+      break;
+  }
+  return channel;
+}
+
+/**
+  * @brief  This function will set the ADC to the required value
+  * @param  pin : the pin to use
+  * @param  resolution : resolution for converted data: 6/8/10/12/14/16
+  * @retval the value of the adc
+  */
+uint16_t adc_read_value(PinName pin, uint32_t resolution)
+{
+  hal_status_t status = HAL_OK;
+  hal_adc_handle_t AdcHandle = {};
+  hal_adc_config_t AdcConfig = {};
+  hal_adc_reg_config_t AdcRegConfig = {};
+  hal_adc_channel_config_t AdcChannelConfig = {};
+  hal_adc_t instance = HAL_ADC1;
+  __IO uint16_t convertedValue = 0;
+  hal_adc_sampling_time_t samplingTime = ADC_SAMPLINGTIME;
+  hal_adc_channel_t channel = HAL_ADC_CHANNEL_NONE;
+
+  if ((pin & PADC_BASE) && (pin < ANA_START)) {
+    /* Default instance is HAL_ADC1 */
+    channel = get_adc_internal_channel(pin);
+    samplingTime = ADC_SAMPLINGTIME_INTERNAL;
+  } else {
+    instance = (hal_adc_t)((uint32_t)pinmap_peripheral(pin, PinMap_ADC));
+    channel = get_adc_channel(pin);
+  }
+  adc_init(instance, pin);
+  status = HAL_ADC_Init(&AdcHandle, instance);
+  if (status == HAL_OK) {
+    /* resolution for converted data */
+    switch (resolution) {
+      case 6:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_6_BIT;
+        break;
+      case 8:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_8_BIT;
+        break;
+      case 10:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_10_BIT;
+        break;
+      case 12:
+      default:
+        AdcConfig.resolution = HAL_ADC_RESOLUTION_12_BIT;
+        break;
+    }
+    AdcConfig.sampling_mode       = HAL_ADC_SAMPLING_MODE_NORMAL;
+    status = HAL_ADC_SetConfig(&AdcHandle, &AdcConfig);
+  }
+  if (status == HAL_OK) {
+    /* Configuration of ADC regular group on sequencer containing only one channel */
+    AdcRegConfig.trigger_src        = HAL_ADC_REG_TRIG_SOFTWARE;
+    AdcRegConfig.sequencer_length   = 1;
+    AdcRegConfig.sequencer_discont  = HAL_ADC_REG_SEQ_DISCONT_DISABLE;
+    AdcRegConfig.continuous         = HAL_ADC_REG_CONV_SINGLE;
+    AdcRegConfig.overrun            = HAL_ADC_REG_OVR_DATA_OVERWRITTEN;
+    status = HAL_ADC_REG_SetConfig(&AdcHandle, &AdcRegConfig);
+  }
+  if (status == HAL_OK) {
+    AdcChannelConfig.group           = HAL_ADC_GROUP_REGULAR;
+    AdcChannelConfig.sequencer_rank  = ADC_REGULAR_RANK;
+    AdcChannelConfig.sampling_time   = samplingTime;
+    AdcChannelConfig.input_mode      = HAL_ADC_IN_SINGLE_ENDED;
+    status = HAL_ADC_SetConfigChannel(&AdcHandle, channel, &AdcChannelConfig);
+  }
+  if (status == HAL_OK) {
+    status = HAL_ADC_Start(&AdcHandle);
+  }
+  if (status == HAL_OK) {
+    status = HAL_ADC_Calibrate(&AdcHandle);
+    if (status == HAL_OK) {
+      status = HAL_ADC_REG_StartConv(&AdcHandle);
+      if (status == HAL_OK) {
+        /*  For simplicity reasons, this example is just waiting till the end of the
+            conversion, but application may perform other tasks while conversion
+            operation is ongoing. */
+        status = HAL_ADC_REG_PollForConv(&AdcHandle, 10);
+        if (status == HAL_OK) {
+          convertedValue = HAL_ADC_REG_ReadConversionData(&AdcHandle);
+        }
+      }
+    }
+    (void)HAL_ADC_Stop(&AdcHandle);
+  }
+  (void)HAL_ADC_DeInit(&AdcHandle);
+  adc_deinit(instance);
+  return (status == HAL_OK) ? convertedValue : 0;
+}
+
+#endif /* USE_HAL_ADC_MODULE && (USE_HAL_ADC_MODULE == 1) */
+
+#if defined(HAL_ADC_MODULE_ENABLED)
+/* ADC */
 #if defined(STM32WB0x) || defined(STM32WL3x)
 #ifndef ADC_SAMPLING_RATE
 #define ADC_SAMPLING_RATE           ADC_SAMPLE_RATE_16
@@ -271,7 +531,7 @@ uint32_t get_adc_channel(PinName pin, uint32_t *bank)
     *bank = ADC_CHANNELS_BANK_A;
   }
 #else
-  UNUSED(bank);
+  (void)bank;
 #endif
   return channel;
 }
@@ -318,299 +578,6 @@ uint32_t get_adc_internal_channel(PinName pin)
   }
   return channel;
 }
-#endif /* HAL_ADC_MODULE_ENABLED && !HAL_ADC_MODULE_ONLY */
-
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
-/**
-  * @brief  Return DAC HAL channel linked to a PinName
-  * @param  pin: specific PinName's for ADC internal.
-  * @retval Valid HAL channel
-  */
-uint32_t get_dac_channel(PinName pin)
-{
-  uint32_t function = pinmap_function(pin, PinMap_DAC);
-  uint32_t channel = 0;
-  switch (STM_PIN_CHANNEL(function)) {
-#ifdef DAC_CHANNEL_0
-    case 0:
-      channel = DAC_CHANNEL_0;
-      break;
-#endif
-    case 1:
-      channel = DAC_CHANNEL_1;
-      break;
-#ifdef DAC_CHANNEL_2
-    case 2:
-      channel = DAC_CHANNEL_2;
-      break;
-#endif
-    default:
-      _Error_Handler("DAC: Unknown dac channel", (int)(STM_PIN_CHANNEL(function)));
-      break;
-  }
-  return channel;
-}
-
-////////////////////////// DAC INTERFACE FUNCTIONS /////////////////////////////
-
-/**
-  * @brief DAC MSP Initialization
-  *        This function configures the hardware resources used in this example:
-  *           - Peripheral's clock enable
-  *           - Peripheral's GPIO Configuration
-  * @param hdac: DAC handle pointer
-  * @retval None
-  */
-void HAL_DAC_MspInit(DAC_HandleTypeDef *hdac)
-{
-  /* DAC Periph clock enable */
-  if (hdac->Instance == DAC1) {
-#ifdef __HAL_RCC_DAC_CLK_ENABLE
-    __HAL_RCC_DAC_CLK_ENABLE();
-#endif
-#ifdef __HAL_RCC_DAC1_CLK_ENABLE
-    __HAL_RCC_DAC1_CLK_ENABLE();
-#endif
-#ifdef __HAL_RCC_DAC12_CLK_ENABLE
-    __HAL_RCC_DAC12_CLK_ENABLE();
-#endif
-  }
-#ifdef DAC2
-  else if (hdac->Instance == DAC2) {
-#ifdef __HAL_RCC_DAC2_CLK_ENABLE
-    __HAL_RCC_DAC2_CLK_ENABLE();
-#endif
-#ifdef __HAL_RCC_DAC12_CLK_ENABLE
-    __HAL_RCC_DAC12_CLK_ENABLE();
-#endif
-  }
-#endif
-#ifdef DAC3
-  else if (hdac->Instance == DAC3) {
-#ifdef __HAL_RCC_DAC3_CLK_ENABLE
-    __HAL_RCC_DAC3_CLK_ENABLE();
-#endif
-  }
-#endif
-#ifdef DAC4
-  else if (hdac->Instance == DAC4) {
-#ifdef __HAL_RCC_DAC4_CLK_ENABLE
-    __HAL_RCC_DAC4_CLK_ENABLE();
-#endif
-  }
-#endif
-
-  /* Configure DAC GPIO pins */
-  pinmap_pinout(g_current_pin, PinMap_DAC);
-}
-
-
-/**
-  * @brief  This function will set the DAC to the required value
-  * @param  port : the gpio port to use
-  * @param  pin : the gpio pin to use
-  * @param  value : the value to push on the adc output
-  * @param  do_init : if set to 1 the initialization of the adc is done
-  * @retval None
-  */
-void dac_write_value(PinName pin, uint32_t value, uint8_t do_init)
-{
-  DAC_HandleTypeDef DacHandle = {};
-  DAC_ChannelConfTypeDef dacChannelConf = {};
-  uint32_t dacChannel;
-
-  DacHandle.Instance = (DAC_TypeDef *)pinmap_peripheral(pin, PinMap_DAC);
-  if (DacHandle.Instance == NP) {
-    return;
-  }
-  dacChannel = get_dac_channel(pin);
-#if defined(STM32G4xx)
-  if (!IS_DAC_CHANNEL(DacHandle.Instance, dacChannel)) {
-#else
-  if (!IS_DAC_CHANNEL(dacChannel)) {
-#endif
-    return;
-  }
-  if (do_init == 1) {
-    /*##-1- Configure the DAC peripheral #######################################*/
-    g_current_pin = pin;
-    if (HAL_DAC_Init(&DacHandle) != HAL_OK) {
-      /* Initialization Error */
-      return;
-    }
-
-    dacChannelConf.DAC_Trigger = DAC_TRIGGER_NONE;
-#if defined(DISABLE_DAC_OUTPUTBUFFER)
-    dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
-#else
-    dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-#endif
-#if defined(DAC_OUTPUTSWITCH_ENABLE)
-    dacChannelConf.DAC_OutputSwitch = DAC_OUTPUTSWITCH_ENABLE;
-#endif
-    /*##-2- Configure DAC channel1 #############################################*/
-#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
-    bool icache_enabled = false;
-    if (HAL_ICACHE_IsEnabled() == 1) {
-      icache_enabled = true;
-      /* Disable instruction cache prior to internal cacheable memory update */
-      if (HAL_ICACHE_Disable() != HAL_OK) {
-        Error_Handler();
-      }
-    }
-#endif /* STM32H5xx && !defined(TIM8) &&!HAL_ICACHE_MODULE_DISABLED */
-    if (HAL_DAC_ConfigChannel(&DacHandle, &dacChannelConf, dacChannel) != HAL_OK) {
-      /* Channel configuration Error */
-      return;
-    }
-#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
-    if (icache_enabled) {
-      /* Re-enable instruction cache */
-      if (HAL_ICACHE_Enable() != HAL_OK) {
-        Error_Handler();
-      }
-    }
-#endif /* STM32H5xx && !defined(TIM8) && !HAL_ICACHE_MODULE_DISABLED */
-  }
-
-  /*##-3- Set DAC Channel1 DHR register ######################################*/
-#if defined(DAC_ALIGN_12B_R)
-  if (HAL_DAC_SetValue(&DacHandle, dacChannel, DAC_ALIGN_12B_R, value) != HAL_OK) {
-#else
-  if (HAL_DAC_SetValue(&DacHandle, dacChannel, DAC_ALIGN_6B_R, value) != HAL_OK) {
-#endif
-    /* Setting value Error */
-    return;
-  }
-
-  /*##-4- Enable DAC Channel1 ################################################*/
-  HAL_DAC_Start(&DacHandle, dacChannel);
-}
-
-/**
-  * @brief  DeInitialize the DAC MSP.
-  * @param  hdac: pointer to a DAC_HandleTypeDef structure that contains
-  *         the configuration information for the specified DAC.
-  * @retval None
-  */
-void HAL_DAC_MspDeInit(DAC_HandleTypeDef *hdac)
-{
-  /* DAC Periph clock disable */
-  if (hdac->Instance == DAC1) {
-#ifdef __HAL_RCC_DAC_FORCE_RESET
-    __HAL_RCC_DAC_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC1_FORCE_RESET
-    __HAL_RCC_DAC1_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC12_FORCE_RESET
-    __HAL_RCC_DAC12_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC_RELEASE_RESET
-    __HAL_RCC_DAC_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC1_RELEASE_RESET
-    __HAL_RCC_DAC1_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC12_RELEASE_RESET
-    __HAL_RCC_DAC12_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC_CLK_DISABLE
-    __HAL_RCC_DAC_CLK_DISABLE();
-#endif
-#ifdef __HAL_RCC_DAC1_CLK_DISABLE
-    __HAL_RCC_DAC1_CLK_DISABLE();
-#endif
-#ifdef __HAL_RCC_DAC12_CLK_ENABLE
-    __HAL_RCC_DAC12_CLK_ENABLE();
-#endif
-  }
-#ifdef DAC2
-  else if (hdac->Instance == DAC2) {
-#ifdef __HAL_RCC_DAC2_FORCE_RESET
-    __HAL_RCC_DAC2_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC12_FORCE_RESET
-    __HAL_RCC_DAC12_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC2_RELEASE_RESET
-    __HAL_RCC_DAC2_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC12_RELEASE_RESET
-    __HAL_RCC_DAC12_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC2_CLK_ENABLE
-    __HAL_RCC_DAC2_CLK_ENABLE();
-#endif
-#ifdef __HAL_RCC_DAC12_CLK_ENABLE
-    __HAL_RCC_DAC12_CLK_ENABLE();
-#endif
-  }
-#endif
-#ifdef DAC3
-  else if (hdac->Instance == DAC3) {
-#ifdef __HAL_RCC_DAC3_FORCE_RESET
-    __HAL_RCC_DAC3_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC3_RELEASE_RESET
-    __HAL_RCC_DAC3_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC3_CLK_DISABLE
-    __HAL_RCC_DAC3_CLK_DISABLE();
-#endif
-  }
-#endif
-#ifdef DAC4
-  else if (hdac->Instance == DAC4) {
-#ifdef __HAL_RCC_DAC4_FORCE_RESET
-    __HAL_RCC_DAC4_FORCE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC4_RELEASE_RESET
-    __HAL_RCC_DAC4_RELEASE_RESET();
-#endif
-#ifdef __HAL_RCC_DAC4_CLK_DISABLE
-    __HAL_RCC_DAC4_CLK_DISABLE();
-#endif
-  }
-#endif
-}
-
-/**
-  * @brief  This function will stop the DAC
-  * @param  port : the gpio port to use
-  * @param  pin : the gpio pin to use
-  * @retval None
-  */
-void dac_stop(PinName pin)
-{
-  DAC_HandleTypeDef DacHandle;
-  uint32_t dacChannel;
-
-  DacHandle.Instance = (DAC_TypeDef *)pinmap_peripheral(pin, PinMap_DAC);
-  if (DacHandle.Instance == NP) {
-    return;
-  }
-  dacChannel = get_dac_channel(pin);
-#if defined(STM32G4xx)
-  if (!IS_DAC_CHANNEL(DacHandle.Instance, dacChannel)) {
-#else
-  if (!IS_DAC_CHANNEL(dacChannel)) {
-#endif
-    return;
-  }
-
-  HAL_DAC_Stop(&DacHandle, dacChannel);
-
-  if (HAL_DAC_DeInit(&DacHandle) != HAL_OK) {
-    /* DeInitialization Error */
-    return;
-  }
-}
-#endif //HAL_DAC_MODULE_ENABLED && !HAL_DAC_MODULE_ONLY
-
-
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
-////////////////////////// ADC INTERFACE FUNCTIONS /////////////////////////////
 
 /**
   * @brief ADC MSP Initialization
@@ -966,7 +933,7 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
   }
 #else
-  UNUSED(resolution);
+  (void)resolution;
 #endif
 #ifdef ADC_DATAALIGN_RIGHT
   AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;           /* Right-alignment for converted data */
@@ -1205,11 +1172,440 @@ uint16_t adc_read_value(PinName pin, uint32_t resolution)
 #endif
   return uhADCxConvertedValue;
 }
-#endif /* HAL_ADC_MODULE_ENABLED && !HAL_ADC_MODULE_ONLY*/
+#endif /* HAL_ADC_MODULE_ENABLED */
+#endif /* !HAL_ADC_MODULE_ONLY */
 
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
-////////////////////////// PWM INTERFACE FUNCTIONS /////////////////////////////
+#if !defined(HAL_ADC_MODULE_ONLY)
+/* DAC */
+#if defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1)
+void dac_init(hal_dac_t instance, PinName pin)
+{
+  /* DAC Periph clock enable */
+#ifdef DAC1
+  if (instance == HAL_DAC1) {
+    HAL_RCC_DAC1_EnableClock();
+  }
+#endif
 
+  /* Configure DAC GPIO pin */
+  pinmap_pinout(pin, PinMap_DAC);
+}
+
+void dac_deinit(hal_dac_t instance, PinName pin)
+{
+  /* DAC Periph clock disable */
+#ifdef DAC1
+  if (instance == HAL_DAC1) {
+    HAL_RCC_DAC1_DisableClock();
+  }
+#endif
+  /* Deconfigure DAC GPIO pin */
+  pin_function(pin, STM_PIN_DATA(STM_MODE_ANALOG, LL_GPIO_PULL_NO, 0));
+}
+
+/**
+  * @brief  Return DAC HAL channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal.
+  * @retval Valid HAL channel
+  */
+hal_dac_channel_t get_dac_channel(PinName pin)
+{
+  uint32_t function = pinmap_function(pin, PinMap_DAC);
+  hal_dac_channel_t channel;
+  switch (STM_PIN_CHANNEL(function)) {
+    case 1:
+      channel = HAL_DAC_CHANNEL_1;
+      break;
+#if defined (DAC_NB_OF_CHANNEL) && (DAC_NB_OF_CHANNEL == 2)
+    case 2:
+      channel = HAL_DAC_CHANNEL_2;
+      break;
+#endif
+    default:
+      _Error_Handler("DAC: Unknown dac channel", (int)(STM_PIN_CHANNEL(function)));
+      break;
+  }
+  return channel;
+}
+
+/**
+  * @brief  This function will set the DAC to the required value
+  * @param  port : the gpio port to use
+  * @param  pin : the gpio pin to use
+  * @param  value : the value to push on the adc output
+  * @param  do_init : if set to true the initialization of the adc is done
+  * @retval None
+  */
+void dac_write_value(PinName pin, uint32_t value, bool do_init)
+{
+  hal_status_t status = HAL_OK;
+  hal_dac_handle_t dac_handle;
+  hal_dac_config_t dac_config;
+  hal_dac_channel_config_t dac_channel_config;
+  hal_dac_t instance = HAL_DAC1;
+  instance = (hal_dac_t)((uint32_t)pinmap_peripheral(pin, PinMap_DAC));
+  if (instance != NP) {
+    hal_dac_channel_t dacChannel = get_dac_channel(pin);
+    /* Initialization of DAC instance */
+    status = HAL_DAC_Init(&dac_handle, instance) ;
+    if ((do_init) && (status == HAL_OK)) {
+      /*##-1- Configure the DAC peripheral #######################################*/
+      g_current_pin = pin;
+      dac_init(instance, pin);
+
+      dac_config.high_frequency_mode = HAL_DAC_HIGH_FREQ_MODE_DISABLED;
+      status = HAL_DAC_SetConfig(&dac_handle, &dac_config);
+      if (status == HAL_OK) {
+        /* Configuration of DAC channel */
+
+        dac_channel_config.alignment         = HAL_DAC_DATA_ALIGN_8_BITS_RIGHT;
+        dac_channel_config.trigger           = HAL_DAC_TRIGGER_NONE;
+#if defined(DISABLE_DAC_OUTPUTBUFFER)
+        dac_channel_config.output_buffer     = HAL_DAC_OUTPUT_BUFFER_DISABLED;
+#else
+        dac_channel_config.output_buffer     = HAL_DAC_OUTPUT_BUFFER_ENABLED;
+#endif
+        dac_channel_config.output_connection = HAL_DAC_OUTPUT_CONNECTION_EXTERNAL;
+        dac_channel_config.data_sign_format  = HAL_DAC_SIGN_FORMAT_UNSIGNED;
+        status = HAL_DAC_SetConfigChannel(&dac_handle, dacChannel, &dac_channel_config);
+        if (status == HAL_OK) {
+          /* The calibration allows a better output voltage precision */
+          status = HAL_DAC_CalibrateChannelBuffer(&dac_handle, dacChannel);
+          if (status == HAL_OK) {
+            /* Enable the DAC channel */
+            status = HAL_DAC_StartChannel(&dac_handle, dacChannel);
+          }
+        }
+      }
+    }
+    if (status == HAL_OK) {
+      /* Set the DAC channel data */
+      status = HAL_DAC_SetChannelData(&dac_handle, dacChannel, value);
+    }
+  }
+}
+
+/**
+  * @brief  This function will stop the DAC
+  * @param  port : the gpio port to use
+  * @param  pin : the gpio pin to use
+  * @retval None
+  */
+void dac_stop(PinName pin)
+{
+  hal_dac_handle_t dac_handle;
+  hal_dac_t instance = (hal_dac_t)((uint32_t)pinmap_peripheral(pin, PinMap_DAC));
+  if (instance != NP) {
+    /* Initialization of DAC instance */
+    hal_status_t status = HAL_DAC_Init(&dac_handle, instance) ;
+    if (status == HAL_OK) {
+      // hal_dac_channel_t dacChannel = get_dac_channel(pin);
+#if defined (DAC_NB_OF_CHANNEL) && (DAC_NB_OF_CHANNEL == 2)
+      hal_dac_channel_t dacChannel = get_dac_channel(pin);
+      /* Stop the DAC channel */
+      (void)HAL_DAC_StopChannel(&dac_handle, dacChannel);
+#else
+      (void)HAL_DAC_DeInit(&dac_handle);
+#endif
+    }
+    dac_deinit(instance, pin);
+  }
+}
+
+#endif /* USE_HAL_DAC_MODULE && (USE_HAL_DAC_MODULE == 1) */
+#if defined(HAL_DAC_MODULE_ENABLED)
+
+/**
+  * @brief  Return DAC HAL channel linked to a PinName
+  * @param  pin: specific PinName's for ADC internal.
+  * @retval Valid HAL channel
+  */
+uint32_t get_dac_channel(PinName pin)
+{
+  uint32_t function = pinmap_function(pin, PinMap_DAC);
+  uint32_t channel = 0;
+  switch (STM_PIN_CHANNEL(function)) {
+#ifdef DAC_CHANNEL_0
+    case 0:
+      channel = DAC_CHANNEL_0;
+      break;
+#endif
+    case 1:
+      channel = DAC_CHANNEL_1;
+      break;
+#ifdef DAC_CHANNEL_2
+    case 2:
+      channel = DAC_CHANNEL_2;
+      break;
+#endif
+    default:
+      _Error_Handler("DAC: Unknown dac channel", (int)(STM_PIN_CHANNEL(function)));
+      break;
+  }
+  return channel;
+}
+
+////////////////////////// DAC INTERFACE FUNCTIONS /////////////////////////////
+
+/**
+  * @brief DAC MSP Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param hdac: DAC handle pointer
+  * @retval None
+  */
+void HAL_DAC_MspInit(DAC_HandleTypeDef *hdac)
+{
+  /* DAC Periph clock enable */
+  if (hdac->Instance == DAC1) {
+#ifdef __HAL_RCC_DAC_CLK_ENABLE
+    __HAL_RCC_DAC_CLK_ENABLE();
+#endif
+#ifdef __HAL_RCC_DAC1_CLK_ENABLE
+    __HAL_RCC_DAC1_CLK_ENABLE();
+#endif
+#ifdef __HAL_RCC_DAC12_CLK_ENABLE
+    __HAL_RCC_DAC12_CLK_ENABLE();
+#endif
+  }
+#ifdef DAC2
+  else if (hdac->Instance == DAC2) {
+#ifdef __HAL_RCC_DAC2_CLK_ENABLE
+    __HAL_RCC_DAC2_CLK_ENABLE();
+#endif
+#ifdef __HAL_RCC_DAC12_CLK_ENABLE
+    __HAL_RCC_DAC12_CLK_ENABLE();
+#endif
+  }
+#endif
+#ifdef DAC3
+  else if (hdac->Instance == DAC3) {
+#ifdef __HAL_RCC_DAC3_CLK_ENABLE
+    __HAL_RCC_DAC3_CLK_ENABLE();
+#endif
+  }
+#endif
+#ifdef DAC4
+  else if (hdac->Instance == DAC4) {
+#ifdef __HAL_RCC_DAC4_CLK_ENABLE
+    __HAL_RCC_DAC4_CLK_ENABLE();
+#endif
+  }
+#endif
+
+  /* Configure DAC GPIO pins */
+  pinmap_pinout(g_current_pin, PinMap_DAC);
+}
+
+
+/**
+  * @brief  This function will set the DAC to the required value
+  * @param  port : the gpio port to use
+  * @param  pin : the gpio pin to use
+  * @param  value : the value to push on the adc output
+  * @param  do_init : if set to true the initialization of the adc is done
+  * @retval None
+  */
+void dac_write_value(PinName pin, uint32_t value, bool do_init)
+{
+  DAC_HandleTypeDef DacHandle = {};
+  DAC_ChannelConfTypeDef dacChannelConf = {};
+  uint32_t dacChannel;
+
+  DacHandle.Instance = (DAC_TypeDef *)pinmap_peripheral(pin, PinMap_DAC);
+  if (DacHandle.Instance == NP) {
+    return;
+  }
+  dacChannel = get_dac_channel(pin);
+#if defined(STM32G4xx)
+  if (!IS_DAC_CHANNEL(DacHandle.Instance, dacChannel)) {
+#else
+  if (!IS_DAC_CHANNEL(dacChannel)) {
+#endif
+    return;
+  }
+  if (do_init) {
+    /*##-1- Configure the DAC peripheral #######################################*/
+    g_current_pin = pin;
+    if (HAL_DAC_Init(&DacHandle) != HAL_OK) {
+      /* Initialization Error */
+      return;
+    }
+
+    dacChannelConf.DAC_Trigger = DAC_TRIGGER_NONE;
+#if defined(DISABLE_DAC_OUTPUTBUFFER)
+    dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+#else
+    dacChannelConf.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+#endif
+#if defined(DAC_OUTPUTSWITCH_ENABLE)
+    dacChannelConf.DAC_OutputSwitch = DAC_OUTPUTSWITCH_ENABLE;
+#endif
+    /*##-2- Configure DAC channel1 #############################################*/
+#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
+    bool icache_enabled = false;
+    if (HAL_ICACHE_IsEnabled() == 1) {
+      icache_enabled = true;
+      /* Disable instruction cache prior to internal cacheable memory update */
+      if (HAL_ICACHE_Disable() != HAL_OK) {
+        Error_Handler();
+      }
+    }
+#endif /* STM32H5xx && !defined(TIM8) &&!HAL_ICACHE_MODULE_DISABLED */
+    if (HAL_DAC_ConfigChannel(&DacHandle, &dacChannelConf, dacChannel) != HAL_OK) {
+      /* Channel configuration Error */
+      return;
+    }
+#if defined(STM32H5xx) && !defined(TIM8) && !defined(HAL_ICACHE_MODULE_DISABLED)
+    if (icache_enabled) {
+      /* Re-enable instruction cache */
+      if (HAL_ICACHE_Enable() != HAL_OK) {
+        Error_Handler();
+      }
+    }
+#endif /* STM32H5xx && !defined(TIM8) && !HAL_ICACHE_MODULE_DISABLED */
+  }
+
+  /*##-3- Set DAC Channel1 DHR register ######################################*/
+#if defined(DAC_ALIGN_12B_R)
+  if (HAL_DAC_SetValue(&DacHandle, dacChannel, DAC_ALIGN_12B_R, value) != HAL_OK) {
+#else
+  if (HAL_DAC_SetValue(&DacHandle, dacChannel, DAC_ALIGN_6B_R, value) != HAL_OK) {
+#endif
+    /* Setting value Error */
+    return;
+  }
+
+  /*##-4- Enable DAC Channel1 ################################################*/
+  HAL_DAC_Start(&DacHandle, dacChannel);
+}
+
+/**
+  * @brief  DeInitialize the DAC MSP.
+  * @param  hdac: pointer to a DAC_HandleTypeDef structure that contains
+  *         the configuration information for the specified DAC.
+  * @retval None
+  */
+void HAL_DAC_MspDeInit(DAC_HandleTypeDef *hdac)
+{
+  /* DAC Periph clock disable */
+  if (hdac->Instance == DAC1) {
+#ifdef __HAL_RCC_DAC_FORCE_RESET
+    __HAL_RCC_DAC_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC1_FORCE_RESET
+    __HAL_RCC_DAC1_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC12_FORCE_RESET
+    __HAL_RCC_DAC12_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC_RELEASE_RESET
+    __HAL_RCC_DAC_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC1_RELEASE_RESET
+    __HAL_RCC_DAC1_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC12_RELEASE_RESET
+    __HAL_RCC_DAC12_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC_CLK_DISABLE
+    __HAL_RCC_DAC_CLK_DISABLE();
+#endif
+#ifdef __HAL_RCC_DAC1_CLK_DISABLE
+    __HAL_RCC_DAC1_CLK_DISABLE();
+#endif
+#ifdef __HAL_RCC_DAC12_CLK_ENABLE
+    __HAL_RCC_DAC12_CLK_ENABLE();
+#endif
+  }
+#ifdef DAC2
+  else if (hdac->Instance == DAC2) {
+#ifdef __HAL_RCC_DAC2_FORCE_RESET
+    __HAL_RCC_DAC2_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC12_FORCE_RESET
+    __HAL_RCC_DAC12_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC2_RELEASE_RESET
+    __HAL_RCC_DAC2_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC12_RELEASE_RESET
+    __HAL_RCC_DAC12_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC2_CLK_ENABLE
+    __HAL_RCC_DAC2_CLK_ENABLE();
+#endif
+#ifdef __HAL_RCC_DAC12_CLK_ENABLE
+    __HAL_RCC_DAC12_CLK_ENABLE();
+#endif
+  }
+#endif
+#ifdef DAC3
+  else if (hdac->Instance == DAC3) {
+#ifdef __HAL_RCC_DAC3_FORCE_RESET
+    __HAL_RCC_DAC3_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC3_RELEASE_RESET
+    __HAL_RCC_DAC3_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC3_CLK_DISABLE
+    __HAL_RCC_DAC3_CLK_DISABLE();
+#endif
+  }
+#endif
+#ifdef DAC4
+  else if (hdac->Instance == DAC4) {
+#ifdef __HAL_RCC_DAC4_FORCE_RESET
+    __HAL_RCC_DAC4_FORCE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC4_RELEASE_RESET
+    __HAL_RCC_DAC4_RELEASE_RESET();
+#endif
+#ifdef __HAL_RCC_DAC4_CLK_DISABLE
+    __HAL_RCC_DAC4_CLK_DISABLE();
+#endif
+  }
+#endif
+}
+
+/**
+  * @brief  This function will stop the DAC
+  * @param  port : the gpio port to use
+  * @param  pin : the gpio pin to use
+  * @retval None
+  */
+void dac_stop(PinName pin)
+{
+  DAC_HandleTypeDef DacHandle;
+  uint32_t dacChannel;
+
+  DacHandle.Instance = (DAC_TypeDef *)pinmap_peripheral(pin, PinMap_DAC);
+  if (DacHandle.Instance == NP) {
+    return;
+  }
+  dacChannel = get_dac_channel(pin);
+#if defined(STM32G4xx)
+  if (!IS_DAC_CHANNEL(DacHandle.Instance, dacChannel)) {
+#else
+  if (!IS_DAC_CHANNEL(dacChannel)) {
+#endif
+    return;
+  }
+
+  HAL_DAC_Stop(&DacHandle, dacChannel);
+
+  if (HAL_DAC_DeInit(&DacHandle) != HAL_OK) {
+    /* DeInitialization Error */
+    return;
+  }
+}
+#endif //HAL_DAC_MODULE_ENABLED
+#endif /* !HAL_DAC_MODULE_ONLY */
+
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
+/* PWM */
 /**
   * @brief  This function will set the PWM to the required value
   * @param  port : the gpio port to use
@@ -1263,7 +1659,7 @@ void pwm_stop(PinName pin)
     HT = NULL;
   }
 }
-#endif /* HAL_TIM_MODULE_ENABLED && !HAL_TIM_MODULE_ONLY */
+#endif /* !HAL_TIM_MODULE_ONLY && (HAL_TIM_MODULE_ENABLED || (USE_HAL_TIM_MODULE && (USE_HAL_TIM_MODULE == 1))) */
 
 #ifdef __cplusplus
 }

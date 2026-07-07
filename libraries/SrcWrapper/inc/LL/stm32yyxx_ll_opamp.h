@@ -8,7 +8,9 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-#ifdef STM32F3xx
+#ifdef STM32C5xx
+  #include "stm32c5xx_ll_opamp.h"
+#elif STM32F3xx
   #include "stm32f3xx_ll_opamp.h"
 #elif STM32G4xx
   #include "stm32g4xx_ll_opamp.h"

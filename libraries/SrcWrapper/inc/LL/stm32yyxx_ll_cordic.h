@@ -8,7 +8,9 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-#ifdef STM32G4xx
+#ifdef STM32C5xx
+  #include "stm32c5xx_ll_cordic.h"
+#elif STM32G4xx
   #include "stm32g4xx_ll_cordic.h"
 #elif STM32H5xx
   #include "stm32h5xx_ll_cordic.h"

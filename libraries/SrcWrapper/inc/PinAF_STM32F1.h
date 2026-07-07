@@ -192,7 +192,7 @@ static inline void pinF1_DisconnectDebug(PinName pin)
     __HAL_AFIO_REMAP_SWJ_NOJTAG(); // JTAG-DP Disabled and SW-DP enabled
   }
 #else
-  UNUSED(pin);
+  (void)pin;
 #endif /* STM32F1_FORCE_DEBUG */
 }
 

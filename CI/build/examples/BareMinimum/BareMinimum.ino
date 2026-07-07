@@ -3,8 +3,9 @@
  * It allows to test build of built-in libraries
  * and can not be executed.
  */
-
+#if defined(HAL_FLASH_MODULE_ENABLED)
 #include <EEPROM.h>
+#endif
 #ifndef STM32MP1xx
 #include <IWatchdog.h>
 #endif
@@ -14,7 +15,7 @@
 #include <SPI.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
-#if defined(I3C1_BASE) || defined(I3C2_BASE)
+#if (defined(I3C1_BASE) || defined(I3C2_BASE)) && defined(HAL_I3C_MODULE_ENABLED)
   #include <I3C.h>
 #endif
 
@@ -91,10 +92,11 @@ void setup() {
   }
   swSerial.end();
 
+#if defined(HAL_FLASH_MODULE_ENABLED)
   // EEPROM
   byte value = EEPROM.read(0x01);
   EEPROM.write(EEPROM.length() - 1, value);
-
+#endif
 #ifndef STM32MP1xx
   // IWDG
   if (!IWatchdog.isReset(true)) {
@@ -135,7 +137,7 @@ void setup() {
   Wire.requestFrom(2, 1);
   Wire.end();
 
-#if defined(I3C1_BASE) || defined(I3C2_BASE)
+#if (defined(I3C1_BASE) || defined(I3C2_BASE)) && defined(HAL_I3C_MODULE_ENABLED)
   // I3C
   I3C.setBusType(I3CBusType::Pure);
   I3C.setMixedBusOpenDrainFrequency(1000000U);

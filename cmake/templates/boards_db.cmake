@@ -9,6 +9,7 @@ set({{pnum}}_MCU {{config.build.mcu}})
 set({{pnum}}_FPCONF "{{config._fpconf}}")
 add_library({{pnum}} INTERFACE)
 target_compile_options({{pnum}} INTERFACE
+  "SHELL:{{config.build.hal}}"
   "SHELL:{{config.build.st_extra_flags}}"
   {% if config.build.peripheral_pins|length  %}
   "SHELL:{{config.build.peripheral_pins}}"
@@ -33,6 +34,7 @@ target_include_directories({{pnum}} INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/../system/Drivers/{{config.build.series}}_HAL_Driver/Inc
   ${CMAKE_CURRENT_LIST_DIR}/../system/Drivers/{{config.build.series}}_HAL_Driver/Src
   ${CMAKE_CURRENT_LIST_DIR}/../system/Drivers/CMSIS/Device/ST/{{config.build.series}}/Include/
+  ${CMAKE_CURRENT_LIST_DIR}/../system/Drivers/CMSIS/Device/ST/{{config.build.series}}/Source/
   ${CMAKE_CURRENT_LIST_DIR}/../system/Drivers/CMSIS/Device/ST/{{config.build.series}}/Source/Templates/gcc/
   {{ "${" }}{{pnum}}_VARIANT_PATH{{ "}" }}
 )

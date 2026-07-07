@@ -73,7 +73,6 @@
 
 #define INVALID_SERVO         255     // flag indicating an invalid servo index
 
-#if !defined(ARDUINO_ARCH_STM32F4)
 
 typedef struct  {
   uint8_t nbr;            // a pin number from 0 to 255
@@ -102,5 +101,4 @@ class Servo {
     int8_t max;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH
 };
 
-#endif
 #endif

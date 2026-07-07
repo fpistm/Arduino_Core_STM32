@@ -52,11 +52,29 @@ def copyFile(src: Path, dest: Path):
         sys.exit(1)
 
 
-def loadSTM32Series(script_path: Path):
+# copy all files with specified extension from src to dest
+def copyFilesWithExt(src: Path, dest: Path, extension: str):
+    try:
+        if src.is_dir():
+            for file in src.iterdir():
+                if file.is_file() and file.suffix == extension:
+                    shutil.copy(str(file), str(dest))
+    except OSError as e:
+        print(f"Error: Files from {src} not copied. {e}")
+        sys.exit(1)
+
+
+def loadSTM32Series(script_path: Path, load_v1: bool = True, load_v2: bool = False):
     # Load stm32 series from json file
     stm32_series_file = script_path / "stm32_series.json"
     with open(stm32_series_file, "r") as json_file:
-        return json.load(json_file)["series"]
+        stm32_series = json.load(json_file)
+    stm32_dict = OrderedDict()
+    if load_v1:
+        stm32_dict.update(stm32_series["series"])
+    if load_v2:
+        stm32_dict.update(stm32_series["seriesv2"])
+    return stm32_dict
 
 
 # Get dict of STM32 series from HAL driver directory
@@ -139,6 +157,21 @@ def commitFiles(repo_path, commit_msg):
         ["git", "-C", repo_path, "rebase", "--whitespace=fix", "HEAD~1"],
         subprocess.DEVNULL,
     )
+    return True
+
+
+def addSeriesToConfig(script_path, series, nx, section):
+    stm32_series_file = script_path / "stm32_series.json"
+    if not stm32_series_file.is_file():
+        print(f"{stm32_series_file} does not exist!")
+        return False
+    with open(stm32_series_file, "r") as fp:
+        stm32_series_data = json.load(fp)
+    if series not in stm32_series_data:
+        stm32_series_data[section][series] = nx
+        with open(stm32_series_file, "w") as fp:
+            json.dump(stm32_series_data, fp, indent=2)
+        print(f"Added series {series} with nx={nx} to stm32_series.json")
     return True
 
 

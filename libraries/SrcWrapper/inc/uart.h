@@ -67,7 +67,12 @@ struct serial_s {
    *  to have get_serial_obj() function work as expected
    */
   USART_TypeDef *uart;
+#if defined(USE_HALV2_DRIVER)
+  hal_uart_handle_t handle;
+#else
   UART_HandleTypeDef handle;
+#endif
+
   void (*rx_callback)(serial_t *);
   int (*tx_callback)(serial_t *);
   PinName pin_tx;
@@ -255,7 +260,11 @@ struct serial_s {
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+#if defined(USE_HALV2_DRIVER)
+bool uart_init(serial_t *obj, uint32_t baudrate, hal_uart_word_length_t databits, hal_uart_parity_t parity, hal_uart_stop_bits_t stopbits, bool rx_invert, bool tx_invert, bool data_invert);
+#else
 bool uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t parity, uint32_t stopbits, bool rx_invert, bool tx_invert, bool data_invert);
+#endif
 void uart_deinit(serial_t *obj);
 #if defined(HAL_PWR_MODULE_ENABLED) && (defined(UART_IT_WUF) || defined(LPUART1_BASE))
 void uart_config_lowpower(serial_t *obj);
@@ -272,11 +281,21 @@ void uart_enable_rx(serial_t *obj);
 
 size_t uart_debug_write(uint8_t *data, uint32_t size);
 
+#if defined(LPUART1_BASE) || defined(LPUART2_BASE)
+#if defined(USE_HALV2_DRIVER)
+void uart_init_lpuart(hal_uart_handle_t *huart, uint32_t baudrate);
+#else
+void uart_init_lpuart(UART_HandleTypeDef *huart);
+#endif
+#endif
+
+#if defined(USE_HALV2_DRIVER)
+hal_uart_prescaler_t uart_compute_prescaler(hal_uart_handle_t *huart, hal_uart_config_t *config);
+#endif
 #if defined(UART_PRESCALER_DIV1)
 uint32_t uart_compute_prescaler(UART_HandleTypeDef *huart);
 uint32_t uart_get_clock_source_freq(UART_HandleTypeDef *huart);
 #endif
-
 #endif /* HAL_UART_MODULE_ENABLED  && !HAL_UART_MODULE_ONLY */
 #ifdef __cplusplus
 }

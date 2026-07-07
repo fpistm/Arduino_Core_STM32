@@ -19,9 +19,11 @@ target_link_libraries(SrcWrapper INTERFACE SrcWrapper_usage)
 
 
 add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
+  src/HAL/stm32yyxx_dlyb_core.c
   src/HAL/stm32yyxx_hal.c
   src/HAL/stm32yyxx_hal_adc.c
   src/HAL/stm32yyxx_hal_adc_ex.c
+  src/HAL/stm32yyxx_hal_aes.c
   src/HAL/stm32yyxx_hal_can.c
   src/HAL/stm32yyxx_hal_ccb.c
   src/HAL/stm32yyxx_hal_cec.c
@@ -31,10 +33,12 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_cortex.c
   src/HAL/stm32yyxx_hal_crc.c
   src/HAL/stm32yyxx_hal_crc_ex.c
+  src/HAL/stm32yyxx_hal_crs.c
   src/HAL/stm32yyxx_hal_cryp.c
   src/HAL/stm32yyxx_hal_cryp_ex.c
   src/HAL/stm32yyxx_hal_dac.c
   src/HAL/stm32yyxx_hal_dac_ex.c
+  src/HAL/stm32yyxx_hal_dbgmcu.c
   src/HAL/stm32yyxx_hal_dcache.c
   src/HAL/stm32yyxx_hal_dcmi.c
   src/HAL/stm32yyxx_hal_dcmi_ex.c
@@ -52,6 +56,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_firewall.c
   src/HAL/stm32yyxx_hal_flash.c
   src/HAL/stm32yyxx_hal_flash_ex.c
+  src/HAL/stm32yyxx_hal_flash_itf.c
   src/HAL/stm32yyxx_hal_flash_ramfunc.c
   src/HAL/stm32yyxx_hal_fmac.c
   src/HAL/stm32yyxx_hal_fmpi2c.c
@@ -106,6 +111,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_pssi.c
   src/HAL/stm32yyxx_hal_pwr.c
   src/HAL/stm32yyxx_hal_pwr_ex.c
+  src/HAL/stm32yyxx_hal_q.c
   src/HAL/stm32yyxx_hal_qspi.c
   src/HAL/stm32yyxx_hal_radio.c
   src/HAL/stm32yyxx_hal_radio_timer.c
@@ -119,6 +125,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_rtc_ex.c
   src/HAL/stm32yyxx_hal_sai.c
   src/HAL/stm32yyxx_hal_sai_ex.c
+  src/HAL/stm32yyxx_hal_sbs.c
   src/HAL/stm32yyxx_hal_sd.c
   src/HAL/stm32yyxx_hal_sd_ex.c
   src/HAL/stm32yyxx_hal_sdadc.c
@@ -134,6 +141,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_sram.c
   src/HAL/stm32yyxx_hal_subghz.c
   src/HAL/stm32yyxx_hal_swpmi.c
+  src/HAL/stm32yyxx_hal_tamp.c
   src/HAL/stm32yyxx_hal_tim.c
   src/HAL/stm32yyxx_hal_tim_ex.c
   src/HAL/stm32yyxx_hal_tsc.c
@@ -143,6 +151,7 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_usart_ex.c
   src/HAL/stm32yyxx_hal_wwdg.c
   src/HAL/stm32yyxx_hal_xspi.c
+  src/HAL/stm32yyxx_usb_drd_core.c
   src/HAL/stm32yyxx_util_i3c.c
   src/HardwareTimer.cpp
   src/LL/stm32yyxx_ll_adc.c

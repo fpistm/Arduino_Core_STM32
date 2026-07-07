@@ -10,6 +10,8 @@
 
 #ifdef STM32C0xx
   #include "stm32c0xx_ll_tim.h"
+#elif STM32C5xx
+  #include "stm32c5xx_ll_tim.h"
 #elif STM32F0xx
   #include "stm32f0xx_ll_tim.h"
 #elif STM32F1xx

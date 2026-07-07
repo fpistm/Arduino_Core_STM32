@@ -116,7 +116,7 @@ void IWatchdogClass::set(uint32_t timeout, uint32_t window)
     LL_IWDG_SetWindow(IWDG, reload);
   }
 #else
-  UNUSED(window);
+  (void)window;
 #endif
 
   // Wait for the registers to be updated (IWDG_SR = 0x0000 0000)
@@ -155,7 +155,7 @@ void IWatchdogClass::get(uint32_t *timeout, uint32_t *window)
       *window = (uint32_t)((4 << prescaler) * (win + 1) * base);
     }
 #else
-    UNUSED(window);
+    (void)window;
 #endif
   }
 }
@@ -199,7 +199,11 @@ bool IWatchdogClass::isReset(bool clear)
   */
 void IWatchdogClass::clearReset(void)
 {
+#if defined(USE_HALV2_DRIVER)
+  LL_RCC_ForceClearResetFlags();
+#else
   LL_RCC_ClearResetFlags();
+#endif
 }
 
 // Preinstantiate Object

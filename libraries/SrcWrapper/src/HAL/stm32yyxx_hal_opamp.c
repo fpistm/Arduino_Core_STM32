@@ -2,7 +2,9 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-#ifdef STM32F3xx
+#ifdef STM32C5xx
+  #include "stm32c5xx_hal_opamp.c"
+#elif STM32F3xx
   #include "stm32f3xx_hal_opamp.c"
 #elif STM32G4xx
   #include "stm32g4xx_hal_opamp.c"

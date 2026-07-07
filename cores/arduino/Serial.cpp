@@ -389,69 +389,113 @@ int Uart::_tx_complete_irq(serial_t *obj)
 
 void Uart::begin(unsigned long baud, uint16_t config)
 {
-  uint32_t databits = 0;
-  uint32_t stopbits = 0;
-  uint32_t parity = 0;
+#if defined(USE_HALV2_DRIVER)
+  hal_uart_word_length_t databits = HAL_UART_WORD_LENGTH_8_BIT;
+  hal_uart_stop_bits_t stopbits = HAL_UART_STOP_BIT_1;
+  hal_uart_parity_t parity = HAL_UART_PARITY_NONE;
 
-  _baud = baud;
-  _config = config;
+  /* First manage parity which influences the number of data bits */
+  if ((config & SERIAL_PARITY_MASK) == SERIAL_PARITY_ODD) {
+    parity = HAL_UART_PARITY_ODD;
+  } else if ((config & SERIAL_PARITY_MASK) == SERIAL_PARITY_EVEN) {
+    parity = HAL_UART_PARITY_EVEN;
+  }
 
   // Manage databits
   switch (config & SERIAL_DATA_MASK) {
+#if defined(HAL_UART_WORD_LENGTH_7_BIT)
     case SERIAL_DATA_6:
-      databits = 6;
+      // Only 6 bits with parity supported
+      if (parity != HAL_UART_PARITY_NONE) {
+        databits = HAL_UART_WORD_LENGTH_7_BIT;
+      } else {
+        Error_Handler();
+      }
       break;
+#endif /* HAL_UART_WORD_LENGTH_7_BIT */
     case SERIAL_DATA_7:
-      databits = 7;
+      // 7 bits with or without parity
+      if (parity != HAL_UART_PARITY_NONE) {
+        databits = HAL_UART_WORD_LENGTH_8_BIT;
+      } else {
+#ifdef HAL_UART_WORD_LENGTH_7_BIT
+        databits = HAL_UART_WORD_LENGTH_7_BIT;
+#else
+        Error_Handler();
+#endif
+      }
       break;
     case SERIAL_DATA_8:
-      databits = 8;
+      // 8 bits with or without parity
+      if (parity != HAL_UART_PARITY_NONE) {
+        databits = HAL_UART_WORD_LENGTH_9_BIT;
+      } else {
+        databits = HAL_UART_WORD_LENGTH_8_BIT;
+      }
       break;
     default:
-      databits = 0;
-      break;
-  }
-
-  switch (config & SERIAL_PARITY_MASK) {
-    case SERIAL_PARITY_ODD:
-      parity   = UART_PARITY_ODD;
-      databits++;               // word length = data bits + parity
-      break;
-    case SERIAL_PARITY_EVEN:
-      parity   = UART_PARITY_EVEN;
-      databits++;
-      break;
-    default:
-      parity   = UART_PARITY_NONE;
-      break;
-  }
-
-  switch (config & SERIAL_STOP_BIT_MASK) {
-    case SERIAL_STOP_BIT_2:
-      stopbits = UART_STOPBITS_2;
-      break;
-    default:
-      stopbits = UART_STOPBITS_1;
-      break;
-  }
-
-  switch (databits) {
-#ifdef UART_WORDLENGTH_7B
-    case 7:
-      databits = UART_WORDLENGTH_7B;
-      break;
-#endif
-    case 8:
-      databits = UART_WORDLENGTH_8B;
-      break;
-    case 9:
-      databits = UART_WORDLENGTH_9B;
-      break;
-    default:
-    case 0:
       Error_Handler();
       break;
   }
+
+  if ((config & SERIAL_STOP_BIT_MASK) == SERIAL_STOP_BIT_2) {
+    stopbits = HAL_UART_STOP_BIT_2;
+  }
+#else
+  uint32_t databits = UART_WORDLENGTH_8B;
+  uint32_t stopbits = UART_STOPBITS_1;
+  uint32_t parity = UART_PARITY_NONE;
+
+  /* First manage parity which influences the number of data bits */
+  if ((config & SERIAL_PARITY_MASK) == SERIAL_PARITY_ODD) {
+    parity = UART_PARITY_ODD;
+  } else if ((config & SERIAL_PARITY_MASK) == SERIAL_PARITY_EVEN) {
+    parity = UART_PARITY_EVEN;
+  }
+
+  // Manage databits
+  switch (config & SERIAL_DATA_MASK) {
+#if defined(UART_WORDLENGTH_7B)
+    case SERIAL_DATA_6:
+      // Only 6 bits with parity supported
+      if (parity != UART_PARITY_NONE) {
+        databits = UART_WORDLENGTH_7B;
+      } else {
+        Error_Handler();
+      }
+      break;
+#endif /* UART_WORDLENGTH_7B */
+    case SERIAL_DATA_7:
+      // 7 bits with or without parity
+      if (parity != UART_PARITY_NONE) {
+        databits = UART_WORDLENGTH_8B;
+      } else {
+#ifdef UART_WORDLENGTH_7B
+        databits = UART_WORDLENGTH_7B;
+#else
+        Error_Handler();
+#endif
+      }
+      break;
+    case SERIAL_DATA_8:
+      // 8 bits with or without parity
+      if (parity != UART_PARITY_NONE) {
+        databits = UART_WORDLENGTH_9B;
+      } else {
+        databits = UART_WORDLENGTH_8B;
+      }
+      break;
+    default:
+      Error_Handler();
+      break;
+  }
+
+  if ((config & SERIAL_STOP_BIT_MASK) == SERIAL_STOP_BIT_2) {
+    stopbits = UART_STOPBITS_2;
+  }
+#endif /* USE_HALV2_DRIVER */
+  _baud = baud;
+  _config = config;
 
   _ready = uart_init(&_serial, (uint32_t)baud, databits, parity, stopbits, _rx_invert, _tx_invert, _data_invert);
   if (_ready) {

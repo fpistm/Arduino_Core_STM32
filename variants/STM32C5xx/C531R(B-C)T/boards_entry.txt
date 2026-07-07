@@ -1,0 +1,23 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C531RBTx
+GenC5.menu.pnum.GENERIC_C531RBTX=Generic C531RBTx
+GenC5.menu.pnum.GENERIC_C531RBTX.upload.maximum_size=131072
+GenC5.menu.pnum.GENERIC_C531RBTX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531RBTX.build.board=GENERIC_C531RBTX
+GenC5.menu.pnum.GENERIC_C531RBTX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531RBTX.build.variant=STM32C5xx/C531R(B-C)T
+GenC5.menu.pnum.GENERIC_C531RBTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+
+# Generic C531RCTx
+GenC5.menu.pnum.GENERIC_C531RCTX=Generic C531RCTx
+GenC5.menu.pnum.GENERIC_C531RCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C531RCTX.upload.maximum_data_size=65536
+GenC5.menu.pnum.GENERIC_C531RCTX.build.board=GENERIC_C531RCTX
+GenC5.menu.pnum.GENERIC_C531RCTX.build.product_line=STM32C531xx
+GenC5.menu.pnum.GENERIC_C531RCTX.build.variant=STM32C5xx/C531R(B-C)T
+GenC5.menu.pnum.GENERIC_C531RCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C531.svd
+

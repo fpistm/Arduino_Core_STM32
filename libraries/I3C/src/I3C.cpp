@@ -2,6 +2,7 @@
 #include <cstring>
 
 #if defined(I3C1_BASE) || defined(I3C2_BASE)
+#if !defined(USE_HALV2_DRIVER)
 
 // ============================================================================
 // Global bus instances
@@ -1965,4 +1966,5 @@ extern "C" void I3C2_ER_IRQHandler(void)
 }
 #endif
 
-#endif
+#endif /* !USE_HALV2_DRIVER */
+#endif /* I3C1_BASE || I3C2_BASE */

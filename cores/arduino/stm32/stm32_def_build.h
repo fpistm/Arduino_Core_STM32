@@ -1,7 +1,7 @@
 #ifndef _STM32_DEF_BUILD_
 #define _STM32_DEF_BUILD_
 
-#if !defined(CMSIS_STARTUP_FILE) && !defined(CUSTOM_STARTUP_FILE)
+#if !defined(USE_HALV2_DRIVER) && !defined(CMSIS_STARTUP_FILE) && !defined(CUSTOM_STARTUP_FILE)
   #if defined(STM32C011xx)
     #define CMSIS_STARTUP_FILE "startup_stm32c011xx.s"
   #elif defined(STM32C031xx)
@@ -573,5 +573,5 @@
   #endif
 #else
   #warning "No CMSIS startup file defined, custom one should be used"
-#endif /* !CMSIS_STARTUP_FILE && !CUSTOM_STARTUP_FILE */
+#endif /* !USE_HALV2_DRIVER && !CMSIS_STARTUP_FILE && !CUSTOM_STARTUP_FILE */
 #endif /* _STM32_DEF_BUILD_ */

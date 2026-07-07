@@ -340,7 +340,7 @@ static void Get_SerialNum(void);
   */
 uint8_t *USBD_Class_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
-  UNUSED(speed);
+  (void)speed;
   *length = sizeof(USBD_Class_DeviceDesc);
   return (uint8_t *)USBD_Class_DeviceDesc;
 }
@@ -353,7 +353,7 @@ uint8_t *USBD_Class_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
   */
 uint8_t *USBD_LangIDStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
-  UNUSED(speed);
+  (void)speed;
   *length = sizeof(USBD_LangIDDesc);
   return (uint8_t *)USBD_LangIDDesc;
 }
@@ -382,7 +382,7 @@ uint8_t *USBD_Class_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *leng
   */
 uint8_t *USBD_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
-  UNUSED(speed);
+  (void)speed;
   USBD_GetString((uint8_t *)USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
   return USBD_StrDesc;
 }
@@ -395,7 +395,7 @@ uint8_t *USBD_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *lengt
   */
 uint8_t *USBD_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
-  UNUSED(speed);
+  (void)speed;
 
   *length = USB_SIZ_STRING_SERIAL;
 
@@ -471,7 +471,7 @@ static void Get_SerialNum(void)
   */
 uint8_t *USBD_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
-  UNUSED(speed);
+  (void)speed;
   *length = sizeof(USBD_BOSDesc);
   return (uint8_t *)USBD_BOSDesc;
 }
@@ -489,9 +489,9 @@ uint8_t *USBD_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 uint8_t *USBD_Class_UserStrDescriptor(USBD_SpeedTypeDef speed, uint8_t idx, uint16_t *length)
 {
   static uint8_t USBD_StrDesc[255];
-  UNUSED(speed);
-  UNUSED(idx);
-  UNUSED(length);
+  (void)speed;
+  (void)idx;
+  (void)length;
   return USBD_StrDesc;
 }
 #endif /* USBD_CLASS_USER_STRING_DESC */

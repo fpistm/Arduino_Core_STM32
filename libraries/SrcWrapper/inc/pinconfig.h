@@ -24,7 +24,7 @@ static inline void pin_DisconnectDebug(PinName pin)
 #ifdef STM32F1xx
   pinF1_DisconnectDebug(pin);
 #else
-  UNUSED(pin);
+  (void)pin;
 #endif /* STM32F1xx */
 }
 
@@ -54,8 +54,8 @@ static inline void pin_PullConfig(GPIO_TypeDef *gpio, uint32_t ll_pin, uint32_t 
 static inline void pin_SetAFPin(GPIO_TypeDef *gpio, PinName pin, uint32_t afnum)
 {
 #ifdef STM32F1xx
-  UNUSED(gpio);
-  UNUSED(pin);
+  (void)gpio;
+  (void)pin;
   pin_SetF1AFPin(afnum);
 #else
   uint32_t ll_pin  = STM_LL_GPIO_PIN(pin);

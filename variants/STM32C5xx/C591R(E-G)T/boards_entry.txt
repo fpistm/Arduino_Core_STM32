@@ -1,0 +1,23 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C591RETx
+GenC5.menu.pnum.GENERIC_C591RETX=Generic C591RETx
+GenC5.menu.pnum.GENERIC_C591RETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C591RETX.upload.maximum_data_size=262144
+GenC5.menu.pnum.GENERIC_C591RETX.build.board=GENERIC_C591RETX
+GenC5.menu.pnum.GENERIC_C591RETX.build.product_line=STM32C591xx
+GenC5.menu.pnum.GENERIC_C591RETX.build.variant=STM32C5xx/C591R(E-G)T
+GenC5.menu.pnum.GENERIC_C591RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C591.svd
+
+# Generic C591RGTx
+GenC5.menu.pnum.GENERIC_C591RGTX=Generic C591RGTx
+GenC5.menu.pnum.GENERIC_C591RGTX.upload.maximum_size=1048576
+GenC5.menu.pnum.GENERIC_C591RGTX.upload.maximum_data_size=262144
+GenC5.menu.pnum.GENERIC_C591RGTX.build.board=GENERIC_C591RGTX
+GenC5.menu.pnum.GENERIC_C591RGTX.build.product_line=STM32C591xx
+GenC5.menu.pnum.GENERIC_C591RGTX.build.variant=STM32C5xx/C591R(E-G)T
+GenC5.menu.pnum.GENERIC_C591RGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C591.svd
+

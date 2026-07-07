@@ -4,6 +4,8 @@
 
 #ifdef STM32C0xx
   #include "stm32c0xx_hal_hcd.c"
+#elif STM32C5xx
+  #include "stm32c5xx_hal_hcd.c"
 #elif STM32F1xx
   #include "stm32f1xx_hal_hcd.c"
 #elif STM32F2xx

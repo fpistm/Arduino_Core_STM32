@@ -19,7 +19,8 @@
 #include <Servo.h>
 #include <HardwareTimer.h>
 
-#if defined(HAL_TIM_MODULE_ENABLED) && defined(TIMER_SERVO) && !defined(HAL_TIM_MODULE_ONLY)
+#if defined(TIMER_SERVO) && !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 
 static servo_t servos[MAX_SERVOS];                         // static array of servo structures
 static volatile int8_t timerChannel[_Nbr_16timers] = {-1}; // counter for the servo being pulsed for each timer (or -1 if refresh interval)
@@ -196,28 +197,28 @@ bool Servo::attached()
 
 #else
 
-#warning "TIMER_TONE or HAL_TIM_MODULE_ENABLED not defined"
+#warning "TIMER_TONE or HAL_TIM_MODULE_ENABLED or USE_HAL_TIM_MODULE set to 1 not defined"
 Servo::Servo() {}
 uint8_t Servo::attach(pin_size_t pin)
 {
-  UNUSED(pin);
+  (void)pin;
   return 0;
 }
 uint8_t Servo::attach(pin_size_t pin, int min, int max)
 {
-  UNUSED(pin);
-  UNUSED(min);
-  UNUSED(max);
+  (void)pin;
+  (void)min;
+  (void)max;
   return 0;
 }
 void Servo::detach() {}
 void Servo::write(int value)
 {
-  UNUSED(value);
+  (void)value;
 }
 void Servo::writeMicroseconds(int value)
 {
-  UNUSED(value);
+  (void)value;
 }
 int Servo::read()
 {
@@ -229,4 +230,4 @@ int Servo::readMicroseconds()
 }
 bool Servo::attached() {}
 
-#endif /* HAL_TIM_MODULE_ENABLED && TIMER_SERVO & !HAL_TIM_MODULE_ONLY */
+#endif /* TIMER_SERVO && !HAL_TIM_MODULE_ONLY && (HAL_TIM_MODULE_ENABLED || USE_HAL_TIM_MODULE...) */

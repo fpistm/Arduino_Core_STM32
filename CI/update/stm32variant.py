@@ -1297,6 +1297,7 @@ def print_peripheral():
                     sdx_pinmap(sdmmcd123dir_list),
                 ),
             ),
+            halv2=False,
         )
     )
 
@@ -1714,6 +1715,7 @@ def print_variant(generic_list, alt_syswkup_list):
             hal_modules_list=hal_modules_list,
             alias_list=alias_list,
             sdmmcNA_list=sdmmcNA_list,
+            halv2=False,
         )
     )
 
@@ -2856,7 +2858,7 @@ if args.list:
     for f in mcu_list:
         print(f.name)
     quit()
-stm32_dict = loadSTM32Series(script_path)
+stm32_dict = loadSTM32Series(script_path, True, True)
 stm32_list = sorted([f"STM32{stm32}" for stm32 in stm32_dict.keys()])
 
 if not stm32_list:

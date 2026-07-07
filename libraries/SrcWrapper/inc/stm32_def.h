@@ -22,6 +22,8 @@
 
 #if defined(STM32C0xx)
   #include "stm32c0xx.h"
+#elif defined(STM32C5xx)
+  #include "stm32c5xx.h"
 #elif defined(STM32F0xx)
   #include "stm32f0xx.h"
 #elif defined(STM32F1xx)
@@ -71,6 +73,20 @@
 #else
   #error "STM32YYxx chip series is not defined in boards.txt."
 #endif
+
+#if defined(USE_HALV2_DRIVER)
+  #include "stm32_hal.h"
+
+  #define _Min_Heap_Size HEAP_SIZE
+  #define _Min_Stack_Size STACK_SIZE
+  #define _end end
+
+  /* Define to avoid any backward compatibility issues */
+  /* but prefer avoid using it, use (void)variable instead */
+  #ifndef UNUSED
+    #define UNUSED STM32_UNUSED
+  #endif /* UNUSED */
+#endif /* USE_HALV2_DRIVER */
 
 #ifndef F_CPU
   #define F_CPU SystemCoreClock

@@ -1,0 +1,32 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C552KCTx
+GenC5.menu.pnum.GENERIC_C552KCTX=Generic C552KCTx
+GenC5.menu.pnum.GENERIC_C552KCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C552KCTX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C552KCTX.build.board=GENERIC_C552KCTX
+GenC5.menu.pnum.GENERIC_C552KCTX.build.product_line=STM32C552xx
+GenC5.menu.pnum.GENERIC_C552KCTX.build.variant=STM32C5xx/C552K(C-E)T_C562KET
+GenC5.menu.pnum.GENERIC_C552KCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
+
+# Generic C552KETx
+GenC5.menu.pnum.GENERIC_C552KETX=Generic C552KETx
+GenC5.menu.pnum.GENERIC_C552KETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C552KETX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C552KETX.build.board=GENERIC_C552KETX
+GenC5.menu.pnum.GENERIC_C552KETX.build.product_line=STM32C552xx
+GenC5.menu.pnum.GENERIC_C552KETX.build.variant=STM32C5xx/C552K(C-E)T_C562KET
+GenC5.menu.pnum.GENERIC_C552KETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C552.svd
+
+# Generic C562KETx
+GenC5.menu.pnum.GENERIC_C562KETX=Generic C562KETx
+GenC5.menu.pnum.GENERIC_C562KETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C562KETX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C562KETX.build.board=GENERIC_C562KETX
+GenC5.menu.pnum.GENERIC_C562KETX.build.product_line=STM32C562xx
+GenC5.menu.pnum.GENERIC_C562KETX.build.variant=STM32C5xx/C552K(C-E)T_C562KET
+GenC5.menu.pnum.GENERIC_C562KETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C562.svd
+

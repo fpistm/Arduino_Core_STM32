@@ -1,0 +1,41 @@
+# This file help to add generic board entry.
+# upload.maximum_size and product_line have to be verified
+# and changed if needed.
+# See: https://github.com/stm32duino/Arduino_Core_STM32/wiki/Add-a-new-variant-%28board%29
+
+# Generic C551CCTx
+GenC5.menu.pnum.GENERIC_C551CCTX=Generic C551CCTx
+GenC5.menu.pnum.GENERIC_C551CCTX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C551CCTX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C551CCTX.build.board=GENERIC_C551CCTX
+GenC5.menu.pnum.GENERIC_C551CCTX.build.product_line=STM32C551xx
+GenC5.menu.pnum.GENERIC_C551CCTX.build.variant=STM32C5xx/C551C(C-E)(T-U)
+GenC5.menu.pnum.GENERIC_C551CCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C551.svd
+
+# Generic C551CCUx
+GenC5.menu.pnum.GENERIC_C551CCUX=Generic C551CCUx
+GenC5.menu.pnum.GENERIC_C551CCUX.upload.maximum_size=262144
+GenC5.menu.pnum.GENERIC_C551CCUX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C551CCUX.build.board=GENERIC_C551CCUX
+GenC5.menu.pnum.GENERIC_C551CCUX.build.product_line=STM32C551xx
+GenC5.menu.pnum.GENERIC_C551CCUX.build.variant=STM32C5xx/C551C(C-E)(T-U)
+GenC5.menu.pnum.GENERIC_C551CCUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C551.svd
+
+# Generic C551CETx
+GenC5.menu.pnum.GENERIC_C551CETX=Generic C551CETx
+GenC5.menu.pnum.GENERIC_C551CETX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C551CETX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C551CETX.build.board=GENERIC_C551CETX
+GenC5.menu.pnum.GENERIC_C551CETX.build.product_line=STM32C551xx
+GenC5.menu.pnum.GENERIC_C551CETX.build.variant=STM32C5xx/C551C(C-E)(T-U)
+GenC5.menu.pnum.GENERIC_C551CETX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C551.svd
+
+# Generic C551CEUx
+GenC5.menu.pnum.GENERIC_C551CEUX=Generic C551CEUx
+GenC5.menu.pnum.GENERIC_C551CEUX.upload.maximum_size=524288
+GenC5.menu.pnum.GENERIC_C551CEUX.upload.maximum_data_size=131072
+GenC5.menu.pnum.GENERIC_C551CEUX.build.board=GENERIC_C551CEUX
+GenC5.menu.pnum.GENERIC_C551CEUX.build.product_line=STM32C551xx
+GenC5.menu.pnum.GENERIC_C551CEUX.build.variant=STM32C5xx/C551C(C-E)(T-U)
+GenC5.menu.pnum.GENERIC_C551CEUX.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32C5xx/STM32C551.svd
+

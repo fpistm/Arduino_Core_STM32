@@ -100,8 +100,8 @@ WEAK void SystemClock_Config(void)
   hsem_lock(CFG_HW_CLK48_CONFIG_SEMID, HSEM_LOCK_DEFAULT_RETRY);
 
   /* Initializes the CPU, AHB and APB busses clocks */
-  RCC_OscInitStruct.OscillatorType =
-    RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI48 | RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI48
+                                     | RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState            = RCC_HSE_ON;
   RCC_OscInitStruct.LSEState            = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState            = RCC_HSI_ON;
@@ -133,8 +133,10 @@ WEAK void SystemClock_Config(void)
 
   /* Initializes the peripherals clocks */
   /* RNG needs to be configured like in M0 core, i.e. with HSI48 */
-  PeriphClkInitStruct.PeriphClockSelection =
-    RCC_PERIPHCLK_SMPS | RCC_PERIPHCLK_RFWAKEUP | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_USB;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS | RCC_PERIPHCLK_RFWAKEUP
+                                             | RCC_PERIPHCLK_RNG | RCC_PERIPHCLK_USB
+                                             | RCC_PERIPHCLK_LPUART1;
+  PeriphClkInitStruct.Lpuart1ClockSelection  = RCC_LPUART1CLKSOURCE_HSI;
   PeriphClkInitStruct.UsbClockSelection      = RCC_USBCLKSOURCE_HSI48;
   PeriphClkInitStruct.RngClockSelection      = RCC_RNGCLKSOURCE_HSI48;
   PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSE;

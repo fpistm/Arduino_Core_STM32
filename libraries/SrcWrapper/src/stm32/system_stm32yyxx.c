@@ -1,5 +1,7 @@
 #ifdef STM32C0xx
   #include "system_stm32c0xx.c"
+#elif STM32C5xx
+  #include "system_stm32c5xx.c"
 #elif STM32F0xx
   #include "system_stm32f0xx.c"
 #elif STM32F1xx

@@ -24,6 +24,7 @@ from utils import (
     getRepoBranchName,
     commitFiles,
     loadSTM32Series,
+    addSeriesToConfig,
 )
 
 if sys.platform.startswith("win32"):
@@ -138,7 +139,7 @@ def checkConfig():
     else:
         defaultConfig(config_file_path, {"REPO_LOCAL_PATH": str(repo_local_path)})
     createFolder(repo_local_path)
-    stm32_dict = loadSTM32Series(script_path)
+    stm32_dict = loadSTM32Series(script_path, True, False)
 
 
 def updateStm32Def(series):
@@ -903,17 +904,6 @@ def updateOpenAmp():
     copyFolder(OpenAmp_cube_path, OpenAmp_core_path)
 
 
-def addSeriesToConfig(series, nx):
-    stm32_series_file = stm32_series_json_path / "stm32_series.json"
-    with open(stm32_series_file, "r") as fp:
-        stm32_series_data = json.load(fp)
-    if series not in stm32_series_data:
-        stm32_series_data["series"][series] = nx
-        with open(stm32_series_file, "w") as fp:
-            json.dump(stm32_series_data, fp, indent=2)
-        print(f"Added series {series} with nx={nx} to stm32_series.json")
-
-
 def updateCore():
     global nx
     for series in stm32_list:
@@ -1046,7 +1036,7 @@ Included in STM32Cube{1} FW {3}""".format(
                 print("No stm32_def file were updated!")
                 sys.exit(1)
             # Add the new series to the json config file
-            addSeriesToConfig(series, nx)
+            addSeriesToConfig(stm32_series_json_path, series, nx, "series")
             if not commitFiles(core_path, series_commit_msg):
                 print("No stm32_series.json file were updated!")
 

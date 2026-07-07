@@ -49,21 +49,36 @@ extern "C" {
 #endif
 
 /* Exported functions ------------------------------------------------------- */
-#if defined(HAL_ADC_MODULE_ENABLED) && !defined(HAL_ADC_MODULE_ONLY)
+#if !defined(HAL_ADC_MODULE_ONLY)
+#if defined(HAL_ADC_MODULE_ENABLED)
 uint32_t get_adc_channel(PinName pin, uint32_t *bank);
 uint32_t get_adc_internal_channel(PinName pin);
+#endif
+#if defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1)
+hal_adc_channel_t get_adc_channel(PinName pin);
+hal_adc_channel_t get_adc_internal_channel(PinName pin);
+#endif
+#if defined(HAL_ADC_MODULE_ENABLED) || (defined(USE_HAL_ADC_MODULE) && (USE_HAL_ADC_MODULE == 1))
 uint16_t adc_read_value(PinName pin, uint32_t resolution);
 #endif
-#if defined(HAL_DAC_MODULE_ENABLED) && !defined(HAL_DAC_MODULE_ONLY)
+#endif /* !HAL_ADC_MODULE_ONLY */
+#if !defined(HAL_DAC_MODULE_ONLY)
+#if defined(HAL_DAC_MODULE_ENABLED)
 uint32_t get_dac_channel(PinName pin);
-void dac_write_value(PinName pin, uint32_t value, uint8_t do_init);
+#endif
+#if defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1)
+hal_dac_channel_t get_dac_channel(PinName pin);
+#endif
+#if defined(HAL_DAC_MODULE_ENABLED) || (defined(USE_HAL_DAC_MODULE) && (USE_HAL_DAC_MODULE == 1))
+void dac_write_value(PinName pin, uint32_t value, bool do_init);
 void dac_stop(PinName pin);
 #endif
-#if defined(HAL_TIM_MODULE_ENABLED) && !defined(HAL_TIM_MODULE_ONLY)
+#endif /* !HAL_DAC_MODULE_ONLY */
+#if !defined(HAL_TIM_MODULE_ONLY) &&\
+    (defined(HAL_TIM_MODULE_ENABLED) || (defined(USE_HAL_TIM_MODULE) && (USE_HAL_TIM_MODULE == 1)))
 void pwm_start(PinName pin, uint32_t clock_freq, uint32_t value, TimerCompareFormat_t resolution);
 void pwm_stop(PinName pin);
 #endif
-
 #ifdef __cplusplus
 }
 #endif

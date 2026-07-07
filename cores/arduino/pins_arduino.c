@@ -41,12 +41,12 @@ PinName analogInputToPinName(pin_size_t pin)
   PinName pn = digitalPinToPinName(analogInputToDigitalPin(pin));
   if (pn == NC) {
     switch (pin) {
-#if defined(ADC_CHANNEL_TEMPSENSOR) || defined(ADC_CHANNEL_TEMPSENSOR_ADC1)
+#ifdef ATEMP
       case ATEMP:
         pn = PADC_TEMP;
         break;
 #endif
-#if defined(ADC5) && defined(ADC_CHANNEL_TEMPSENSOR_ADC5)
+#ifdef ATEMP_ADC5
       case ATEMP_ADC5:
         pn = PADC_TEMP_ADC5;
         break;

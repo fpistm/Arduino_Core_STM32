@@ -8,7 +8,9 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-#ifdef STM32H5xx
+#ifdef STM32C5xx
+  #include "stm32_utils_i3c.h"
+#elif STM32H5xx
   #include "stm32h5xx_util_i3c.h"
 #elif STM32U3xx
   #include "stm32u3xx_util_i3c.h"
