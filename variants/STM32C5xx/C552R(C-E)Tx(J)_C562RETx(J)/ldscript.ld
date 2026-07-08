@@ -18,8 +18,8 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
-HEAP_SIZE = 0x200;
-STACK_SIZE = 0x400;
+HEAP_SIZE = 0x2000;
+STACK_SIZE = 0x2000;
 
 
 MEMORY
