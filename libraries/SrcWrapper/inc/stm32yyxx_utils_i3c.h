@@ -1,5 +1,5 @@
-#ifndef _STM32YYXX_UTIL_I2C_H_
-#define _STM32YYXX_UTIL_I2C_H_
+#ifndef _STM32YYXX_UTILS_I3C_H_
+#define _STM32YYXX_UTILS_I3C_H_
 /* LL raised several warnings, ignore them */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -9,7 +9,11 @@
 #endif
 
 #ifdef STM32C5xx
-  #include "stm32_utils_i2c.h"
+  #include "stm32_utils_i3c.h"
+#elif STM32H5xx
+  #include "stm32h5xx_util_i3c.h"
+#elif STM32U3xx
+  #include "stm32u3xx_util_i3c.h"
 #endif
 #pragma GCC diagnostic pop
-#endif /* _STM32YYXX_UTIL_I2C_H_ */
+#endif /* _STM32YYXX_UTILS_I3C_H_ */
