@@ -1,5 +1,5 @@
-#ifndef _STM32YYXX_UTIL_{{feat.upper()}}_H_
-#define _STM32YYXX_UTIL_{{feat.upper()}}_H_
+#ifndef _STM32YYXX_UTILS_{{feat.upper()}}_H_
+#define _STM32YYXX_UTILS_{{feat.upper()}}_H_
 /* LL raised several warnings, ignore them */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -8,21 +8,21 @@
   #pragma GCC diagnostic ignored "-Wregister"
 #endif
 
-{% for series, nx, halv2 in serieslist %}
+{% for series, nx, is_series_in_fn, utils in serieslist %}
   {% if loop.first %}
 #ifdef STM32{{series.upper()}}{{nx}}
   {% else %}
 #elif STM32{{series.upper()}}{{nx}}
   {% endif %}
-  {% if halv2 %}
-  #include "stm32_utils_{{feat}}.h"
+  {% if is_series_in_fn %}
+  #include "stm32{{series}}{{nx}}_{{'utils' if utils else 'util'}}_{{feat}}.h"
   {% else %}
-  #include "stm32{{series}}{{nx}}_util_{{feat}}.h"
+  #include "stm32_{{'utils' if utils else 'util'}}_{{feat}}.h"
   {% endif %}
   {% if loop.last %}
 #endif
   {% endif %}
 {% endfor %}
 #pragma GCC diagnostic pop
-#endif /* _STM32YYXX_UTIL_{{feat.upper()}}_H_ */
+#endif /* _STM32YYXX_UTILS_{{feat.upper()}}_H_ */
 
