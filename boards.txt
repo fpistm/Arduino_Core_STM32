@@ -13539,6 +13539,16 @@ GenWB.openocd.target=stm32wbx
 GenWB.vid.0=0x0483
 GenWB.pid.0=0x5740
 
+# WeAct STM32WB55CGU6
+GenWB.menu.pnum.WEACT_WB55CGU6=WeAct STM32WB55CGU6
+GenWB.menu.pnum.WEACT_WB55CGU6.upload.maximum_size=524288
+GenWB.menu.pnum.WEACT_WB55CGU6.upload.maximum_data_size=196608
+GenWB.menu.pnum.WEACT_WB55CGU6.build.board=WEACT_WB55CGU6
+GenWB.menu.pnum.WEACT_WB55CGU6.build.product_line=STM32WB55xx
+GenWB.menu.pnum.WEACT_WB55CGU6.build.variant=STM32WBxx/WB35C(C-E)UxA_WB55C(C-E-G)U
+GenWB.menu.pnum.WEACT_WB55CGU6.build.variant_h=variant_WEACT_WB55CGU6.h
+GenWB.menu.pnum.WEACT_WB55CGU6.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32WBxx/STM32WB55_CM4.svd
+
 # Generic WB15CCUx
 GenWB.menu.pnum.GENERIC_WB15CCUX=Generic WB15CCUx
 GenWB.menu.pnum.GENERIC_WB15CCUX.upload.maximum_size=131072

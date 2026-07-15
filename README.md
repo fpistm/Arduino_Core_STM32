@@ -819,6 +819,7 @@ User can add a STM32 based board following this [wiki](https://github.com/stm32d
 | :----: | :-------: | ---- | :-----: | :---- |
 | :green_heart: | STM32WB15CCU | Generic Board | *2.5.0* |  |
 | :green_heart: | STM32WB55CC<br>STM32WB55CE<br>STM32WB55CG | Generic Board | *2.0.0* |  |
+| :yellow_heart: | STM32WB55CGU | [WeAct STM32WB55CGU6](https://github.com/WeActStudio/WeActStudio.STM32WB55CoreBoard) | **3.0.0** |  |
 | :green_heart: | STM32WB5MMG | Generic Board | *2.1.0* |  |
 | :green_heart: | STM32WB55RC<br>STM32WB55RE<br>STM32WB55RG | Generic Board | *2.0.0* |  |
 | :green_heart: | STM32WB55VC<br>STM32WB55VE<br>STM32WB55VG | Generic Board | *2.10.0* |  |
