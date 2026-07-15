@@ -30,7 +30,7 @@ void setup() {
   Serial.print("DA = 0x");
   Serial.println(I3C.address(), HEX);
 
-  HAL_I3C_FlushAllFifo(I3C.halHandle());
+  Serial.printf("flushAllFifos =  %s\n", (I3C.flushAllFifos()) ? "true" : "false");
 
   int rc = I3C.receive(rxBuf, sizeof(rxBuf), 10000);
   Serial.print("receive rc = ");

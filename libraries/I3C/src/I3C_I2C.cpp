@@ -29,6 +29,31 @@ int I3CBus::i2cWrite(uint8_t staticAddr,
 {
   int result = -1;
 
+#if defined(USE_HALV2_DRIVER)
+  if (_initialized &&
+      (_hi3c.mode == HAL_I3C_MODE_CTRL) &&
+      (_busType == I3CBusType::Mixed) &&
+      isValidI2CStaticAddr(staticAddr) &&
+      (buf != nullptr) &&
+      (len != 0U)) {
+    uint32_t               controlBuffer[1] = {};
+    hal_i3c_transfer_ctx_t ctx {};
+    hal_i3c_private_desc_t priv[] = {
+      { staticAddr, static_cast<uint32_t>(len), HAL_I3C_DIRECTION_WRITE },
+    };
+
+    if ((HAL_I3C_CTRL_ResetTransferCtx(&ctx) == HAL_OK) &&
+        (HAL_I3C_CTRL_InitTransferCtxTc(&ctx, controlBuffer, 1U) == HAL_OK) &&
+        (HAL_I3C_CTRL_InitTransferCtxTx(&ctx, buf, static_cast<uint32_t>(len)) == HAL_OK) &&
+        (HAL_I3C_CTRL_BuildTransferCtxPrivate(&ctx,
+                                              priv,
+                                              COUNTOF(priv),
+                                              HAL_I2C_PRIVATE_WITHOUT_ARB_STOP) == HAL_OK)) {
+      hal_status_t st = HAL_I3C_CTRL_Transfer(&_hi3c, &ctx, timeout);
+      result = HAL_I3C_GetError(_hi3c, st);
+    }
+  }
+#else
   if (_initialized &&
       (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) &&
       (_busType == I3CBusType::Mixed) &&
@@ -67,6 +92,7 @@ int I3CBus::i2cWrite(uint8_t staticAddr,
       result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
     }
   }
+#endif
 
   return result;
 }
@@ -78,6 +104,31 @@ int I3CBus::i2cRead(uint8_t staticAddr,
 {
   int result = -1;
 
+#if defined(USE_HALV2_DRIVER)
+  if (_initialized &&
+      (_hi3c.mode == HAL_I3C_MODE_CTRL) &&
+      (_busType == I3CBusType::Mixed) &&
+      isValidI2CStaticAddr(staticAddr) &&
+      (buf != nullptr) &&
+      (len != 0U)) {
+    uint32_t               controlBuffer[1] = {};
+    hal_i3c_transfer_ctx_t ctx {};
+    hal_i3c_private_desc_t priv[] = {
+      { staticAddr, static_cast<uint32_t>(len), HAL_I3C_DIRECTION_READ },
+    };
+
+    if ((HAL_I3C_CTRL_ResetTransferCtx(&ctx) == HAL_OK) &&
+        (HAL_I3C_CTRL_InitTransferCtxTc(&ctx, controlBuffer, 1U) == HAL_OK) &&
+        (HAL_I3C_CTRL_InitTransferCtxRx(&ctx, buf, static_cast<uint32_t>(len)) == HAL_OK) &&
+        (HAL_I3C_CTRL_BuildTransferCtxPrivate(&ctx,
+                                              priv,
+                                              COUNTOF(priv),
+                                              HAL_I2C_PRIVATE_WITHOUT_ARB_STOP) == HAL_OK)) {
+      hal_status_t st = HAL_I3C_CTRL_Transfer(&_hi3c, &ctx, timeout);
+      result = HAL_I3C_GetError(_hi3c, st);
+    }
+  }
+#else
   if (_initialized &&
       (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) &&
       (_busType == I3CBusType::Mixed) &&
@@ -116,6 +167,7 @@ int I3CBus::i2cRead(uint8_t staticAddr,
       result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
     }
   }
+#endif
 
   return result;
 }
@@ -130,8 +182,6 @@ int I3CBus::i2cWriteRead(uint8_t staticAddr,
   int result = -1;
 
   if ((!_initialized) ||
-      (_hi3c.Mode != HAL_I3C_MODE_CONTROLLER) ||
-      (_busType != I3CBusType::Mixed) ||
       (!isValidI2CStaticAddr(staticAddr)) ||
       (txBuf == nullptr) ||
       (txLen == 0U) ||
@@ -139,70 +189,97 @@ int I3CBus::i2cWriteRead(uint8_t staticAddr,
       (rxLen == 0U)) {
     result = -1;
   } else {
-    I3C_XferTypeDef    context {};
-    I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[1] = {};
-    HAL_StatusTypeDef  st;
+#if defined(USE_HALV2_DRIVER)
+    if ((_hi3c.mode == HAL_I3C_MODE_CTRL) &&
+        (_busType == I3CBusType::Mixed)) {
+      uint32_t               controlBuffer[2] = {};
+      hal_i3c_transfer_ctx_t ctx {};
+      hal_i3c_private_desc_t priv[] = {
+        { staticAddr, static_cast<uint32_t>(txLen), HAL_I3C_DIRECTION_WRITE },
+        { staticAddr, static_cast<uint32_t>(rxLen), HAL_I3C_DIRECTION_READ  },
+      };
 
-    // 1) write phase with RESTART
-    priv.TargetAddr    = staticAddr;
-    priv.TxBuf.pBuffer = const_cast<uint8_t *>(txBuf);
-    priv.TxBuf.Size    = static_cast<uint32_t>(txLen);
-    priv.RxBuf.pBuffer = nullptr;
-    priv.RxBuf.Size    = 0U;
-    priv.Direction     = HAL_I3C_DIRECTION_WRITE;
+      if ((HAL_I3C_CTRL_ResetTransferCtx(&ctx) == HAL_OK) &&
+          (HAL_I3C_CTRL_InitTransferCtxTc(&ctx, controlBuffer, 2U) == HAL_OK) &&
+          (HAL_I3C_CTRL_InitTransferCtxTx(&ctx, txBuf, static_cast<uint32_t>(txLen)) == HAL_OK) &&
+          (HAL_I3C_CTRL_InitTransferCtxRx(&ctx, rxBuf, static_cast<uint32_t>(rxLen)) == HAL_OK) &&
+          (HAL_I3C_CTRL_BuildTransferCtxPrivate(&ctx,
+                                                priv,
+                                                COUNTOF(priv),
+                                                HAL_I2C_PRIVATE_WITHOUT_ARB_RESTART) == HAL_OK)) {
+        hal_status_t st = HAL_I3C_CTRL_Transfer(&_hi3c, &ctx, timeout);
+        result = HAL_I3C_GetError(_hi3c, st);
+      }
+    }
+#else
+    if ((_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) &&
+        (_busType == I3CBusType::Mixed)) {
+      I3C_XferTypeDef    context {};
+      I3C_PrivateTypeDef priv {};
+      uint32_t           controlBuffer[1] = {};
+      HAL_StatusTypeDef  st;
 
-    std::memset(&context, 0, sizeof(context));
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = 1U;
-    context.TxBuf.pBuffer   = const_cast<uint8_t *>(txBuf);
-    context.TxBuf.Size      = static_cast<uint32_t>(txLen);
+      // 1) write phase with RESTART
+      priv.TargetAddr    = staticAddr;
+      priv.TxBuf.pBuffer = const_cast<uint8_t *>(txBuf);
+      priv.TxBuf.Size    = static_cast<uint32_t>(txLen);
+      priv.RxBuf.pBuffer = nullptr;
+      priv.RxBuf.Size    = 0U;
+      priv.Direction     = HAL_I3C_DIRECTION_WRITE;
 
-    st = HAL_I3C_AddDescToFrame(
-           &_hi3c,
-           nullptr,
-           &priv,
-           &context,
-           context.CtrlBuf.Size,
-           I2C_PRIVATE_WITHOUT_ARB_RESTART);
+      std::memset(&context, 0, sizeof(context));
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 1U;
+      context.TxBuf.pBuffer   = const_cast<uint8_t *>(txBuf);
+      context.TxBuf.Size      = static_cast<uint32_t>(txLen);
 
-    if (st != HAL_OK) {
-      result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
-    } else {
-      st = HAL_I3C_Ctrl_Transmit(&_hi3c, &context, timeout);
+      st = HAL_I3C_AddDescToFrame(
+             &_hi3c,
+             nullptr,
+             &priv,
+             &context,
+             context.CtrlBuf.Size,
+             I2C_PRIVATE_WITHOUT_ARB_RESTART);
+
       if (st != HAL_OK) {
         result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
       } else {
-        // 2) read phase with STOP
-        priv.TargetAddr    = staticAddr;
-        priv.TxBuf.pBuffer = nullptr;
-        priv.TxBuf.Size    = 0U;
-        priv.RxBuf.pBuffer = rxBuf;
-        priv.RxBuf.Size    = static_cast<uint32_t>(rxLen);
-        priv.Direction     = HAL_I3C_DIRECTION_READ;
-
-        std::memset(&context, 0, sizeof(context));
-        context.CtrlBuf.pBuffer = controlBuffer;
-        context.CtrlBuf.Size    = 1U;
-        context.RxBuf.pBuffer   = rxBuf;
-        context.RxBuf.Size      = static_cast<uint32_t>(rxLen);
-
-        st = HAL_I3C_AddDescToFrame(
-               &_hi3c,
-               nullptr,
-               &priv,
-               &context,
-               context.CtrlBuf.Size,
-               I2C_PRIVATE_WITHOUT_ARB_STOP);
-
+        st = HAL_I3C_Ctrl_Transmit(&_hi3c, &context, timeout);
         if (st != HAL_OK) {
           result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
         } else {
-          st = HAL_I3C_Ctrl_Receive(&_hi3c, &context, timeout);
-          result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+          // 2) read phase with STOP
+          priv.TargetAddr    = staticAddr;
+          priv.TxBuf.pBuffer = nullptr;
+          priv.TxBuf.Size    = 0U;
+          priv.RxBuf.pBuffer = rxBuf;
+          priv.RxBuf.Size    = static_cast<uint32_t>(rxLen);
+          priv.Direction     = HAL_I3C_DIRECTION_READ;
+
+          std::memset(&context, 0, sizeof(context));
+          context.CtrlBuf.pBuffer = controlBuffer;
+          context.CtrlBuf.Size    = 1U;
+          context.RxBuf.pBuffer   = rxBuf;
+          context.RxBuf.Size      = static_cast<uint32_t>(rxLen);
+
+          st = HAL_I3C_AddDescToFrame(
+                 &_hi3c,
+                 nullptr,
+                 &priv,
+                 &context,
+                 context.CtrlBuf.Size,
+                 I2C_PRIVATE_WITHOUT_ARB_STOP);
+
+          if (st != HAL_OK) {
+            result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+          } else {
+            st = HAL_I3C_Ctrl_Receive(&_hi3c, &context, timeout);
+            result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+          }
         }
       }
     }
+#endif
   }
 
   return result;
@@ -217,48 +294,74 @@ int I3CBus::i2cWriteRegBuffer(uint8_t staticAddr,
   int result = -1;
 
   if ((_initialized) &&
-      (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) &&
       (_busType == I3CBusType::Mixed) &&
       isValidI2CStaticAddr(staticAddr) &&
       (pData != nullptr) &&
       (len != 0U) &&
       (len <= 31U)) {
-    I3C_XferTypeDef    context {};
-    I3C_PrivateTypeDef priv {};
-    uint32_t           controlBuffer[1] = {};
-    uint8_t            data[32] = {0};
-    HAL_StatusTypeDef  st;
+#if defined(USE_HALV2_DRIVER)
+    if (_hi3c.mode == HAL_I3C_MODE_CTRL) {
+      uint32_t               controlBuffer[1] = {};
+      uint8_t                data[32] = {0};
+      hal_i3c_transfer_ctx_t ctx {};
+      hal_i3c_private_desc_t priv[] = {
+        { staticAddr, static_cast<uint32_t>(1U + len), HAL_I3C_DIRECTION_WRITE },
+      };
 
-    data[0] = reg;
-    memcpy(&data[1], pData, len);
+      data[0] = reg;
+      memcpy(&data[1], pData, len);
 
-    priv.TargetAddr    = staticAddr;
-    priv.TxBuf.pBuffer = data;
-    priv.TxBuf.Size    = static_cast<uint32_t>(1U + len);
-    priv.RxBuf.pBuffer = nullptr;
-    priv.RxBuf.Size    = 0U;
-    priv.Direction     = HAL_I3C_DIRECTION_WRITE;
-
-    std::memset(&context, 0, sizeof(context));
-    context.CtrlBuf.pBuffer = controlBuffer;
-    context.CtrlBuf.Size    = 1U;
-    context.TxBuf.pBuffer   = data;
-    context.TxBuf.Size      = static_cast<uint32_t>(1U + len);
-
-    st = HAL_I3C_AddDescToFrame(
-           &_hi3c,
-           nullptr,
-           &priv,
-           &context,
-           context.CtrlBuf.Size,
-           I2C_PRIVATE_WITHOUT_ARB_STOP);
-
-    if (st != HAL_OK) {
-      result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
-    } else {
-      st = HAL_I3C_Ctrl_Transmit(&_hi3c, &context, timeout);
-      result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+      if ((HAL_I3C_CTRL_ResetTransferCtx(&ctx) == HAL_OK) &&
+          (HAL_I3C_CTRL_InitTransferCtxTc(&ctx, controlBuffer, 1U) == HAL_OK) &&
+          (HAL_I3C_CTRL_InitTransferCtxTx(&ctx, data, static_cast<uint32_t>(1U + len)) == HAL_OK) &&
+          (HAL_I3C_CTRL_BuildTransferCtxPrivate(&ctx,
+                                                priv,
+                                                COUNTOF(priv),
+                                                HAL_I2C_PRIVATE_WITHOUT_ARB_STOP) == HAL_OK)) {
+        hal_status_t st = HAL_I3C_CTRL_Transfer(&_hi3c, &ctx, timeout);
+        result = HAL_I3C_GetError(_hi3c, st);
+      }
     }
+#else
+    if (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) {
+      I3C_XferTypeDef    context {};
+      I3C_PrivateTypeDef priv {};
+      uint32_t           controlBuffer[1] = {};
+      uint8_t            data[32] = {0};
+      HAL_StatusTypeDef  st;
+
+      data[0] = reg;
+      memcpy(&data[1], pData, len);
+
+      priv.TargetAddr    = staticAddr;
+      priv.TxBuf.pBuffer = data;
+      priv.TxBuf.Size    = static_cast<uint32_t>(1U + len);
+      priv.RxBuf.pBuffer = nullptr;
+      priv.RxBuf.Size    = 0U;
+      priv.Direction     = HAL_I3C_DIRECTION_WRITE;
+
+      std::memset(&context, 0, sizeof(context));
+      context.CtrlBuf.pBuffer = controlBuffer;
+      context.CtrlBuf.Size    = 1U;
+      context.TxBuf.pBuffer   = data;
+      context.TxBuf.Size      = static_cast<uint32_t>(1U + len);
+
+      st = HAL_I3C_AddDescToFrame(
+             &_hi3c,
+             nullptr,
+             &priv,
+             &context,
+             context.CtrlBuf.Size,
+             I2C_PRIVATE_WITHOUT_ARB_STOP);
+
+      if (st != HAL_OK) {
+        result = -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+      } else {
+        st = HAL_I3C_Ctrl_Transmit(&_hi3c, &context, timeout);
+        result = (st == HAL_OK) ? 0 : -static_cast<int>(HAL_I3C_GetError(&_hi3c));
+      }
+    }
+#endif
   }
 
   return result;
@@ -301,11 +404,19 @@ int I3CBus::scanI2CDevices(uint8_t *addrs,
 {
   int result = -1;
 
+#if defined(USE_HALV2_DRIVER)
+  if ((_initialized) &&
+      (_hi3c.mode == HAL_I3C_MODE_CTRL) &&
+      (_busType == I3CBusType::Mixed) &&
+      (addrs != nullptr) &&
+      (foundCount != nullptr)) {
+#else
   if ((_initialized) &&
       (_hi3c.Mode == HAL_I3C_MODE_CONTROLLER) &&
       (_busType == I3CBusType::Mixed) &&
       (addrs != nullptr) &&
       (foundCount != nullptr)) {
+#endif
     size_t count = 0U;
 
     for (uint8_t addr = 0x08U; addr < 0x78U; ++addr) {
@@ -398,4 +509,4 @@ int I3CBus::readRegBuffer(uint8_t addr,
          : readRegBuffer(addr, reg, pData, len, timeout);
 }
 
-#endif
+#endif  /* I3C1_BASE || I3C2_BASE */

@@ -9,6 +9,7 @@
 // ============================================================================
 // Descriptors, configuration structures, and enums
 // ============================================================================
+#define COUNTOF(__BUFFER__) (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
 
 struct I3CDiscoveredDevice {
   uint8_t  dynAddr = 0;            // 7-bit dynamic address
@@ -57,7 +58,7 @@ struct I3CTargetConfig {
   bool     ibiRequest = false;
   bool     ibiPayload = false;
 
-  uint32_t ibiPayloadSize = HAL_I3C_PAYLOAD_EMPTY;
+  uint32_t ibiPayloadSize = LL_I3C_PAYLOAD_EMPTY;
 
   uint16_t maxReadDataSize = 0xFFFF;
   uint16_t maxWriteDataSize = 0xFFFF;
@@ -68,9 +69,9 @@ struct I3CTargetConfig {
   uint32_t dataTurnAroundDuration = HAL_I3C_TURNAROUND_TIME_TSCO_LESS_12NS;
   uint8_t  maxReadTurnAround = 0;
   uint32_t maxDataSpeed = HAL_I3C_GETMXDS_FORMAT_1;
-  bool     maxSpeedLimitation = false;
-
   uint32_t handOffActivityState = HAL_I3C_HANDOFF_ACTIVITY_STATE_0;
+
+  bool     maxSpeedLimitation = false;
   bool     handOffDelay = false;
   bool     pendingReadMDB = false;
 };
@@ -97,10 +98,18 @@ enum class I3CTransferType : uint8_t {
 };
 
 struct I3CControllerConfig {
+
+#if defined(USE_HALV2_DRIVER)
+  uint32_t rxFifoThreshold = HAL_I3C_RX_FIFO_THRESHOLD_1_8;
+  uint32_t txFifoThreshold = HAL_I3C_TX_FIFO_THRESHOLD_1_8;
+  uint32_t controlFifo     = 0U;
+  uint32_t statusFifo      = 0U;
+#else
   uint32_t rxFifoThreshold = HAL_I3C_RXFIFO_THRESHOLD_1_4;
   uint32_t txFifoThreshold = HAL_I3C_TXFIFO_THRESHOLD_1_4;
   uint32_t controlFifo     = HAL_I3C_CONTROLFIFO_DISABLE;
   uint32_t statusFifo      = HAL_I3C_STATUSFIFO_DISABLE;
+#endif
 
   uint8_t  dynamicAddr     = 0U;
   uint8_t  stallTime       = 0x00U;
@@ -113,6 +122,16 @@ struct I3CControllerConfig {
   bool     highKeeperSDA   = false;
 };
 
+struct I3CTargetEventConfig {
+  uint8_t *rxData = nullptr;
+  uint32_t rxSize = 0U;
+};
+
+struct I3CTargetCccInfo {
+  bool hotJoinAllowed = false;
+  bool inBandAllowed = false;
+  bool ctrlRoleAllowed = false;
+};
 // ============================================================================
 // I3CBus
 // ============================================================================
@@ -159,6 +178,8 @@ class I3CBus {
     bool isTarget() const;
 
     void end();
+
+    bool  flushAllFifos();
 
     // ------------------------------------------------------------------------
     // Default I3C controller transfers
@@ -289,11 +310,11 @@ class I3CBus {
     // ------------------------------------------------------------------------
     bool isI2CDeviceReady(uint8_t staticAddr,
                           uint32_t trials = 3U,
-                          uint32_t timeout = 1000U);
+                          uint32_t timeout = 10U);
 
     bool isI3CDeviceReady(uint8_t dynAddr,
                           uint32_t trials = 3U,
-                          uint32_t timeout = 1000U);
+                          uint32_t timeout = 10U);
 
     // ------------------------------------------------------------------------
     // CCC broadcast & direct commands
@@ -393,7 +414,7 @@ class I3CBus {
                 uint8_t payloadSize,
                 uint32_t timeout = 1000U);
 
-    int enableTargetEvents(I3C_XferTypeDef *pXferData,
+    int enableTargetEvents(const I3CTargetEventConfig &cfg,
                            uint32_t interruptMask);
 
     int disableTargetEvents(uint32_t interruptMask);
@@ -405,6 +426,7 @@ class I3CBus {
 
     bool hasTargetEvent() const;
     bool readTargetEvent(uint32_t &eventId);
+    bool getTargetCccInfo(uint32_t eventId, I3CTargetCccInfo &out);
 
     // ------------------------------------------------------------------------
     // Controller-side IBI support
@@ -422,8 +444,8 @@ class I3CBus {
                   bool stopTransfer = false,
                   uint32_t timeout = 1000U);
 
-    int enableControllerEvents(uint32_t interruptMask = HAL_I3C_IT_IBIIE);
-    int disableControllerEvents(uint32_t interruptMask = HAL_I3C_IT_IBIIE);
+    int enableControllerEvents(uint32_t interruptMask = LL_I3C_IER_IBIIE);
+    int disableControllerEvents(uint32_t interruptMask = LL_I3C_IER_IBIIE);
 
     bool hasIbi() const;
     bool readIbi(I3CControllerIbiInfo &out);
@@ -436,10 +458,17 @@ class I3CBus {
     // ------------------------------------------------------------------------
     void handleHalNotify(uint32_t eventId);
 
+#if defined(USE_HALV2_DRIVER)
+    hal_i3c_handle_t *halHandle()
+    {
+      return &_hi3c;
+    }
+#else
     I3C_HandleTypeDef *halHandle()
     {
       return &_hi3c;
     }
+#endif
 
   private:
     // ------------------------------------------------------------------------
@@ -527,12 +556,26 @@ class I3CBus {
     static uint32_t bigToLittle32(uint32_t x);
     static uint64_t extractPid48FromEntdaaPayload(uint64_t payload);
 
+#if defined(USE_HALV2_DRIVER)
+    static int HAL_I3C_GetError(const hal_i3c_handle_t &hi3c, hal_status_t st = HAL_OK);
+#endif
+
     // ------------------------------------------------------------------------
     // Clock helpers
     // ------------------------------------------------------------------------
     uint32_t getPeripheralClockFreq() const;
+
+#if defined(USE_HALV2_DRIVER)
+    bool buildControllerTiming(uint32_t srcFreq,
+                               uint32_t freq,
+                               I3CBusType busType,
+                               uint32_t mixedBusOdFreq,
+                               hal_i3c_ctrl_config_t &outCtrl) ;
+    bool buildTargetTiming(uint32_t srcFreq, hal_i3c_tgt_config_t &outTgt) ;
+#else
     bool buildControllerTiming(uint32_t freq, LL_I3C_CtrlBusConfTypeDef &outCtrl) const;
     bool buildTargetTiming(LL_I3C_TgtBusConfTypeDef &outTgt) const;
+#endif
 
     // ------------------------------------------------------------------------
     // Irq helpers
@@ -559,7 +602,13 @@ class I3CBus {
     volatile bool _targetEventPending = false;
     volatile uint32_t _lastTargetEventId = 0U;
 
-    I3C_HandleTypeDef _hi3c{};
+
+#if defined(USE_HALV2_DRIVER)
+    hal_i3c_handle_t _hi3c {};
+#else
+    I3C_HandleTypeDef _hi3c {};
+#endif
+
     bool _initialized = false;
     I3C_TypeDef *_instance = nullptr;
 

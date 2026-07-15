@@ -54,6 +54,16 @@
     #define USE_HAL_I2S_MODULE                    1U
   #endif
 
+  #if defined(HAL_I3C_MODULE_DISABLED)
+    #if defined(USE_HAL_I3C_MODULE)
+      #undef USE_HAL_I3C_MODULE
+    #endif
+    #define USE_HAL_I3C_MODULE                    0U
+  #else
+    #define USE_HAL_I3C_MODULE                    1U
+    #define USE_HAL_I3C_GET_LAST_ERRORS           0U
+  #endif
+
   #if defined(HAL_RTC_MODULE_DISABLED)
     #if defined(USE_HAL_RTC_MODULE)
       #undef USE_HAL_RTC_MODULE
