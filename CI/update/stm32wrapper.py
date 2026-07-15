@@ -58,7 +58,7 @@ j2_env = Environment(
 )
 all_ll_header_file_template = j2_env.get_template(all_ll_h_file)
 ll_h_file_template = j2_env.get_template(ll_h_file)
-util_h_file_template = j2_env.get_template("stm32yyxx_util_ppp.h")
+utils_h_file_template = j2_env.get_template("stm32yyxx_utils_ppp.h")
 c_file_template = j2_env.get_template(c_file)
 dsp_file_template = Template('#include "../Source/{{ dsp_dir }}/{{ dsp_name }}"\n\n')
 stm32_def_build_template = j2_env.get_template(stm32_def_build_file)
@@ -66,10 +66,9 @@ startup_stm32yyxx_template = j2_env.get_template(startup_stm32yyxx_file)
 system_stm32_template = j2_env.get_template(system_stm32_file)
 
 # re
-feat_c_regex = re.compile(r"stm32[^_]+_(.*).c$")
+feat_c_regex = re.compile(r"stm32[^_]*_(.*).c$")
 feat_h_regex = re.compile(r"stm32[^_]+_(.*).h$")
-feat_util_h_regex = re.compile(r"stm32[^_]+_util_(.*).h$")
-feat_utils_h_regex = re.compile(r"stm32_utils_(.*).h$")
+feat_utils_h_regex = re.compile(r"stm32[^_]*_utils?_(.*).h$")
 
 
 def checkConfig(arg_core, arg_cmsis):
@@ -225,7 +224,7 @@ def wrap(arg_core, arg_cmsis, log):
     ll_h_dict = {}
     ll_c_dict = {}
     hal_c_dict = {}
-    util_h_dict = {}
+    utils_h_dict = {}
 
     # Search all files for each series
     for series in stm32_series:
@@ -238,9 +237,10 @@ def wrap(arg_core, arg_cmsis, log):
                 print(f"Generating for {series}...")
             lower = series.lower()
 
-            # Search stm32yyxx_[hal|ll]*.c file
-            filelist = src.glob(f"**/stm32{lower}{nx}_*.c")
+            # Search stm32yyxx_[hal|ll|utils?]*.c or stm32_utils?_*.c file
+            filelist = src.glob("**/stm32*.c")
             for fp in filelist:
+                is_series_in_fn = fp.name.startswith(f"stm32{lower}{nx}_")
                 legacy = fp.parent.name == "Legacy"
                 # File name
                 fn = fp.name
@@ -258,12 +258,18 @@ def wrap(arg_core, arg_cmsis, log):
                             current_list = ll_c_dict.pop(feat)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
-                            current_list.append((lower, legacy, stm32_dict[series]))
+                            current_list.append(
+                                (lower, legacy, stm32_dict[series], is_series_in_fn)
+                            )
                             ll_c_dict[feat] = current_list
                         else:
-                            ll_c_dict[feat].append((lower, legacy, stm32_dict[series]))
+                            ll_c_dict[feat].append(
+                                (lower, legacy, stm32_dict[series], is_series_in_fn)
+                            )
                     else:
-                        ll_c_dict[feat] = [(lower, legacy, stm32_dict[series])]
+                        ll_c_dict[feat] = [
+                            (lower, legacy, stm32_dict[series], is_series_in_fn)
+                        ]
                 else:
                     if feat in hal_c_dict:
                         if legacy:
@@ -271,13 +277,18 @@ def wrap(arg_core, arg_cmsis, log):
                             current_list = hal_c_dict.pop(feat)
                             if current_list[-1][0] == lower:
                                 current_list.pop()
-                            current_list.append((lower, legacy, stm32_dict[series]))
+                            current_list.append(
+                                (lower, legacy, stm32_dict[series], is_series_in_fn)
+                            )
                             hal_c_dict[feat] = current_list
                         else:
-                            hal_c_dict[feat].append((lower, legacy, stm32_dict[series]))
+                            hal_c_dict[feat].append(
+                                (lower, legacy, stm32_dict[series], is_series_in_fn)
+                            )
                     else:
-                        hal_c_dict[feat] = [(lower, legacy, stm32_dict[series])]
-
+                        hal_c_dict[feat] = [
+                            (lower, legacy, stm32_dict[series], is_series_in_fn)
+                        ]
             # Search stm32yyxx_ll_*.h file
             filelist = inc.glob(f"stm32{lower}{nx}_ll_*.h")
             for fp in filelist:
@@ -294,33 +305,26 @@ def wrap(arg_core, arg_cmsis, log):
                 else:
                     ll_h_dict[feature] = [(lower, stm32_dict[series])]
             # Search stm32yyxx_util_.*.h file
-            filelist = inc.glob(f"stm32{lower}{nx}_util_*.h")
-            for fp in filelist:
-                # File name
-                fn = fp.name
-                found = feat_util_h_regex.match(fn)
-                if not found:
-                    continue
-                feature = found.group(1)
-                # Add to util_h_dict to generate a header file for it
-                if feature in util_h_dict:
-                    util_h_dict[feature].append((lower, stm32_dict[series], False))
-                else:
-                    util_h_dict[feature] = [(lower, stm32_dict[series], False)]
-            # Search stm32yyxx_util_.*.h file
-            filelist = inc.glob(f"stm32_utils_*.h")
+            filelist = list(inc.glob("stm32*_util_*.h"))
+            filelist += list(inc.glob("stm32*_utils_*.h"))
             for fp in filelist:
                 # File name
                 fn = fp.name
                 found = feat_utils_h_regex.match(fn)
+                is_series_in_fn = fp.name.startswith(f"stm32{lower}{nx}_")
                 if not found:
                     continue
                 feature = found.group(1)
-                # Add to util_h_dict to generate a header file for it
-                if feature in util_h_dict:
-                    util_h_dict[feature].append((lower, stm32_dict[series], True))
+                utils = "_utils_" in fn
+                # Add to utils_h_dict to generate a header file for it
+                if feature in utils_h_dict:
+                    utils_h_dict[feature].append(
+                        (lower, stm32_dict[series], is_series_in_fn, utils)
+                    )
                 else:
-                    util_h_dict[feature] = [(lower, stm32_dict[series], True)]
+                    utils_h_dict[feature] = [
+                        (lower, stm32_dict[series], is_series_in_fn, utils)
+                    ]
 
     # Generate stm32yyxx_hal_*.c file
     for key, value in hal_c_dict.items():
@@ -343,11 +347,11 @@ def wrap(arg_core, arg_cmsis, log):
             out_file.write(ll_h_file_template.render(feat=key, serieslist=value))
     if log:
         print("done")
-    # Generate stm32yyxx_util_*.h file
-    for key, value in util_h_dict.items():
-        filepath = SrcWrapper_path / "inc" / f"stm32yyxx_util_{key}.h"
+    # Generate stm32yyxx_utils_*.h file
+    for key, value in utils_h_dict.items():
+        filepath = SrcWrapper_path / "inc" / f"stm32yyxx_utils_{key}.h"
         with open(filepath, "w", newline="\n") as out_file:
-            out_file.write(util_h_file_template.render(feat=key, serieslist=value))
+            out_file.write(utils_h_file_template.render(feat=key, serieslist=value))
     # Filter all LL header file
     all_ll_h_list = sorted(set(all_ll_h_list))
     # Generate the all LL header file

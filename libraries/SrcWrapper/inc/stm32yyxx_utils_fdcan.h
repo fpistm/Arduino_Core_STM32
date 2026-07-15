@@ -1,5 +1,5 @@
-#ifndef _STM32YYXX_UTIL_FDCAN_H_
-#define _STM32YYXX_UTIL_FDCAN_H_
+#ifndef _STM32YYXX_UTILS_FDCAN_H_
+#define _STM32YYXX_UTILS_FDCAN_H_
 /* LL raised several warnings, ignore them */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -12,4 +12,4 @@
   #include "stm32_utils_fdcan.h"
 #endif
 #pragma GCC diagnostic pop
-#endif /* _STM32YYXX_UTIL_FDCAN_H_ */
+#endif /* _STM32YYXX_UTILS_FDCAN_H_ */
