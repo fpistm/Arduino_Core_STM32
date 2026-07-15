@@ -7,7 +7,7 @@
 #if defined(USE_HALV2_DRIVER)
 #warning "I3C library is not yet compatible with HALv2 driver."
 #else
-#include "stm32yyxx_util_i3c.h"
+#include "stm32yyxx_utils_i3c.h"
 
 // ============================================================================
 // Descriptors, configuration structures, and enums
