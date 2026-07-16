@@ -4,9 +4,6 @@
 
 #if defined(I3C1_BASE) || defined(I3C2_BASE)
 
-#if defined(USE_HALV2_DRIVER)
-#warning "I3C library is not yet compatible with HALv2 driver."
-#else
 #include "stm32yyxx_utils_i3c.h"
 
 // ============================================================================
@@ -584,5 +581,4 @@ class I3CBus {
 
 extern I3CBus I3C;
 
-#endif /* !USE_HALV2_DRIVER */
-#endif /* I3C1_BASE || I3C2_BASE */
+#endif
