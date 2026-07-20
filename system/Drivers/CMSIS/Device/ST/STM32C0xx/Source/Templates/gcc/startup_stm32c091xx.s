@@ -137,38 +137,38 @@ g_pfnVectors:
   .word  0
   .word  PendSV_Handler
   .word  SysTick_Handler
-  .word  WWDG_IRQHandler                   /* Window WatchDog                             */
-  .word  0                                 /* reserved                                    */
-  .word  RTC_IRQHandler                    /* RTC through the EXTI line                   */
-  .word  FLASH_IRQHandler                  /* FLASH                                       */
-  .word  RCC_IRQHandler                    /* RCC                                         */
-  .word  EXTI0_1_IRQHandler                /* EXTI Line 0 and 1                           */
-  .word  EXTI2_3_IRQHandler                /* EXTI Line 2 and 3                           */
-  .word  EXTI4_15_IRQHandler               /* EXTI Line 4 to 15                           */
-  .word  0                                 /* reserved                                    */
-  .word  DMA1_Channel1_IRQHandler          /* DMA1 Channel 1                              */
-  .word  DMA1_Channel2_3_IRQHandler        /* DMA1 Channel 2 and Channel 3                */
-  .word  DMAMUX1_DMA1_CH4_5_IRQHandler     /* DMAMUX1, DMA1 Channel 4 and 5               */
-  .word  ADC1_IRQHandler                   /* ADC1                                        */
-  .word  TIM1_BRK_UP_TRG_COM_IRQHandler    /* TIM1 Break, Update, Trigger and Commutation */
-  .word  TIM1_CC_IRQHandler                /* TIM1 Capture Compare                        */
-  .word  TIM2_IRQHandler                   /* TIM2                                        */
-  .word  TIM3_IRQHandler                   /* TIM3                                        */
-  .word  0                                 /* reserved                                    */
-  .word  0                                 /* reserved                                    */
-  .word  TIM14_IRQHandler                  /* TIM14                                       */
-  .word  TIM15_IRQHandler                  /* TIM15                                       */
-  .word  TIM16_IRQHandler                  /* TIM16                                       */
-  .word  TIM17_IRQHandler                  /* TIM17                                       */
-  .word  I2C1_IRQHandler                   /* I2C1                                        */
-  .word  I2C2_IRQHandler                   /* I2C1                                        */
-  .word  SPI1_IRQHandler                   /* SPI1                                        */
-  .word  SPI2_IRQHandler                   /* SPI1                                        */
-  .word  USART1_IRQHandler                 /* USART1                                      */
-  .word  USART2_IRQHandler                 /* USART2                                      */
-  .word  USART3_4_IRQHandler               /* USART3 and USART4                           */
-  .word  0                                 /* reserved                                    */
-  .word  0                                 /* reserved                                    */
+  .word  WWDG_IRQHandler                        /* Window WatchDog                             */
+  .word  0                                      /* reserved                                    */
+  .word  RTC_IRQHandler                         /* RTC through the EXTI line                   */
+  .word  FLASH_IRQHandler                       /* FLASH                                       */
+  .word  RCC_IRQHandler                         /* RCC                                         */
+  .word  EXTI0_1_IRQHandler                     /* EXTI Line 0 and 1                           */
+  .word  EXTI2_3_IRQHandler                     /* EXTI Line 2 and 3                           */
+  .word  EXTI4_15_IRQHandler                    /* EXTI Line 4 to 15                           */
+  .word  0                                      /* reserved                                    */
+  .word  DMA1_Channel1_IRQHandler               /* DMA1 Channel 1                              */
+  .word  DMA1_Channel2_3_IRQHandler             /* DMA1 Channel 2 and Channel 3                */
+  .word  DMAMUX1_DMA1_CH4_5_6_7_IRQHandler      /* DMAMUX1, DMA1 Channel 4 and 7               */
+  .word  ADC1_IRQHandler                        /* ADC1                                        */
+  .word  TIM1_BRK_UP_TRG_COM_IRQHandler         /* TIM1 Break, Update, Trigger and Commutation */
+  .word  TIM1_CC_IRQHandler                     /* TIM1 Capture Compare                        */
+  .word  TIM2_IRQHandler                        /* TIM2                                        */
+  .word  TIM3_IRQHandler                        /* TIM3                                        */
+  .word  0                                      /* reserved                                    */
+  .word  0                                      /* reserved                                    */
+  .word  TIM14_IRQHandler                       /* TIM14                                       */
+  .word  TIM15_IRQHandler                       /* TIM15                                       */
+  .word  TIM16_IRQHandler                       /* TIM16                                       */
+  .word  TIM17_IRQHandler                       /* TIM17                                       */
+  .word  I2C1_IRQHandler                        /* I2C1                                        */
+  .word  I2C2_IRQHandler                        /* I2C1                                        */
+  .word  SPI1_IRQHandler                        /* SPI1                                        */
+  .word  SPI2_IRQHandler                        /* SPI1                                        */
+  .word  USART1_IRQHandler                      /* USART1                                      */
+  .word  USART2_IRQHandler                      /* USART2                                      */
+  .word  USART3_4_IRQHandler                    /* USART3 and USART4                           */
+  .word  0                                      /* reserved                                    */
+  .word  0                                      /* reserved                                    */
 
   .size g_pfnVectors, .-g_pfnVectors
 /*******************************************************************************
@@ -221,8 +221,8 @@ g_pfnVectors:
   .weak      DMA1_Channel2_3_IRQHandler
   .thumb_set DMA1_Channel2_3_IRQHandler,Default_Handler
 
-  .weak      DMAMUX1_DMA1_CH4_5_IRQHandler
-  .thumb_set DMAMUX1_DMA1_CH4_5_IRQHandler,Default_Handler
+  .weak      DMAMUX1_DMA1_CH4_5_6_7_IRQHandler
+  .thumb_set DMAMUX1_DMA1_CH4_5_6_7_IRQHandler,Default_Handler
 
   .weak      ADC1_IRQHandler
   .thumb_set ADC1_IRQHandler,Default_Handler

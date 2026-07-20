@@ -1,6 +1,6 @@
 # STM32CubeC0 CMSIS Device MCU Component
 
-![latest tag](https://img.shields.io/github/v/tag/STMicroelectronics/cmsis_device_c0.svg?color=brightgreen)
+![tag](https://img.shields.io/badge/tag-v1.4.1-brightgreen.svg)
 
 ## Overview
 
