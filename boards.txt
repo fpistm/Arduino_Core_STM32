@@ -424,7 +424,7 @@ Nucleo_144.menu.upload_method.MassStorage.upload.tool=massStorageCopy
 
 Nucleo_144.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Nucleo_144.menu.upload_method.swdMethod.upload.protocol=swd
-Nucleo_144.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Nucleo_144.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Nucleo_144.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Nucleo_144.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -1099,7 +1099,7 @@ Nucleo_64.menu.upload_method.MassStorage.upload.tool=massStorageCopy
 
 Nucleo_64.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Nucleo_64.menu.upload_method.swdMethod.upload.protocol=swd
-Nucleo_64.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Nucleo_64.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Nucleo_64.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Nucleo_64.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -1282,7 +1282,7 @@ Nucleo_32.menu.upload_method.MassStorage.upload.tool=massStorageCopy
 
 Nucleo_32.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Nucleo_32.menu.upload_method.swdMethod.upload.protocol=swd
-Nucleo_32.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Nucleo_32.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Nucleo_32.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Nucleo_32.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -1701,7 +1701,7 @@ Disco.menu.upload_method.MassStorage.upload.tool=massStorageCopy
 
 Disco.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Disco.menu.upload_method.swdMethod.upload.protocol=swd
-Disco.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Disco.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Disco.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Disco.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -1797,7 +1797,7 @@ Eval.menu.pnum.STEVAL_MKBOXPRO.debug.svd_file={runtime.tools.STM32_SVD.path}/svd
 # Upload menu
 Eval.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Eval.menu.upload_method.swdMethod.upload.protocol=swd
-Eval.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Eval.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Eval.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Eval.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -2135,7 +2135,7 @@ GenC0.menu.pnum.GENERIC_C092RCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenC0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenC0.menu.upload_method.swdMethod.upload.protocol=swd
-GenC0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenC0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenC0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenC0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -2217,7 +2217,7 @@ GenC5.menu.pnum.GENERIC_C562RETX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenC5.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenC5.menu.upload_method.swdMethod.upload.protocol=swd
-GenC5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenC5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenC5.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenC5.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -3162,7 +3162,7 @@ GenF0.menu.pnum.GENERIC_F098VCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF0.menu.upload_method.swdMethod.upload.protocol=swd
-GenF0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -4011,7 +4011,7 @@ GenF1.menu.pnum.GENERIC_F103ZGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF1.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF1.menu.upload_method.swdMethod.upload.protocol=swd
-GenF1.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF1.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF1.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF1.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -4505,7 +4505,7 @@ GenF2.menu.pnum.GENERIC_F217ZGTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF2.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF2.menu.upload_method.swdMethod.upload.protocol=swd
-GenF2.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF2.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF2.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF2.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -5011,7 +5011,7 @@ GenF3.menu.pnum.GENERIC_F398VETX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF3.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF3.menu.upload_method.swdMethod.upload.protocol=swd
-GenF3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF3.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF3.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -6118,7 +6118,7 @@ GenF4.menu.pnum.GENERIC_F446ZETX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF4.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF4.menu.upload_method.swdMethod.upload.protocol=swd
-GenF4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF4.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF4.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -6673,7 +6673,7 @@ GenF7.menu.pnum.GENERIC_F777ZITX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenF7.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenF7.menu.upload_method.swdMethod.upload.protocol=swd
-GenF7.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenF7.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenF7.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenF7.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -8103,7 +8103,7 @@ GenG0.menu.pnum.GENERIC_G0C1VETX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenG0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenG0.menu.upload_method.swdMethod.upload.protocol=swd
-GenG0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenG0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenG0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenG0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -9398,7 +9398,7 @@ GenG4.menu.pnum.GENERIC_G4A1VETX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenG4.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenG4.menu.upload_method.swdMethod.upload.protocol=swd
-GenG4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenG4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenG4.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenG4.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -9634,7 +9634,7 @@ GenH5.menu.pnum.GENERIC_H573ZITX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenH5.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenH5.menu.upload_method.swdMethod.upload.protocol=swd
-GenH5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenH5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenH5.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenH5.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -10425,7 +10425,7 @@ GenH7.menu.pnum.GENERIC_H7B3ZITXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenH7.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenH7.menu.upload_method.swdMethod.upload.protocol=swd
-GenH7.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenH7.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenH7.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenH7.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -11722,7 +11722,7 @@ GenL0.menu.pnum.GENERIC_L083VZTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenL0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenL0.menu.upload_method.swdMethod.upload.protocol=swd
-GenL0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenL0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenL0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenL0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -12061,7 +12061,7 @@ GenL1.menu.pnum.GENERIC_L162ZDTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenL1.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenL1.menu.upload_method.swdMethod.upload.protocol=swd
-GenL1.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenL1.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenL1.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenL1.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -12898,7 +12898,7 @@ GenL4.menu.pnum.GENERIC_L4S9ZIYX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenL4.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenL4.menu.upload_method.swdMethod.upload.protocol=swd
-GenL4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenL4.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenL4.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenL4.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13005,7 +13005,7 @@ GenL5.menu.pnum.GENERIC_L562ZETXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenL5.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenL5.menu.upload_method.swdMethod.upload.protocol=swd
-GenL5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenL5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenL5.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenL5.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13200,7 +13200,7 @@ GenU0.menu.pnum.GENERIC_U083RCTX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenU0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenU0.menu.upload_method.swdMethod.upload.protocol=swd
-GenU0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenU0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenU0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenU0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13330,7 +13330,7 @@ GenU3.menu.pnum.GENERIC_U385VGIXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenU3.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenU3.menu.upload_method.swdMethod.upload.protocol=swd
-GenU3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenU3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenU3.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenU3.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13525,7 +13525,7 @@ GenU5.menu.pnum.GENERIC_U5A9ZJTXQ.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenU5.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenU5.menu.upload_method.swdMethod.upload.protocol=swd
-GenU5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenU5.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenU5.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenU5.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13724,7 +13724,7 @@ GenWB.menu.pnum.GENERIC_WB5MMGHX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenWB.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWB.menu.upload_method.swdMethod.upload.protocol=swd
-GenWB.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenWB.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenWB.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWB.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13813,7 +13813,7 @@ GenWB0.menu.pnum.GENERIC_WB09TEFX.debug.svd_file={runtime.tools.STM32_SVD.path}/
 # Upload menu
 GenWB0.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWB0.menu.upload_method.swdMethod.upload.protocol=swd
-GenWB0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenWB0.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenWB0.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWB0.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13873,7 +13873,7 @@ GenWBA.menu.pnum.GENERIC_WBA55CGUX.debug.svd_file={runtime.tools.STM32_SVD.path}
 # Upload menu
 GenWBA.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWBA.menu.upload_method.swdMethod.upload.protocol=swd
-GenWBA.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenWBA.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenWBA.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWBA.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -13971,7 +13971,7 @@ GenWL3.menu.pnum.GENERIC_WL33CCVXX.debug.svd_file={runtime.tools.STM32_SVD.path}
 # Upload menu
 GenWL3.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWL3.menu.upload_method.swdMethod.upload.protocol=swd
-GenWL3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenWL3.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenWL3.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWL3.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14147,7 +14147,7 @@ GenWL.menu.pnum.GENERIC_WLE5JCIX.debug.svd_file={runtime.tools.STM32_SVD.path}/s
 # Upload menu
 GenWL.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenWL.menu.upload_method.swdMethod.upload.protocol=swd
-GenWL.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenWL.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenWL.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenWL.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14398,7 +14398,7 @@ GenWL.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.1={runtime.
 # Upload menu
 3dprinter.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 3dprinter.menu.upload_method.swdMethod.upload.protocol=swd
-3dprinter.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+3dprinter.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 3dprinter.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 3dprinter.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14508,7 +14508,7 @@ Blues.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.1={runtime.
 
 Blues.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Blues.menu.upload_method.swdMethod.upload.protocol=swd
-Blues.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Blues.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Blues.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Blues.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -14564,7 +14564,7 @@ Elecgator.menu.pnum.ETHERCAT_DUINO.debug.svd_file={runtime.tools.STM32_SVD.path}
 # Upload menu
 Elecgator.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Elecgator.menu.upload_method.swdMethod.upload.protocol=swd
-Elecgator.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Elecgator.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Elecgator.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Elecgator.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14636,7 +14636,7 @@ ESC_board.menu.pnum.WRAITH32_V1.debug.svd_file={runtime.tools.STM32_SVD.path}/sv
 # Upload menu
 ESC_board.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 ESC_board.menu.upload_method.swdMethod.upload.protocol=swd
-ESC_board.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+ESC_board.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 ESC_board.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 ESC_board.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14811,7 +14811,7 @@ GenFlight.menu.pnum.Sparky_V1.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/
 # Upload menu
 GenFlight.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 GenFlight.menu.upload_method.swdMethod.upload.protocol=swd
-GenFlight.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+GenFlight.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 GenFlight.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 GenFlight.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14895,7 +14895,7 @@ IotContinuum.menu.pnum.DEVKIT_IOT_CONTINUUM.debug.svd_file={runtime.tools.STM32_
 # Upload menu
 IotContinuum.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 IotContinuum.menu.upload_method.swdMethod.upload.protocol=swd
-IotContinuum.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+IotContinuum.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 IotContinuum.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 IotContinuum.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -15110,7 +15110,7 @@ LoRa.menu.pnum.RHF76_052.debug.svd_file={runtime.tools.STM32_SVD.path}/svd/STM32
 # Upload menu
 LoRa.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 LoRa.menu.upload_method.swdMethod.upload.protocol=swd
-LoRa.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+LoRa.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 LoRa.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 LoRa.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -15180,7 +15180,7 @@ Midatronics.menu.upload_method.MassStorage.upload.tool=massStorageCopy
 
 Midatronics.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 Midatronics.menu.upload_method.swdMethod.upload.protocol=swd
-Midatronics.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+Midatronics.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 Midatronics.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 Midatronics.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -15266,7 +15266,7 @@ SparkFun.menu.pnum.SFE_MMPB_STM32WB5MMG.debug.svd_file={runtime.tools.STM32_SVD.
 # Upload menu
 SparkFun.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD)
 SparkFun.menu.upload_method.swdMethod.upload.protocol=swd
-SparkFun.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+SparkFun.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 SparkFun.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 SparkFun.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -15327,7 +15327,7 @@ ELV_Modular_System.menu.pnum.ELV_BM_TRX1.debug.svd_file={runtime.tools.STM32_SVD
 # Upload menu
 ELV_Modular_System.menu.upload_method.swdMethod=STM32CubeProgrammer (SWD) with Bootloader
 ELV_Modular_System.menu.upload_method.swdMethod.upload.protocol=swd
-ELV_Modular_System.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq}
+ELV_Modular_System.menu.upload_method.swdMethod.upload.options=-a {upload.address} -m {upload.mode} -s {upload.start} -f {upload.freq} -n {upload.stlink_sn}
 ELV_Modular_System.menu.upload_method.swdMethod.upload.tool=stm32CubeProg
 
 ELV_Modular_System.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link) with Bootloader
