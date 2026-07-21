@@ -434,7 +434,7 @@ Nucleo_144.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 Nucleo_144.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Nucleo_144.menu.upload_method.serialMethod.upload.protocol=serial
-Nucleo_144.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Nucleo_144.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Nucleo_144.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Nucleo_144.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -1109,7 +1109,7 @@ Nucleo_64.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 Nucleo_64.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Nucleo_64.menu.upload_method.serialMethod.upload.protocol=serial
-Nucleo_64.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Nucleo_64.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Nucleo_64.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Nucleo_64.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -1292,7 +1292,7 @@ Nucleo_32.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 Nucleo_32.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Nucleo_32.menu.upload_method.serialMethod.upload.protocol=serial
-Nucleo_32.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Nucleo_32.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Nucleo_32.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Nucleo_32.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -1711,7 +1711,7 @@ Disco.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 Disco.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Disco.menu.upload_method.serialMethod.upload.protocol=serial
-Disco.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Disco.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Disco.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Disco.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -2145,7 +2145,7 @@ GenC0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenC0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenC0.menu.upload_method.serialMethod.upload.protocol=serial
-GenC0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenC0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenC0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenC0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -2227,7 +2227,7 @@ GenC5.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenC5.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenC5.menu.upload_method.serialMethod.upload.protocol=serial
-GenC5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenC5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenC5.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenC5.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -3172,7 +3172,7 @@ GenF0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF0.menu.upload_method.serialMethod.upload.protocol=serial
-GenF0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -4021,7 +4021,7 @@ GenF1.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF1.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF1.menu.upload_method.serialMethod.upload.protocol=serial
-GenF1.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF1.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF1.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF1.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -4515,7 +4515,7 @@ GenF2.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF2.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF2.menu.upload_method.serialMethod.upload.protocol=serial
-GenF2.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF2.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF2.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF2.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -5021,7 +5021,7 @@ GenF3.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF3.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF3.menu.upload_method.serialMethod.upload.protocol=serial
-GenF3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF3.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF3.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -6128,7 +6128,7 @@ GenF4.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF4.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF4.menu.upload_method.serialMethod.upload.protocol=serial
-GenF4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF4.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF4.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -6683,7 +6683,7 @@ GenF7.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenF7.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenF7.menu.upload_method.serialMethod.upload.protocol=serial
-GenF7.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenF7.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenF7.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenF7.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -8113,7 +8113,7 @@ GenG0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenG0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenG0.menu.upload_method.serialMethod.upload.protocol=serial
-GenG0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenG0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenG0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenG0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -9408,7 +9408,7 @@ GenG4.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenG4.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenG4.menu.upload_method.serialMethod.upload.protocol=serial
-GenG4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenG4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenG4.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenG4.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -9644,7 +9644,7 @@ GenH5.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenH5.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenH5.menu.upload_method.serialMethod.upload.protocol=serial
-GenH5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenH5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenH5.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenH5.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -10435,7 +10435,7 @@ GenH7.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenH7.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenH7.menu.upload_method.serialMethod.upload.protocol=serial
-GenH7.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenH7.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenH7.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenH7.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -11732,7 +11732,7 @@ GenL0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenL0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenL0.menu.upload_method.serialMethod.upload.protocol=serial
-GenL0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenL0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenL0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenL0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -12071,7 +12071,7 @@ GenL1.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenL1.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenL1.menu.upload_method.serialMethod.upload.protocol=serial
-GenL1.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenL1.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenL1.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenL1.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -12908,7 +12908,7 @@ GenL4.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenL4.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenL4.menu.upload_method.serialMethod.upload.protocol=serial
-GenL4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenL4.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenL4.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenL4.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13015,7 +13015,7 @@ GenL5.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenL5.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenL5.menu.upload_method.serialMethod.upload.protocol=serial
-GenL5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenL5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenL5.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenL5.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13210,7 +13210,7 @@ GenU0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenU0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenU0.menu.upload_method.serialMethod.upload.protocol=serial
-GenU0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenU0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenU0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenU0.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13340,7 +13340,7 @@ GenU3.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenU3.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenU3.menu.upload_method.serialMethod.upload.protocol=serial
-GenU3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenU3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenU3.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenU3.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13535,7 +13535,7 @@ GenU5.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenU5.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenU5.menu.upload_method.serialMethod.upload.protocol=serial
-GenU5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenU5.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenU5.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenU5.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13734,7 +13734,7 @@ GenWB.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenWB.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenWB.menu.upload_method.serialMethod.upload.protocol=serial
-GenWB.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenWB.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenWB.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenWB.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -13823,7 +13823,7 @@ GenWB0.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenWB0.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenWB0.menu.upload_method.serialMethod.upload.protocol=serial
-GenWB0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenWB0.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenWB0.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 #GenWB0.menu.upload_method.OpenOCDSTLink=OpenOCD STLink (SWD)
@@ -13883,7 +13883,7 @@ GenWBA.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenWBA.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenWBA.menu.upload_method.serialMethod.upload.protocol=serial
-GenWBA.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenWBA.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenWBA.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenWBA.menu.upload_method.OpenOCDSTLink=OpenOCD STLink (SWD)
@@ -13981,7 +13981,7 @@ GenWL3.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenWL3.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenWL3.menu.upload_method.serialMethod.upload.protocol=serial
-GenWL3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenWL3.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenWL3.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 ################################################################################
@@ -14157,7 +14157,7 @@ GenWL.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenWL.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenWL.menu.upload_method.serialMethod.upload.protocol=serial
-GenWL.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenWL.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenWL.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenWL.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -14408,7 +14408,7 @@ GenWL.menu.upload_method.OpenOCDDapLink.debug.server.openocd.scripts.1={runtime.
 
 3dprinter.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 3dprinter.menu.upload_method.serialMethod.upload.protocol=serial
-3dprinter.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+3dprinter.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 3dprinter.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 3dprinter.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -14518,7 +14518,7 @@ Blues.menu.upload_method.dfuMethod.upload.tool=stm32CubeProg
 
 Blues.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Blues.menu.upload_method.serialMethod.upload.protocol=serial
-Blues.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Blues.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Blues.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Blues.menu.upload_method.jlinkMethod=STM32CubeProgrammer (J-Link)
@@ -14646,7 +14646,7 @@ ESC_board.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 ESC_board.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 ESC_board.menu.upload_method.serialMethod.upload.protocol=serial
-ESC_board.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+ESC_board.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 ESC_board.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 ESC_board.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -14821,7 +14821,7 @@ GenFlight.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 GenFlight.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 GenFlight.menu.upload_method.serialMethod.upload.protocol=serial
-GenFlight.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+GenFlight.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 GenFlight.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 GenFlight.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -14905,7 +14905,7 @@ IotContinuum.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 IotContinuum.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 IotContinuum.menu.upload_method.serialMethod.upload.protocol=serial
-IotContinuum.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+IotContinuum.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 IotContinuum.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 IotContinuum.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -15120,7 +15120,7 @@ LoRa.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 LoRa.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 LoRa.menu.upload_method.serialMethod.upload.protocol=serial
-LoRa.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+LoRa.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 LoRa.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 LoRa.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -15190,7 +15190,7 @@ Midatronics.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 Midatronics.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 Midatronics.menu.upload_method.serialMethod.upload.protocol=serial
-Midatronics.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+Midatronics.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 Midatronics.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 Midatronics.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -15276,7 +15276,7 @@ SparkFun.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 SparkFun.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial)
 SparkFun.menu.upload_method.serialMethod.upload.protocol=serial
-SparkFun.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+SparkFun.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 SparkFun.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 SparkFun.menu.upload_method.dfuMethod=STM32CubeProgrammer (DFU)
@@ -15337,7 +15337,7 @@ ELV_Modular_System.menu.upload_method.jlinkMethod.upload.tool=stm32CubeProg
 
 ELV_Modular_System.menu.upload_method.serialMethod=STM32CubeProgrammer (Serial) with Bootloader
 ELV_Modular_System.menu.upload_method.serialMethod.upload.protocol=serial
-ELV_Modular_System.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} --parity {upload.parity}
+ELV_Modular_System.menu.upload_method.serialMethod.upload.options=-c {serial.port.file} -a {upload.address} -s {upload.start} -p {upload.parity}
 ELV_Modular_System.menu.upload_method.serialMethod.upload.tool=stm32CubeProg
 
 ################################################################################
