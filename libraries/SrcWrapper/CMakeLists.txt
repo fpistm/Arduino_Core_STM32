@@ -153,6 +153,8 @@ add_library(SrcWrapper_bin OBJECT EXCLUDE_FROM_ALL
   src/HAL/stm32yyxx_hal_xspi.c
   src/HAL/stm32yyxx_usb_drd_core.c
   src/HAL/stm32yyxx_util_i3c.c
+  src/HAL/stm32yyxx_utils_fdcan.c
+  src/HAL/stm32yyxx_utils_i2c.c
   src/HAL/stm32yyxx_utils_i3c.c
   src/HardwareTimer.cpp
   src/LL/stm32yyxx_ll_adc.c
